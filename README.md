@@ -1,2 +1,2 @@
-# dsgamemaker
-DS Game Maker
+# DS Game Maker
+Make your own Nintendo DS games.
