@@ -1,0 +1,75 @@
+bool Read_File(char* Buffer, char* Path) {
+ FILE *FH;
+ FH = fopen(Path, "r");
+ if (FH == NULL) return false;
+ fread(Buffer, 1, 255, FH);
+ fseek(FH, 0, SEEK_END);
+ Buffer[ftell(FH)] = 0;
+ fclose(FH);
+ return true;
+}
+
+bool Write_File(char* Content, char* Path) {
+ FILE *FH;
+ FH = fopen(Path, "w");
+ if (FH == NULL) {
+  return false;
+ }
+ fprintf(FH, "%s", Content);
+ fclose(FH);
+ return true; 
+}
+
+bool List_Files(bool Screen, u8 X, u8 Y, char* Path) {
+ DIR *FD;
+ struct dirent *FE;
+ FD = opendir(Path);
+ if (FD == NULL) {
+  return false;
+ }
+ while ((FE = readdir (FD)) != NULL) {
+  if (!Strings_Same(FE->d_name, "..") && !Strings_Same(FE->d_name, ".")) {
+   Draw_Text(Screen, X, Y, FE->d_name);
+   Y += 1;
+  }
+ }
+ return true;
+}
+
+void Switch_To_NitroFS() {
+  chdir("nitro:/");
+}
+
+void Switch_To_FAT() {
+  chdir("fat:/");
+}
+
+void Enable_Rotation(u8 AppliesTo) {
+  PA_SetSpriteRotEnable(Instances[AppliesTo].Screen, AppliesTo, AppliesTo);
+}
+
+void Disable_Rotation(u8 AppliesTo) {
+  PA_SetSpriteRotDisable(Instances[AppliesTo].Screen, AppliesTo);
+}
+
+void Set_Angle(u8 AppliesTo, s16 Angle) {
+  PA_SetRotsetNoZoom(Instances[AppliesTo].Screen, AppliesTo, Angle);
+}
+
+float Angle_To_Radians(float Angle) {
+  //Original by Prob_Caboose
+  return ((Angle * 142) / 100);
+}
+	
+float Radians_To_Angle(float Radians) {
+  //Original by Prob_Caboose
+  return ((Radians * 100) / 142);
+}
+
+int Angle_Between_Points(s16 X1, s16 Y1, s16 X2, s16 Y2) {
+  return PA_GetAngle(X1, Y1, X2, Y2);
+}
+
+int Distance_Between_Points(s16 X1, s16 Y1, s16 X2, s16 Y2) {
+  return PA_TrueDistance(X1, Y1, X2, Y2);
+}

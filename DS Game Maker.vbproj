@@ -1,0 +1,756 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D36BBFA2-96BE-4656-909F-07C53473A02F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>DS_Game_Maker.My.MyApplication</StartupObject>
+    <RootNamespace>DS_Game_Maker</RootNamespace>
+    <AssemblyName>DS Game Maker</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <ApplicationIcon>DSGMIcon.ico</ApplicationIcon>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>DS Game Maker.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>DS Game Maker.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScintillaNet, Version=2.2.3581.19319, Culture=neutral, PublicKeyToken=948d6c9751444115, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutDSGM.Designer.vb">
+      <DependentUpon>AboutDSGM.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AboutDSGM.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Action.Designer.vb">
+      <DependentUpon>Action.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Action.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ActionEditor.Designer.vb">
+      <DependentUpon>ActionEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ActionEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ActionsLib.vb" />
+    <Compile Include="Argument.Designer.vb">
+      <DependentUpon>Argument.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Argument.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Background.Designer.vb">
+      <DependentUpon>Background.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Background.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BadSpriteSize.Designer.vb">
+      <DependentUpon>BadSpriteSize.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BadSpriteSize.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="clsColors.vb" />
+    <Compile Include="clsMenuRenderer.vb" />
+    <Compile Include="clsToolStripRenderer.vb" />
+    <Compile Include="Compiled.Designer.vb">
+      <DependentUpon>Compiled.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Compiled.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DEvent.Designer.vb">
+      <DependentUpon>DEvent.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DEvent.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DObject.Designer.vb">
+      <DependentUpon>DObject.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DObject.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DSGMLib.vb" />
+    <Compile Include="EditCode.Designer.vb">
+      <DependentUpon>EditCode.vb</DependentUpon>
+    </Compile>
+    <Compile Include="EditCode.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FontViewer.Designer.vb">
+      <DependentUpon>FontViewer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FontViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAction.Designer.vb">
+      <DependentUpon>FormAction.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormAction.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FoundInScripts.Designer.vb">
+      <DependentUpon>FoundInScripts.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FoundInScripts.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameSettings.Designer.vb">
+      <DependentUpon>GameSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GameSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalArrays.Designer.vb">
+      <DependentUpon>GlobalArrays.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalArrays.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalStructures.Designer.vb">
+      <DependentUpon>GlobalStructures.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalStructures.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalVariables.Designer.vb">
+      <DependentUpon>GlobalVariables.vb</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalVariables.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportSprite.Designer.vb">
+      <DependentUpon>ImportSprite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ImportSprite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBoxForm.Designer.vb">
+      <DependentUpon>InputBoxForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="InputBoxForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Compile.Designer.vb">
+      <DependentUpon>Compile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Compile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options.Designer.vb">
+      <DependentUpon>Options.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Options.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Preview.Designer.vb">
+      <DependentUpon>Preview.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Preview.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegistryLib.vb" />
+    <Compile Include="ResourcesLib.vb" />
+    <Compile Include="Room.Designer.vb">
+      <DependentUpon>Room.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Room.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Script.Designer.vb">
+      <DependentUpon>Script.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Script.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScriptsLib.vb" />
+    <Compile Include="SessionsLib.vb" />
+    <Compile Include="SetCoOrdinates.Designer.vb">
+      <DependentUpon>SetCoOrdinates.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SetCoOrdinates.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings.vb" />
+    <Compile Include="OptionsLib.vb" />
+    <Compile Include="Sound.Designer.vb">
+      <DependentUpon>Sound.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Sound.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundType.Designer.vb">
+      <DependentUpon>SoundType.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SoundType.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Sprite.Designer.vb">
+      <DependentUpon>Sprite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Sprite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpriteSize.Designer.vb">
+      <DependentUpon>SpriteSize.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SpriteSize.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Statistics.Designer.vb">
+      <DependentUpon>Statistics.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Statistics.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StructureItem.Designer.vb">
+      <DependentUpon>StructureItem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="StructureItem.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Toolchain.vb" />
+    <Compile Include="TransformSprite.Designer.vb">
+      <DependentUpon>TransformSprite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TransformSprite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Update.Designer.vb">
+      <DependentUpon>Update.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Update.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AboutDSGM.resx">
+      <DependentUpon>AboutDSGM.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Action.resx">
+      <DependentUpon>Action.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ActionEditor.resx">
+      <DependentUpon>ActionEditor.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Argument.resx">
+      <DependentUpon>Argument.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Background.resx">
+      <DependentUpon>Background.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BadSpriteSize.resx">
+      <DependentUpon>BadSpriteSize.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compile.resx">
+      <DependentUpon>Compile.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compiled.resx">
+      <DependentUpon>Compiled.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DEvent.resx">
+      <DependentUpon>DEvent.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DObject.resx">
+      <DependentUpon>DObject.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditCode.resx">
+      <DependentUpon>EditCode.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FontViewer.resx">
+      <DependentUpon>FontViewer.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FoundInScripts.resx">
+      <DependentUpon>FoundInScripts.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameSettings.resx">
+      <DependentUpon>GameSettings.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GlobalArrays.resx">
+      <DependentUpon>GlobalArrays.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GlobalStructures.resx">
+      <DependentUpon>GlobalStructures.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GlobalVariables.resx">
+      <DependentUpon>GlobalVariables.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportSprite.resx">
+      <DependentUpon>ImportSprite.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBoxForm.resx">
+      <DependentUpon>InputBoxForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options.resx">
+      <DependentUpon>Options.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Preview.resx">
+      <DependentUpon>Preview.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Room.resx">
+      <DependentUpon>Room.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Script.resx">
+      <DependentUpon>Script.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetCoOrdinates.resx">
+      <DependentUpon>SetCoOrdinates.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sound.resx">
+      <DependentUpon>Sound.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundType.resx">
+      <DependentUpon>SoundType.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprite.resx">
+      <DependentUpon>Sprite.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpriteSize.resx">
+      <DependentUpon>SpriteSize.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Statistics.resx">
+      <DependentUpon>Statistics.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StructureItem.resx">
+      <DependentUpon>StructureItem.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransformSprite.resx">
+      <DependentUpon>TransformSprite.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Update.resx">
+      <DependentUpon>Update.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings1.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NewIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SaveIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenLastIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SaveAsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TestGameIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TestGameSaveIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OptionsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ObjectIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpriteIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ObjectAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SoundIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SoundAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CopyIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RoomIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RoomAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FontIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PasteIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpriteAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InternetIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CutIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BackgroundAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BackgroundIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScriptIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScriptAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PathIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PathAddIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpriteMoveIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpriteMeasureIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LockIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\UnlockIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GameSettingsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VariableManagerIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\question-octagon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\QuestionIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FolderIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AcceptIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PencilIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScriptImportIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScriptExportIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PlusIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DeleteIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ActionEditIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PuzzlePieceSmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InsertIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ActionIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CreateEventIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KeyDownIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KeyIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\KeyDownIcon1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StylusIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Collision.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ClockIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddFolderIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExportSpriteStripButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExportSpriteStripIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TransformIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpriteSizesTable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ArrowFadeRightIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LeftArrowSmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RightArrowSmall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DSGMIcon.ico" />
+    <None Include="Resources\ActionBacker.png" />
+    <None Include="Resources\BlankActionCondition.png" />
+    <None Include="Resources\BlankActionIcon.png" />
+    <None Include="Resources\OpenObjectIcon.png" />
+    <None Include="Resources\SpriteSizesTable1.png" />
+    <None Include="Resources\ExtraDBAS" />
+    <None Include="Resources\ArgumentIcon.png" />
+    <None Include="Resources\StopButtonIcon.png" />
+    <None Include="Resources\PlayButtonIcon.png" />
+    <None Include="Resources\AlarmIcon.png" />
+    <None Include="Resources\RedoIcon.png" />
+    <None Include="Resources\UndoIcon.png" />
+    <None Include="Resources\ActionWorks" />
+    <None Include="Resources\DSGMIcon.ico" />
+    <None Include="Resources\UpdateBigIcon.png" />
+    <None Include="Resources\CompileWaitIcon.png" />
+    <None Include="Resources\CompilePAGfxIcon.png" />
+    <None Include="Resources\CompileSoundIcon.png" />
+    <None Include="Resources\CompileIcon.png" />
+    <None Include="Resources\ListIcon.png" />
+    <None Include="Resources\InGameProBanner.png" />
+    <None Include="Resources\StructureIcon.png" />
+    <None Include="app.config" />
+    <None Include="Resources\ProBanner.png" />
+    <None Include="Resources\RegBanner.png" />
+    <None Include="Resources\DSGMTopBanner.png" />
+    <None Include="Resources\ArrayIcon.png" />
+    <None Include="Resources\VariableIcon.png" />
+    <None Include="Resources\BigHBIcon.png" />
+    <None Include="Resources\BigPlayButton.png" />
+    <None Include="Resources\BigFolderIcon.png" />
+    <None Include="Resources\BigSaveIcon.png" />
+    <None Include="Resources\color.png" />
+    <None Include="Resources\ky_geturl.h" />
+    <None Include="Resources\PAGfx.exe" />
+    <None Include="Resources\ArrowDown.png" />
+    <None Include="Resources\ArrowUp.png" />
+    <None Include="Resources\BigMusicIcon1.png" />
+    <None Include="Resources\BigMusicIcon.png" />
+    <None Include="Resources\ProBG.png" />
+    <None Include="Resources\MDIBG.png" />
+    <None Include="Resources\BarBGSmall.png" />
+    <None Include="Resources\BarBG.png" />
+    <None Include="Resources\Corners.png" />
+    <None Include="Resources\RoundedBlock.png" />
+    <None Include="Resources\OtherIcon.png" />
+    <None Include="Resources\WifiLibC" />
+    <None Include="Resources\WifiLibH" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
