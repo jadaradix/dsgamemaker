@@ -23,16 +23,16 @@ Partial Class Action
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Action))
-        Me.SubPanel = New System.Windows.Forms.Panel
-        Me.DOkayButton = New System.Windows.Forms.Button
-        Me.AppliesToGroupBox = New System.Windows.Forms.GroupBox
-        Me.InstancesTextBox = New System.Windows.Forms.TextBox
-        Me.InstancesOfDropper = New System.Windows.Forms.ComboBox
-        Me.InstancesRadioButton = New System.Windows.Forms.RadioButton
-        Me.InstancesOfRadioButton = New System.Windows.Forms.RadioButton
-        Me.ThisRadioButton = New System.Windows.Forms.RadioButton
-        Me.LabelsPanel = New System.Windows.Forms.Panel
-        Me.ControlsPanel = New System.Windows.Forms.Panel
+        Me.SubPanel = New System.Windows.Forms.Panel()
+        Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.AppliesToGroupBox = New System.Windows.Forms.GroupBox()
+        Me.InstancesTextBox = New System.Windows.Forms.TextBox()
+        Me.InstancesOfDropper = New System.Windows.Forms.ComboBox()
+        Me.InstancesRadioButton = New System.Windows.Forms.RadioButton()
+        Me.InstancesOfRadioButton = New System.Windows.Forms.RadioButton()
+        Me.ThisRadioButton = New System.Windows.Forms.RadioButton()
+        Me.LabelsPanel = New System.Windows.Forms.Panel()
+        Me.ControlsPanel = New System.Windows.Forms.Panel()
         Me.SubPanel.SuspendLayout()
         Me.AppliesToGroupBox.SuspendLayout()
         Me.SuspendLayout()
@@ -53,7 +53,7 @@ Partial Class Action
         Me.DOkayButton.Name = "DOkayButton"
         Me.DOkayButton.Size = New System.Drawing.Size(104, 26)
         Me.DOkayButton.TabIndex = 1
-        Me.DOkayButton.Text = "Okay"
+        Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
         '
         'AppliesToGroupBox

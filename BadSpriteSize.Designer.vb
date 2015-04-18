@@ -23,9 +23,9 @@ Partial Class BadSpriteSize
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(BadSpriteSize))
-        Me.ExplanationLabel = New System.Windows.Forms.Label
-        Me.Panel1 = New System.Windows.Forms.Panel
-        Me.DAcceptButton = New System.Windows.Forms.Button
+        Me.ExplanationLabel = New System.Windows.Forms.Label()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.DAcceptButton = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ExplanationLabel
@@ -35,7 +35,7 @@ Partial Class BadSpriteSize
         Me.ExplanationLabel.Size = New System.Drawing.Size(196, 57)
         Me.ExplanationLabel.TabIndex = 1
         Me.ExplanationLabel.Text = "The sprite you have tried to load is not correctly sized to be used on the DS. Yo" & _
-            "u will need to resize it to one of the sizes below using a paint program."
+    "u will need to resize it to one of the sizes below using a paint program."
         '
         'Panel1
         '
@@ -47,14 +47,12 @@ Partial Class BadSpriteSize
         '
         'DAcceptButton
         '
-        Me.DAcceptButton.Image = Global.DS_Game_Maker.My.Resources.Resources.AcceptIcon
         Me.DAcceptButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
         Me.DAcceptButton.Location = New System.Drawing.Point(134, 180)
         Me.DAcceptButton.Name = "DAcceptButton"
         Me.DAcceptButton.Size = New System.Drawing.Size(76, 28)
         Me.DAcceptButton.TabIndex = 3
-        Me.DAcceptButton.Text = "      Accept"
-        Me.DAcceptButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.DAcceptButton.Text = "OK"
         Me.DAcceptButton.UseVisualStyleBackColor = True
         '
         'BadSpriteSize

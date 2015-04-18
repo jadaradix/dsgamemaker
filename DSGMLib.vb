@@ -6,7 +6,7 @@ Module DSGMlib
 
     Public ResourceTypes(6) As String
 
-    Public IDVersion As UInt16 = 520
+    Public IDVersion As UInt16 = 530
     Public Domain As String = "http://dsgamemaker.com/"
     Public UpdateVersion As UInt16 = 0
 

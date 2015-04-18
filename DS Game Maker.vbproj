@@ -686,7 +686,6 @@
     <None Include="Resources\ListIcon.png" />
     <None Include="Resources\InGameProBanner.png" />
     <None Include="Resources\StructureIcon.png" />
-    <None Include="app.config" />
     <None Include="Resources\ProBanner.png" />
     <None Include="Resources\RegBanner.png" />
     <None Include="Resources\DSGMTopBanner.png" />

@@ -23,11 +23,11 @@ Partial Class Argument
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Argument))
-        Me.DOkayButton = New System.Windows.Forms.Button
-        Me.NameLabel = New System.Windows.Forms.Label
-        Me.NameTextBox = New System.Windows.Forms.TextBox
-        Me.TypeLabel = New System.Windows.Forms.Label
-        Me.TypeDropper = New System.Windows.Forms.ComboBox
+        Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.NameLabel = New System.Windows.Forms.Label()
+        Me.NameTextBox = New System.Windows.Forms.TextBox()
+        Me.TypeLabel = New System.Windows.Forms.Label()
+        Me.TypeDropper = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'DOkayButton
@@ -37,7 +37,7 @@ Partial Class Argument
         Me.DOkayButton.Name = "DOkayButton"
         Me.DOkayButton.Size = New System.Drawing.Size(100, 28)
         Me.DOkayButton.TabIndex = 0
-        Me.DOkayButton.Text = "Okay"
+        Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
         '
         'NameLabel

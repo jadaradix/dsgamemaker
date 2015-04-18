@@ -65,7 +65,7 @@ Partial Class AboutDSGM
         Me.AdditionalCreditsLabel.ForeColor = System.Drawing.Color.Silver
         Me.AdditionalCreditsLabel.Location = New System.Drawing.Point(8, 38)
         Me.AdditionalCreditsLabel.Name = "AdditionalCreditsLabel"
-        Me.AdditionalCreditsLabel.Size = New System.Drawing.Size(314, 109)
+        Me.AdditionalCreditsLabel.Size = New System.Drawing.Size(314, 132)
         Me.AdditionalCreditsLabel.TabIndex = 3
         Me.AdditionalCreditsLabel.Text = resources.GetString("AdditionalCreditsLabel.Text")
         '
@@ -89,12 +89,12 @@ Partial Class AboutDSGM
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MainInfoLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MainInfoLabel.ForeColor = System.Drawing.Color.White
-        Me.MainInfoLabel.Location = New System.Drawing.Point(8, 147)
+        Me.MainInfoLabel.Location = New System.Drawing.Point(8, 189)
         Me.MainInfoLabel.Name = "MainInfoLabel"
-        Me.MainInfoLabel.Size = New System.Drawing.Size(314, 80)
+        Me.MainInfoLabel.Size = New System.Drawing.Size(314, 35)
         Me.MainInfoLabel.TabIndex = 1
-        Me.MainInfoLabel.Text = "Copyright James Garner (Junge Mit Herz), 2008-2012" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "For DS Game Maker updates, " & _
-    "more information, discussion and games, visit the website:"
+        Me.MainInfoLabel.Text = "For DS Game Maker updates, more information, discussion and games, visit the webs" & _
+    "ite:"
         '
         'WrittenByLabel
         '

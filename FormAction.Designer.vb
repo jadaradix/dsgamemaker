@@ -22,17 +22,16 @@ Partial Class FormAction
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Action))
-        Me.SubPanel = New System.Windows.Forms.Panel
-        Me.DOkayButton = New System.Windows.Forms.Button
-        Me.AppliesToGroupBox = New System.Windows.Forms.GroupBox
-        Me.InstancesTextBox = New System.Windows.Forms.TextBox
-        Me.InstancesOfDropper = New System.Windows.Forms.ComboBox
-        Me.InstancesRadioButton = New System.Windows.Forms.RadioButton
-        Me.InstancesOfRadioButton = New System.Windows.Forms.RadioButton
-        Me.ThisRadioButton = New System.Windows.Forms.RadioButton
-        Me.LabelsPanel = New System.Windows.Forms.Panel
-        Me.ControlsPanel = New System.Windows.Forms.Panel
+        Me.SubPanel = New System.Windows.Forms.Panel()
+        Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.AppliesToGroupBox = New System.Windows.Forms.GroupBox()
+        Me.InstancesTextBox = New System.Windows.Forms.TextBox()
+        Me.InstancesOfDropper = New System.Windows.Forms.ComboBox()
+        Me.InstancesRadioButton = New System.Windows.Forms.RadioButton()
+        Me.InstancesOfRadioButton = New System.Windows.Forms.RadioButton()
+        Me.ThisRadioButton = New System.Windows.Forms.RadioButton()
+        Me.LabelsPanel = New System.Windows.Forms.Panel()
+        Me.ControlsPanel = New System.Windows.Forms.Panel()
         Me.SubPanel.SuspendLayout()
         Me.AppliesToGroupBox.SuspendLayout()
         Me.SuspendLayout()
@@ -53,7 +52,7 @@ Partial Class FormAction
         Me.DOkayButton.Name = "DOkayButton"
         Me.DOkayButton.Size = New System.Drawing.Size(104, 26)
         Me.DOkayButton.TabIndex = 1
-        Me.DOkayButton.Text = "Okay"
+        Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
         '
         'AppliesToGroupBox
@@ -132,7 +131,7 @@ Partial Class FormAction
         Me.ControlsPanel.Size = New System.Drawing.Size(128, 158)
         Me.ControlsPanel.TabIndex = 3
         '
-        'Action
+        'FormAction
         '
         Me.AcceptButton = Me.DOkayButton
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -144,10 +143,9 @@ Partial Class FormAction
         Me.Controls.Add(Me.SubPanel)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "Action"
+        Me.Name = "FormAction"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.SubPanel.ResumeLayout(False)
         Me.AppliesToGroupBox.ResumeLayout(False)
