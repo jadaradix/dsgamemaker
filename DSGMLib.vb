@@ -417,7 +417,7 @@ Module DSGMlib
         FinalString += "  DSGM_Init_PAlib();" + vbcrlf
         FinalString += "  Reset_Alarms();" + vbcrlf
         If GetXDSLine("NITROFS_CALL ").Substring(13) = "1" Then
-            FinalString += "  nitroFSInit();" + vbcrlf
+            FinalString += "  nitroFSInit(NULL);" + vbcrlf
             FinalString += "  chdir(""nitro:/"");" + vbcrlf
         End If
         If GetXDSLine("FAT_CALL ").Substring(9) = "1" Then
