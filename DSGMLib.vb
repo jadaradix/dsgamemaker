@@ -6,14 +6,17 @@ Module DSGMlib
 
     Public ResourceTypes(6) As String
 
-    Public IDVersion As UInt16 = 530
+    Public IsPro As Boolean = True
+    Public IDVersion As Int16 = 512
     Public Domain As String = "http://dsgamemaker.com/"
-    Public UpdateVersion As UInt16 = 0
+    Public OrderURL As String = "http://order." + Domain.Substring(7)
+    Public UpdateVersion As Int16 = 0
 
+    Public ActionBG As New Bitmap(32, 32)
+    Public ActionConditionalBG As New Bitmap(32, 32)
     Public WC As New WebClient
 
     Public AppPath As String = String.Empty
-    Public DevPath As String = String.Empty
     Public ProjectPath As String = String.Empty
 
     Public CDrive As String = String.Empty
@@ -73,6 +76,18 @@ Module DSGMlib
         MsgInfo("There is no Resource named '" + ResourceName + "'.")
     End Sub
 
+    Public Function IsObject(ByVal ThingyName As String) As Boolean
+        If GetXDSFilter("OBJECT " + ThingyName + ",").Length > 0 Then Return True Else Return False
+    End Function
+
+    Public Function IsBG(ByVal ThingyName As String) As Boolean
+        Return DoesXDSLineExist("BACKGROUND " + ThingyName)
+    End Function
+
+    Public Function IsRoom(ByVal ThingyName As String) As Boolean
+        If GetXDSFilter("ROOM " + ThingyName + ",").Length > 0 Then Return True Else Return False
+    End Function
+
     Public Function ResurrectResourceName(ByVal ResourceName As String) As String
         Dim Returnable As String = ResourceName
         For Each BannedChar As String In BannedChars
@@ -119,6 +134,30 @@ Module DSGMlib
             Return True
         Catch : Return False
         End Try
+    End Function
+
+    Function ReallyPro() As Boolean
+        Dim Email As String = GetSetting("PRO_EMAIL")
+        Dim Serial As String = GetSetting("PRO_SERIAL")
+        Dim UserPro As Boolean = If(Convert.ToByte(GetSetting("PRO")) = 1, True, False)
+        If Not UserPro = My.Settings.ProActivated Then UserPro = My.Settings.ProActivated
+        If Not UserPro Then Return False
+        If Not Email = My.Settings.ProEmail Then Email = My.Settings.ProEmail
+        If Not Serial = My.Settings.ProSerial Then Serial = My.Settings.ProSerial
+        If UserPro Then
+            'Okay, using Pro... let's check those details baby
+            If HasInternetConnection(Domain) Then
+                Dim Request As String = Domain + "DSGM5RegClient/key.php?data1=" + Email + "&data2=" + Serial
+                Dim Response As String = WC.DownloadString(Request)
+                If Response = "0" Then Return False
+                WC.Dispose()
+                Return True
+            Else
+                If Not Email.Contains("@") Then Return False
+                If Not Serial.StartsWith("DSGM") Then Return False
+                Return True
+            End If
+        End If
     End Function
 
     Public Function SQLSanitize(ByVal InputData As String, ByVal AlsoSpaces As Boolean) As String
@@ -234,14 +273,14 @@ Module DSGMlib
         If Not Directory.Exists(CompilePath + "gfx\bin") Then
             Directory.CreateDirectory(CompilePath + "gfx\bin")
         End If
-        'If Not IsPro Then
-        '    If Not File.Exists(CompilePath + "gfx\bin\DSGMPro.c") Then
-        '        File.Copy(AppPath + "Fonts\CompiledBINs\DSGMPro.c", CompilePath + "gfx\bin\DSGMPro.c", True)
-        '        File.Copy(AppPath + "Fonts\CompiledBINs\DSGMPro_Tiles.bin", CompilePath + "gfx\bin\DSGMPro_Tiles.bin", True)
-        '        File.Copy(AppPath + "Fonts\CompiledBINs\DSGMPro_Map.bin", CompilePath + "gfx\bin\DSGMPro_Map.bin", True)
-        '        File.Copy(AppPath + "Fonts\CompiledBINs\DSGMPro_Pal.bin", CompilePath + "gfx\bin\DSGMPro_Pal.bin", True)
-        '    End If
-        'End If
+        If Not IsPro Then
+            If Not File.Exists(CompilePath + "gfx\bin\DSGMPro.c") Then
+                File.Copy(AppPath + "CompiledBINs\DSGMPro.c", CompilePath + "gfx\bin\DSGMPro.c", True)
+                File.Copy(AppPath + "CompiledBINs\DSGMPro_Tiles.bin", CompilePath + "gfx\bin\DSGMPro_Tiles.bin", True)
+                File.Copy(AppPath + "CompiledBINs\DSGMPro_Map.bin", CompilePath + "gfx\bin\DSGMPro_Map.bin", True)
+                File.Copy(AppPath + "CompiledBINs\DSGMPro_Pal.bin", CompilePath + "gfx\bin\DSGMPro_Pal.bin", True)
+            End If
+        End If
         'Remove fonts not used this time
         For Each X As String In FontsUsedLastTime
             If Not FontsUsedThisTime.Contains(X) Then
@@ -264,14 +303,14 @@ Module DSGMlib
         For Each X As String In FontsUsedThisTime
             'If there's a font in this time's that's not in last times...
             If Not FontsUsedLastTime.Contains(X) Then
-                File.Copy(AppPath + "Fonts\CompiledBINs\" + X + ".c", CompilePath + "gfx\bin\" + X + ".c", True)
-                File.Copy(AppPath + "Fonts\CompiledBINs\" + X + "_Map.bin", CompilePath + "gfx\bin\" + X + "_Map.bin", True)
-                File.Copy(AppPath + "Fonts\CompiledBINs\" + X + "_Tiles.bin", CompilePath + "gfx\bin\" + X + "_Tiles.bin", True)
-                File.Copy(AppPath + "Fonts\CompiledBINs\" + X + "_Pal.bin", CompilePath + "gfx\bin\" + X + "_Pal.bin", True)
+                File.Copy(AppPath + "CompiledBINs\" + X + ".c", CompilePath + "gfx\bin\" + X + ".c", True)
+                File.Copy(AppPath + "CompiledBINs\" + X + "_Map.bin", CompilePath + "gfx\bin\" + X + "_Map.bin", True)
+                File.Copy(AppPath + "CompiledBINs\" + X + "_Tiles.bin", CompilePath + "gfx\bin\" + X + "_Tiles.bin", True)
+                File.Copy(AppPath + "CompiledBINs\" + X + "_Pal.bin", CompilePath + "gfx\bin\" + X + "_Pal.bin", True)
             End If
             FontH += "extern const PA_BgStruct " + X + ";" + vbcrlf
         Next
-        'If Not IsPro Then FontH += "extern const PA_BgStruct DSGMPro;" + vbcrlf
+        If Not IsPro Then FontH += "extern const PA_BgStruct DSGMPro;" + vbcrlf
         'FontH += "#ifdef __cplusplus" + vbcrlf
         'FontH += "  }" + vbcrlf
         'FontH += "#endif"
@@ -314,14 +353,31 @@ Module DSGMlib
             Next
             IO.File.WriteAllBytes(CompilePath + "nitrofiles\SaveData.dat", ff)
         End If
+
+        If GetXDSLine("PROJECTLOGO ").Length < 12 Then
+            If File.Exists(CompilePath + "logo.bmp") Then
+                File.Delete(CompilePath + "logo.bmp")
+            End If
+            File.Copy(AppPath + "logo.bmp", CompilePath + "logo.bmp")
+        Else
+            If File.Exists(CompilePath + "logo.bmp") Then
+                File.Delete(CompilePath + "logo.bmp")
+            End If
+            File.Copy(GetXDSLine("PROJECTLOGO ").Substring(12), CompilePath + "logo.bmp")
+        End If
+
         Dim BootRoom As String = GetXDSLine("BOOTROOM ").Substring(9)
         Dim FinalString As String = String.Empty
-        FinalString += "#include <PA9.h>" + vbcrlf
-        FinalString += "#include <dirent.h>" + vbcrlf
-        FinalString += "#include <filesystem.h>" + vbcrlf
-        FinalString += "#include <unistd.h>" + vbcrlf
+        FinalString += "#include <PA9.h>" + vbCrLf
+        FinalString += "#include <dirent.h>" + vbCrLf
+        FinalString += "#include <filesystem.h>" + vbCrLf
+        FinalString += "#include <unistd.h>" + vbCrLf
+
+        'FinalString += "#include ""NitroGraphics.h""" + vbCrLf
+
+        File.WriteAllBytes(CompilePath + "include\NitroGraphics.h", My.Resources.NitroGraphics)
         If GetXDSLine("INCLUDE_WIFI_LIB ").Substring(17) = "1" Then
-            FinalString += "#include ""ky_geturl.h""" + vbcrlf
+            FinalString += "#include ""ky_geturl.h""" + vbCrLf
             If Not File.Exists(CompilePath + "source\ky_geturl.h") Then
                 File.WriteAllBytes(CompilePath + "source\ky_geturl.h", My.Resources.WifiLibH)
             End If
@@ -336,8 +392,8 @@ Module DSGMlib
                 File.Delete(CompilePath + "source\ky_geturl.c")
             End If
         End If
-        FinalString += "#include ""dsgm_gfx.h""" + vbcrlf
-        FinalString += "#include ""GameWorks.h""" + vbcrlf
+        FinalString += "#include ""dsgm_gfx.h""" + vbCrLf
+        FinalString += "#include ""GameWorks.h""" + vbCrLf
         Compile.CustomPerformStep("Converting Sounds")
         Dim RAWString As String = String.Empty
         Dim MP3String As String = String.Empty
@@ -345,20 +401,20 @@ Module DSGMlib
         Dim DoMP3 As Boolean = False
         For Each X As String In SoundsToRedo
             If iGet(GetXDSLine("SOUND " + X + ","), 1, ",") = "1" Then
-                MP3String += "mp3enc -b 64 """ + X + "_enc.mp3"" """ + X + """.mp3" + vbcrlf
+                MP3String += "mp3enc -b 64 """ + X + "_enc.mp3"" """ + X + """.mp3" + vbCrLf
                 IO.File.Copy(SessionPath + "Sounds\" + X + ".mp3", CompilePath + "nitrofiles\" + X + "_enc.mp3")
                 DoMP3 = True
             Else
-                RAWString += "sox """ + X + """.wav -r 11025 -c 1 -e signed -b 8 """ + X + """.raw" + vbcrlf
+                RAWString += "sox """ + X + """.wav -r 11025 -c 1 -e signed -b 8 """ + X + """.raw" + vbCrLf
                 File.Copy(SessionPath + "Sounds\" + X + ".wav", CompilePath + "data\" + X + ".wav")
                 DoRAW = True
             End If
         Next
         If DoRAW Then
-            File.Copy(DevPath + "sox.exe", CompilePath + "data\sox.exe")
-            File.Copy(DevPath + "libgomp-1.dll", CompilePath + "data\libgomp-1.dll")
-            File.Copy(DevPath + "pthreadgc2.dll", CompilePath + "data\pthreadgc2.dll")
-            File.Copy(DevPath + "zlib1.dll", CompilePath + "data\zlib1.dll")
+            File.Copy(AppPath + "sox.exe", CompilePath + "data\sox.exe")
+            File.Copy(AppPath + "libgomp-1.dll", CompilePath + "data\libgomp-1.dll")
+            File.Copy(AppPath + "pthreadgc2.dll", CompilePath + "data\pthreadgc2.dll")
+            File.Copy(AppPath + "zlib1.dll", CompilePath + "data\zlib1.dll")
             RunBatchString(RAWString, CompilePath + "data", False)
             File.Delete(CompilePath + "data\sox.exe")
             File.Delete(CompilePath + "data\libgomp-1.dll")
@@ -370,7 +426,7 @@ Module DSGMlib
             Next
         End If
         If DoMP3 Then
-            File.Copy(DevPath + "mp3enc.exe", CompilePath + "nitrofiles\mp3enc.exe")
+            File.Copy(AppPath + "mp3enc.exe", CompilePath + "nitrofiles\mp3enc.exe")
             RunBatchString(MP3String, CompilePath + "nitrofiles", False)
             For Each X As String In SoundsToRedo
                 If iGet(GetXDSLine("SOUND " + X + ","), 1, ",") = "0" Then Continue For
@@ -378,7 +434,7 @@ Module DSGMlib
             Next
             File.Delete(CompilePath + "nitrofiles\mp3enc.exe")
         End If
-        FinalString += vbcrlf
+        FinalString += vbCrLf
         For Each X As String In GetXDSFilter("NITROFS ")
             Dim FileName As String = X.Substring(8)
             IO.File.Copy(SessionPath + "NitroFSFiles\" + FileName, CompilePath + "nitrofiles\" + FileName, True)
@@ -396,63 +452,66 @@ Module DSGMlib
         'FinalString += "bool DSGM_SetObjectSprite(u8 InstanceID, u8 SpriteID, bool DeleteOld);" + vbcrlf
         'FinalString += "bool DSGM_SwitchRoomByIndex(u8 RoomIndex);" + vbcrlf
         'FinalString += vbcrlf + "int main (int argc, char ** argv) {" + vbcrlf
-        FinalString += vbcrlf + "int main (void) {" + vbcrlf
-        FinalString += "  RoomCount = " + GetXDSFilter("ROOM ").Length.ToString + ";" + vbcrlf
-        FinalString += "  score = " + GetXDSLine("SCORE ").Substring(6) + ";" + vbcrlf
-        FinalString += "  lives = " + GetXDSLine("LIVES ").Substring(6) + ";" + vbcrlf
-        FinalString += "  health = " + GetXDSLine("HEALTH ").Substring(7) + ";" + vbcrlf
+        FinalString += vbCrLf + "int main (void) {" + vbCrLf
+        FinalString += "  RoomCount = " + GetXDSFilter("ROOM ").Length.ToString + ";" + vbCrLf
+        FinalString += "  score = " + GetXDSLine("SCORE ").Substring(6) + ";" + vbCrLf
+        FinalString += "  lives = " + GetXDSLine("LIVES ").Substring(6) + ";" + vbCrLf
+        FinalString += "  health = " + GetXDSLine("HEALTH ").Substring(7) + ";" + vbCrLf
         For Each XDSLine As String In GetXDSFilter("GLOBAL ")
             XDSLine = XDSLine.Substring(7)
             Dim VariableType As String = iGet(XDSLine, 1, ",")
             If Not VariableType = "String" Then Continue For
             Dim VariableName As String = iGet(XDSLine, 0, ",")
             Dim VariableValue As String = iGet(XDSLine, 2, ",")
-            FinalString += "  strcpy(" + VariableName + ", """ + VariableValue + """);" + vbcrlf
+            FinalString += "  strcpy(" + VariableName + ", """ + VariableValue + """);" + vbCrLf
         Next
-        FinalString += "  CurrentRoom = Room_Get_Index(""" + GetXDSLine("BOOTROOM ").Substring(9) + """);" + vbcrlf
-        FinalString += "  swiWaitForVBlank();" + vbcrlf
-        FinalString += "  PA_InitFifo();" + vbcrlf
-        FinalString += "  PA_Init();" + vbcrlf
+        FinalString += "  CurrentRoom = Room_Get_Index(""" + GetXDSLine("BOOTROOM ").Substring(9) + """);" + vbCrLf
+        FinalString += "  swiWaitForVBlank();" + vbCrLf
+        FinalString += "  PA_InitFifo();" + vbCrLf
+        FinalString += "  PA_Init();" + vbCrLf
         'FinalString += "  PA_Init2D();" + vbcrlf
-        FinalString += "  DSGM_Init_PAlib();" + vbcrlf
-        FinalString += "  Reset_Alarms();" + vbcrlf
+        FinalString += "  DSGM_Init_PAlib();" + vbCrLf
+        FinalString += "  Reset_Alarms();" + vbCrLf
         If GetXDSLine("NITROFS_CALL ").Substring(13) = "1" Then
-            FinalString += "  nitroFSInit(NULL);" + vbcrlf
-            FinalString += "  chdir(""nitro:/"");" + vbcrlf
+            FinalString += "  nitroFSInit(NULL);" + vbCrLf
+            FinalString += "  chdir(""nitro:/"");" + vbCrLf
         End If
         If GetXDSLine("FAT_CALL ").Substring(9) = "1" Then
-            FinalString += "  fatInitDefault();" + vbcrlf
+            FinalString += "  fatInitDefault();" + vbCrLf
         End If
         If XDSCountLines("SOUND ") > 0 Then
-            FinalString += "  DSGM_Init_Sound();" + vbcrlf
+            FinalString += "  DSGM_Init_Sound();" + vbCrLf
         End If
-        FinalString += "  " + BootRoom + "();" + vbCrLf
-        'FinalString += "  PA_LoadBackground(1, 2, &DSGMPro);" + vbcrlf
-        'FinalString += "  PA_LoadBackground(0, 2, &DSGMPro);" + vbcrlf
-        'FinalString += "  PA_EasyBgScrollXY(0, 2, 256, 0);" + vbcrlf
-        'FinalString += "  bool ProDir = false;" + vbcrlf
-        'FinalString += "  s8 ProFadeAmount = 0;" + vbcrlf
-        'FinalString += "  u8 ProFrameOn = 0;" + vbcrlf
-        'FinalString += "  while (true) {" + vbcrlf
-        'FinalString += "    if (ProFrameOn % 4 == 0) {" + vbcrlf
-        'FinalString += "      if (ProFadeAmount <= -15) {" + vbcrlf
-        'FinalString += "        ProDir = true;" + vbcrlf
-        'FinalString += "      }" + vbcrlf
-        'FinalString += "      if (ProFadeAmount >= 0) {" + vbcrlf
-        'FinalString += "        ProDir = false;" + vbcrlf
-        'FinalString += "      }" + vbcrlf
-        'FinalString += "      if (ProDir) ProFadeAmount += 1;" + vbcrlf
-        'FinalString += "      if (!ProDir) ProFadeAmount -= 1;" + vbcrlf
-        'FinalString += "      PA_SetBrightness(0, ProFadeAmount);" + vbcrlf
-        'FinalString += "    }" + vbcrlf
-        'FinalString += "    if (Stylus.Newpress || Pad.Newpress.Anykey) {" + vbcrlf
-        'FinalString += "      PA_SetBrightness(0, 0);" + vbcrlf
-        'FinalString += "      " + BootRoom + "();" + vbcrlf
-        'FinalString += "    }" + vbcrlf
-        'FinalString += "    ProFrameOn += 1;" + vbcrlf
-        'FinalString += "    if (ProFrameOn == 200) ProFrameOn = 0;" + vbcrlf
-        'FinalString += "    PA_WaitForVBL();" + vbcrlf
-        'FinalString += "  }" + vbcrlf
+        If IsPro Then
+            FinalString += "  " + BootRoom + "();" + vbCrLf
+        Else
+            FinalString += "  PA_LoadBackground(1, 2, &DSGMPro);" + vbCrLf
+            FinalString += "  PA_LoadBackground(0, 2, &DSGMPro);" + vbCrLf
+            FinalString += "  PA_EasyBgScrollXY(0, 2, 256, 0);" + vbCrLf
+            FinalString += "  bool ProDir = false;" + vbCrLf
+            FinalString += "  s8 ProFadeAmount = 0;" + vbCrLf
+            FinalString += "  u8 ProFrameOn = 0;" + vbCrLf
+            FinalString += "  while (true) {" + vbCrLf
+            FinalString += "    if (ProFrameOn % 4 == 0) {" + vbCrLf
+            FinalString += "      if (ProFadeAmount <= -15) {" + vbCrLf
+            FinalString += "        ProDir = true;" + vbCrLf
+            FinalString += "      }" + vbCrLf
+            FinalString += "      if (ProFadeAmount >= 0) {" + vbCrLf
+            FinalString += "        ProDir = false;" + vbCrLf
+            FinalString += "      }" + vbCrLf
+            FinalString += "      if (ProDir) ProFadeAmount += 1;" + vbCrLf
+            FinalString += "      if (!ProDir) ProFadeAmount -= 1;" + vbCrLf
+            FinalString += "      PA_SetBrightness(0, ProFadeAmount);" + vbCrLf
+            FinalString += "    }" + vbCrLf
+            FinalString += "    if (Stylus.Newpress || Pad.Newpress.Anykey) {" + vbCrLf
+            FinalString += "      PA_SetBrightness(0, 0);" + vbCrLf
+            FinalString += "      " + BootRoom + "();" + vbCrLf
+            FinalString += "    }" + vbCrLf
+            FinalString += "    ProFrameOn += 1;" + vbCrLf
+            FinalString += "    if (ProFrameOn == 200) ProFrameOn = 0;" + vbCrLf
+            FinalString += "    PA_WaitForVBL();" + vbCrLf
+            FinalString += "  }" + vbCrLf
+        End If
         FinalString += "  return 0;" + vbCrLf
         FinalString += "}" + vbCrLf
         Dim PAini As String = "#TranspColor Magenta"
@@ -515,8 +574,12 @@ Module DSGMlib
         PAini += vbCrLf + "#Sprites : " + vbCrLf
         Dim PalletNumbers As New Collection
         Dim PalletNames As New Collection
+        Dim PalletNumbers_Nitro As New Collection
+        Dim PalletNames_Nitro As New Collection
         Dim AllColors As Int16 = 0
         Dim PalletOn As Byte = 0
+        Dim AllColors_Nitro As Int16 = 0
+        Dim PalletOn_Nitro As Byte = 0
         Dim FirstRun As Boolean = True
         For Each XDSLine As String In GetXDSFilter("SPRITE ")
             XDSLine = XDSLine.Substring(7)
@@ -524,20 +587,40 @@ Module DSGMlib
             Dim TheImage As Bitmap = GenerateDSSprite(SpriteName)
             Dim SpriteNameExtension As String = SpriteName + ".png"
             Dim CurrentColors As Int16 = ImageCountColors(TheImage)
-            If AllColors + CurrentColors >= 256 Then
-                AllColors = 0
-                PalletOn += 1
+            If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
+                If AllColors_Nitro + CurrentColors >= 256 Then
+                    AllColors_Nitro = 0
+                    PalletOn_Nitro += 1
+                Else
+                    AllColors_Nitro += CurrentColors
+                End If
+                PalletNumbers_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
             Else
-                AllColors += CurrentColors
+                If AllColors + CurrentColors >= 256 Then
+                    AllColors = 0
+                    PalletOn += 1
+                Else
+                    AllColors += CurrentColors
+                End If
+                PalletNumbers.Add(SpriteName + "," + PalletOn.ToString)
             End If
-            PalletNumbers.Add(SpriteName + "," + PalletOn.ToString)
             If RedoSprites Then
                 TheImage.Save(CompilePath + "gfx\" + SpriteNameExtension)
-                PAini += SpriteNameExtension + " 256Colors " + "DSGMPal" + PalletOn.ToString + vbCrLf
+                If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
+                    PAini += SpriteNameExtension + " 256Colors " + "NitroPal" + PalletOn_Nitro.ToString + vbCrLf
+                Else
+                    PAini += SpriteNameExtension + " 256Colors " + "DSGMPal" + PalletOn.ToString + vbCrLf
+                End If
             End If
-            If FirstRun Then PalletNames.Add(SpriteName + "," + PalletOn.ToString) : FirstRun = False : Continue For
-            If AllColors = 0 Then PalletNames.Add(SpriteName + "," + PalletOn.ToString)
+            If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
+                If FirstRun Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString) : FirstRun = False : Continue For
+                If AllColors = 0 Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
+            Else
+                If FirstRun Then PalletNames.Add(SpriteName + "," + PalletOn.ToString) : FirstRun = False : Continue For
+                If AllColors = 0 Then PalletNames.Add(SpriteName + "," + PalletOn.ToString)
+            End If
         Next
+        File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
         Dim EventsString As String = String.Empty
         For Each XDSLine As String In GetXDSFilter("EVENT ")
             DOn = 0
@@ -711,13 +794,21 @@ Module DSGMlib
             FinalString += "bool " + RoomName + "(void) {" + vbCrLf
             FinalString += "  PA_ResetSpriteSys();" + vbCrLf
             FinalString += "  PA_ResetBgSys();" + vbCrLf
-            If TopBG.Length > 0 Then FinalString += "  PA_LoadBackground(1, 2, &" + TopBG + ");" + vbCrLf
-            If BottomBG.Length > 0 Then FinalString += "  PA_LoadBackground(0, 2, &" + BottomBG + ");" + vbCrLf
+            If iGet(GetXDSLine("BACKGROUND " + TopBG), 1, ",") = "Nitro" Then
+                If TopBG.Length > 0 Then FinalString += "  FAT_LoadBackground(1, 2, """ + TopBG + """);" + vbCrLf
+                If BottomBG.Length > 0 Then FinalString += "  FAT_LoadBackground(0, 2, """ + BottomBG + """);" + vbCrLf
+            Else
+                If TopBG.Length > 0 Then FinalString += "  PA_LoadBackground(1, 2, &" + TopBG + ");" + vbCrLf
+                If BottomBG.Length > 0 Then FinalString += "  PA_LoadBackground(0, 2, &" + BottomBG + ");" + vbCrLf
+            End If
             Dim MyPalletLines As New Collection
+            Dim MyNewLine As String = String.Empty
             For Each p As String In PalletNames
                 Dim PalletNo As Byte = Convert.ToByte(p.Substring(p.IndexOf(",") + 1))
-                Dim MyNewLine As String = "  PA_LoadSpritePal(1, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
-                MyNewLine += " PA_LoadSpritePal(0, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+                If File.ReadAllText(CompilePath + "gfx\PAGfx.ini").Contains("DSGMPal" + PalletNo.ToString) Then
+                    MyNewLine = "  PA_LoadSpritePal(1, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+                    MyNewLine += " PA_LoadSpritePal(0, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+                End If
                 Dim AlreadyDone As Boolean = False
                 For Each MyLine As String In MyPalletLines
                     If MyLine = MyNewLine Then AlreadyDone = True : Exit For
@@ -917,7 +1008,7 @@ Module DSGMlib
         'Twas here 2, Marvolo!
         'FinalString += "  return true;" + vbcrlf
         'FinalString += "}" + vbcrlf + vbcrlf
-        File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
+        'File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
         File.WriteAllText(CompilePath + "source\main.c", FinalString)
         Dim DefsString As String = String.Empty
         For Each XDSLine As String In GetXDSFilter("ROOM ")
@@ -1014,15 +1105,17 @@ Module DSGMlib
             GameString += RealVariableType + " " + VariableName + "[] = {" + ValuesString + "};" + vbCrLf
         Next
         GameString += vbCrLf
-        GameString += "enum ObjectEnums { "
-        Dim ELooper As Byte = 1
-        For Each P As String In GetXDSFilter("OBJECT ")
-            P = P.Substring(7)
-            P = P.Substring(0, P.IndexOf(","))
-            GameString += P + " = " + ELooper.ToString + ", "
-            ELooper += 1
-        Next
-        GameString += " };" + vbCrLf
+        If GetXDSFilter("OBJECT ").Length > 0 Then
+            GameString += "enum ObjectEnums { "
+            Dim ELooper As Byte = 1
+            For Each P As String In GetXDSFilter("OBJECT ")
+                P = P.Substring(7)
+                P = P.Substring(0, P.IndexOf(","))
+                GameString += P + " = " + ELooper.ToString + ", "
+                ELooper += 1
+            Next
+            GameString += " };" + vbCrLf
+        End If
         GameString += "void Set_Sprite(u8 InstanceID, char *SpriteName, bool DeleteOld);" + vbCrLf
         GameString += "void Create_Object(u8 ObjectEnum, u8 InstanceID, bool Screen, s16 X, s16 Y);" + vbCrLf
         GameString += "u8 Sprite_Get_ID(char *SpriteName);" + vbCrLf
@@ -1055,15 +1148,33 @@ Module DSGMlib
                 Dim SW As String = iGet(X, 1, ",")
                 Dim SH As String = iGet(X, 2, ",")
                 Dim PalletNumber As Byte = 0
-                For Each PalletString As String In PalletNumbers
-                    If PalletString.StartsWith(SpriteName + ",") Then
-                        PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
-                    End If
-                Next
+                Dim PalletNumber_Nitro As Byte = 0
+                If iGet(X, 3, ",") = "Nitro" Then
+                    For Each PalletString_Nitro As String In PalletNumbers_Nitro
+                        If PalletString_Nitro.StartsWith(SpriteName + ",") Then
+                            PalletNumber_Nitro = Convert.ToByte(PalletString_Nitro.Substring(PalletString_Nitro.IndexOf(",") + 1))
+                        End If
+                    Next
+                    PalletNumber = PalletNumbers.Count
+                Else
+                    For Each PalletString As String In PalletNumbers
+                        If PalletString.StartsWith(SpriteName + ",") Then
+                            PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
+                        End If
+                    Next
+                End If
                 GameString += "    case " + DOn.ToString + ":" + vbCrLf
                 GameString += "      Instances[InstanceID].Width = " + SW + "; Instances[InstanceID].Height = " + SH + ";" + vbCrLf
-                GameString += "      PA_CreateSprite(Instances[InstanceID].Screen, InstanceID, (void*)" + SpriteName + "_Sprite, " + _
-                                      "OBJ_SIZE_" + SW + "X" + SH + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbCrLf
+
+                If iGet(X, 3, ",") = "Nitro" Then
+                    'Fix palette
+                    ' Nitro + DSGM
+                    GameString += "      FAT_BasicCreateSprite(Instances[InstanceID].Screen, InstanceID, " + (PalletNumber_Nitro + PalletNumber).ToString + ", """ + SpriteName + "_Sprite.bin"", """ + "NitroPal" + PalletNumber_Nitro.ToString + "_Pal.bin"", OBJ_SIZE_" + SW + "X" + SH + ", 256, 192);" + vbCrLf
+                Else
+                    GameString += "      PA_CreateSprite(Instances[InstanceID].Screen, InstanceID, (void*)" + SpriteName + "_Sprite, " + _
+                                         "OBJ_SIZE_" + SW + "X" + SH + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbCrLf
+                End If
+
                 GameString += "      break;" + vbCrLf
                 DOn += 1
             Next
@@ -1193,15 +1304,53 @@ Module DSGMlib
         DSGMH += "//Sprites:" + vbCrLf
         For Each X As String In GetXDSFilter("SPRITE ")
             X = X.Substring(7)
-            Dim SpriteName As String = X.Substring(0, X.IndexOf(","))
-            Dim TheSize As Size = GenerateDSSprite(SpriteName).Size
-            Dim Timez As Int64 = TheSize.Width * TheSize.Height
-            DSGMH += "  extern const unsigned char " + SpriteName + "_Sprite[" + Timez.ToString + "] _GFX_ALIGN;" + vbCrLf
+            If iGet(GetXDSLine("SPRITE " + X), 3, ",") = "Nitro" Then
+                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
+                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
+                End If
+                Dim PalletNumber As Byte = 0
+                For Each PalletString As String In PalletNumbers
+                    If PalletString.StartsWith(X + ",") Then
+                        PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
+                    End If
+                Next
+
+                If File.Exists(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
+                    File.Move(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin", CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
+                End If
+            Else
+                Dim SpriteName As String = X.Substring(0, X.IndexOf(","))
+                Dim TheSize As Size = GenerateDSSprite(SpriteName).Size
+                Dim Timez As Int64 = TheSize.Width * TheSize.Height
+                DSGMH += "  extern const unsigned char " + SpriteName + "_Sprite[" + Timez.ToString + "] _GFX_ALIGN;" + vbCrLf
+            End If
         Next
         DSGMH += vbCrLf + "//Backgrounds:" + vbCrLf
         For Each X As String In GetXDSFilter("BACKGROUND ")
             X = X.Substring(11)
-            DSGMH += "  extern const PA_BgStruct " + X + ";" + vbCrLf
+            If iGet(GetXDSLine("BACKGROUND " + X), 1, ",") = "Nitro" Then
+
+                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
+                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
+                End If
+                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
+                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
+                End If
+                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
+                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
+                End If
+                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c") Then
+                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
+                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
+                End If
+            Else
+                DSGMH += "  extern const PA_BgStruct " + X + ";" + vbCrLf
+            End If
         Next
         If PalletNames.Count > 0 Then
             DSGMH += vbCrLf + "//Pallets:" + vbCrLf
@@ -1242,7 +1391,7 @@ Module DSGMlib
     End Function
 
     Public Sub NOGBAShizzle()
-        If Convert.ToByte(GetOption("USE_NOGBA")) = 1 Then
+        If Convert.ToByte(GetSetting("USE_NOGBA")) = 1 Then
             If Not Directory.Exists(FormNOGBAPath()) Then
                 MsgError("NO$GBA was not found." + vbcrlf + vbcrlf + "Please reinstall " + Application.ProductName + ".")
                 Exit Sub
@@ -1250,11 +1399,11 @@ Module DSGMlib
             'MsgError(CompilePath + GetXDSLine("PROJECTNAME ").ToString.Substring(12) + ".nds")
             Diagnostics.Process.Start(FormNOGBAPath() + "\NO$GBA.exe", CompilePath + "DSGMTemp" + Session + ".nds")
         Else
-            If Not File.Exists(GetOption("EMULATOR_PATH")) Then
+            If Not File.Exists(GetSetting("EMULATOR_PATH")) Then
                 MsgError("The selected Custom Emulator does not exist.")
                 Exit Sub
             End If
-            Diagnostics.Process.Start(GetOption("EMULATOR_PATH"), CompilePath + "DSGMTemp" + Session + ".nds")
+            Diagnostics.Process.Start(GetSetting("EMULATOR_PATH"), CompilePath + "DSGMTemp" + Session + ".nds")
         End If
     End Sub
 
@@ -1316,7 +1465,7 @@ Module DSGMlib
     Public Function EditImage(ByVal FilePath As String, ByVal ResourceName As String, ByVal CustomMessage As Boolean) As Boolean
         Dim FinalName As String = String.Empty
         Dim FinalEXE As String = String.Empty
-        FinalEXE = GetOption("IMAGE_EDITOR_PATH")
+        FinalEXE = GetSetting("IMAGE_EDITOR_PATH")
         If File.Exists(FinalEXE) Then
             System.Diagnostics.Process.Start(FinalEXE, """" + FilePath + """")
         Else
@@ -1331,7 +1480,7 @@ Module DSGMlib
     End Function
 
     Public Function EditSound(ByVal FilePath As String, ByVal ResourceName As String) As Boolean
-        System.Diagnostics.Process.Start(GetOption("SOUND_EDITOR_PATH"), """" + FilePath + """")
+        System.Diagnostics.Process.Start(GetSetting("SOUND_EDITOR_PATH"), """" + FilePath + """")
         Dim Message As String = "'" + ResourceName + "' has been opened. When you are finished, click 'OK'." + vbcrlf + vbcrlf + "To reverse any changes, please click 'Cancel'."
         Dim Response As Byte = MessageBox.Show(Message, Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
         If Response = MsgBoxResult.Ok Then Return True Else Return False
@@ -1605,7 +1754,7 @@ Module DSGMlib
     Sub DeleteResource(ByVal ResourceName As String, ByVal Type As String)
         Dim DOn As Int16 = 0
         If Type = "Room" And GetXDSFilter("ROOM ").Length < 2 Then
-            MsgWarn("You must always have at fewest one room in a Project.")
+            MsgWarn("You must always have at least one room in a Project.")
             Exit Sub
         End If
         Dim Response As Byte = MessageBox.Show("Are you sure you would like to delete '" + ResourceName + "'?", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
@@ -1649,10 +1798,10 @@ Module DSGMlib
                     Dim TopAffected As Byte = 0
                     Dim BottomAffected As Byte = 0
                     DOn = 0
-                    For DOn = 0 To DForm.Instances.Count - 1
-                        If AffectedObjects.Contains(DForm.Instances(DOn).ObjectName) Then
-                            If DForm.Instances(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
-                            DForm.Instances(DOn).CacheImage = ObjectGetImage(DForm.Instances(DOn).ObjectName)
+                    For DOn = 0 To DForm.Objects.Count - 1
+                        If AffectedObjects.Contains(DForm.Objects(DOn).ObjectName) Then
+                            If DForm.Objects(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
+                            DForm.Objects(DOn).CacheImage = ObjectGetImage(DForm.Objects(DOn).ObjectName)
                         End If
                     Next
                     If TopAffected > 0 Then DForm.RefreshRoom(True)
@@ -1682,13 +1831,13 @@ Module DSGMlib
                     Dim TopAffected As Byte = 0
                     Dim BottomAffected As Byte = 0
                     DOn = 0
-                    For Each Y As Room.AnObject In DForm.Instances
+                    For Each Y As Room.AnObject In DForm.Objects
                         If Y.InUse And Y.ObjectName = ResourceName Then
-                            DForm.Instances(DOn).CacheImage = Nothing
-                            DForm.Instances(DOn).InUse = False
-                            DForm.Instances(DOn).ObjectName = String.Empty
-                            DForm.Instances(DOn).X = 0 : DForm.Instances(DOn).Y = 0
-                            If DForm.Instances(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
+                            DForm.Objects(DOn).CacheImage = Nothing
+                            DForm.Objects(DOn).InUse = False
+                            DForm.Objects(DOn).ObjectName = String.Empty
+                            DForm.Objects(DOn).X = 0 : DForm.Objects(DOn).Y = 0
+                            If DForm.Objects(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
                         End If
                         DOn += 1
                     Next
@@ -1717,7 +1866,7 @@ Module DSGMlib
                 If X.Text = ResourceName Then X.Remove() : Exit For
             Next
         ElseIf Type = "Background" Then
-            XDSRemoveLine("BACKGROUND " + ResourceName)
+            XDSRemoveLine(GetXDSLine("BACKGROUND " + ResourceName))
             File.Delete(SessionPath + "Backgrounds\" + ResourceName + ".png")
             If File.Exists(CompilePath + "gfx\" + ResourceName + ".png") Then
                 File.Delete(CompilePath + "gfx\" + ResourceName + ".png")
@@ -1733,6 +1882,18 @@ Module DSGMlib
             End If
             If File.Exists(CompilePath + "gfx\bin\" + ResourceName + "_Pal.bin") Then
                 File.Delete(CompilePath + "gfx\bin\" + ResourceName + "_Pal.bin")
+            End If
+            If File.Exists(CompilePath + "nitrofiles\" + ResourceName + ".c") Then
+                File.Delete(CompilePath + "nitrofiles\" + ResourceName + ".c")
+            End If
+            If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Map.bin") Then
+                File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Map.bin")
+            End If
+            If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Tiles.bin") Then
+                File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Tiles.bin")
+            End If
+            If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Pal.bin") Then
+                File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Pal.bin")
             End If
             If Directory.Exists(CompilePath + "build") Then
                 For Each X As String In Directory.GetFiles(CompilePath + "build")
@@ -1794,6 +1955,14 @@ Module DSGMlib
                 Dim NewRoomName As String = MainForm.ResourcesTreeView.Nodes(ResourceIDs.Room).Nodes(0).Text
                 XDSChangeLine("BOOTROOM " + ResourceName, "BOOTROOM " + NewRoomName)
             End If
+        ElseIf Type = "Path" Then
+            XDSRemoveLine("PATH " + ResourceName + ",")
+            XDSRemoveFilter("PATHPOINT " + ResourceName + ",")
+            CurrentXDS = UpdateActionsName(CurrentXDS, "Path", ResourceName, "<Unknown>", False)
+            UpdateArrayActionsName("Path", ResourceName, "<Unknown>", False)
+            For Each X As TreeNode In MainForm.ResourcesTreeView.Nodes(ResourceIDs.Path).Nodes
+                If X.Text = ResourceName Then X.Remove()
+            Next
         ElseIf Type = "Script" Then
             XDSRemoveLine(GetXDSLine("SCRIPT " + ResourceName + ","))
             XDSRemoveFilter("SCRIPTARG " + ResourceName + ",")
@@ -1846,6 +2015,15 @@ Module DSGMlib
                 Else
                     File.Copy(SessionPath + "Sounds\" + OldName + ".wav", SessionPath + "Sounds\" + NewName + ".wav")
                 End If
+            Case ResourceIDs.Path
+                XDSAddLine("PATH " + NewName)
+                For Each X As String In GetXDSFilter("PATHPOINT " + OldName + ",")
+                    X = X.Substring(11 + OldName.Length)
+                    Dim XP As String = iGet(X, 0, ",")
+                    Dim YP As String = iGet(X, 1, ",")
+                    XDSAddLine("PATHPOINT " + NewName + "," + XP + "," + YP)
+                Next
+                AddResourceNode(ResourceType, NewName, "PathNode", True)
             Case ResourceIDs.Room
                 Dim OldLine As String = GetXDSLine("ROOM " + OldName + ",")
                 OldLine = OldLine.Substring(6 + OldName.Length)
@@ -1961,7 +2139,7 @@ Module DSGMlib
         Next
     End Sub
 
-    Sub CleanFresh()
+    Sub CleanFresh(ByVal WishCloseNews As Boolean)
         Try
             If SessionPath.Length > 0 And Directory.Exists(AppPath + "ProjectTemp\" + Session) Then
                 Directory.Delete(SessionPath, True)
@@ -1970,6 +2148,11 @@ Module DSGMlib
                 Directory.Delete(CompilePath, True)
             End If
         Catch : End Try
+        Dim AvoidNewsline As Boolean = If(GetSetting("CLOSE_NEWS") = "0", True, False)
+        For Each X As Form In MainForm.MdiChildren
+            If X.Name = "Newsline" And AvoidNewsline And WishCloseNews = False Then Continue For
+            X.Close()
+        Next
         ClearResourcesTreeView()
     End Sub
 
@@ -1977,7 +2160,7 @@ Module DSGMlib
         IsNewProject = False
         ProjectPath = Result
         BeingUsed = True
-        CleanFresh()
+        CleanFresh(False)
         Dim DisplayResult As String = Result.Substring(Result.LastIndexOf("\") + 1)
         DisplayResult = DisplayResult.Substring(0, DisplayResult.LastIndexOf("."))
         DisplayResult = DisplayResult.Replace(" ", String.Empty)
@@ -2060,8 +2243,8 @@ Module DSGMlib
         BGsToRedo.Clear()
         FontsUsedLastTime.Clear()
         BuildSoundsRedoFromFile()
-        SetOption("LAST_PROJECT", Result)
-        SaveOptions()
+        SetSetting("LAST_PROJECT", Result)
+        SaveSettings()
     End Sub
 
     Sub BuildSoundsRedoFromFile()
@@ -2101,6 +2284,11 @@ Module DSGMlib
         System.Diagnostics.Process.Start(URL)
     End Sub
 
+    Sub ProPlease(ByVal ToDoWhat As String)
+        MsgInfo("Please buy the Pro Edition to " + ToDoWhat + ".")
+        Pro.ShowDialog()
+    End Sub
+
     Function GetActionTypes(ByVal ActionName) As String
         Dim Returnable As String = String.Empty
         For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
@@ -2120,6 +2308,7 @@ Module DSGMlib
         If DoesXDSLineExist("BACKGROUND " + TheName) Then Return "a Background"
         If GetXDSFilter("SOUND " + TheName + ",").Length > 0 Then Return "a Sound"
         If GetXDSFilter("ROOM " + TheName + ",").Length > 0 Then Return "a Room"
+        If DoesXDSLineExist("PATH " + TheName) Then Return "a Path"
         If GetXDSFilter("SCRIPT " + TheName + ",").Length > 0 Then Return "a Script"
         Return String.Empty
     End Function
@@ -2153,9 +2342,7 @@ Module DSGMlib
     End Function
 
     Sub RunBatchString(ByVal BatchString As String, ByVal WorkingDirectory As String, ByVal is7Zip As Boolean)
-        If Not DevPath = WorkingDirectory Then
-            If is7Zip Then File.Copy(DevPath + "zip.exe", WorkingDirectory + "zip.exe", True)
-        End If
+        If is7Zip Then File.Copy(AppPath + "zip.exe", WorkingDirectory + "zip.exe", True)
         File.WriteAllText(WorkingDirectory + "\DSGMBatch.bat", BatchString)
         'MsgError(WorkingDirectory + "DSGMBatch.bat")
         Dim MyProcess As New Process
@@ -2164,13 +2351,10 @@ Module DSGMlib
             .WorkingDirectory = WorkingDirectory
             .WindowStyle = ProcessWindowStyle.Hidden
         End With
-        With MyProcess
-            .StartInfo = MyStartInfo
-            .Start()
-            .WaitForExit()
-            .Dispose()
-        End With
-      
+        MyProcess.StartInfo = MyStartInfo
+        MyProcess.Start()
+        MyProcess.WaitForExit()
+        MyProcess.Dispose()
         File.Delete(WorkingDirectory + "\DSGMBatch.bat")
         Try
             If is7Zip Then File.Delete(WorkingDirectory + "zip.exe")
@@ -2179,18 +2363,34 @@ Module DSGMlib
         End Try
     End Sub
 
+    Public Sub ResetPro()
+        My.Settings.ProEmail = String.Empty
+        My.Settings.ProSerial = String.Empty
+        My.Settings.ProActivated = False
+        My.Settings.Save()
+        SetSetting("PRO_EMAIL", String.Empty)
+        SetSetting("PRO_SERIAL", String.Empty)
+        SetSetting("PRO", "0")
+        MsgInfo("The Reset was successful.")
+        IsPro = False
+        MainForm.Text = TitleDataWorks()
+        'MainForm.EquateProButton()
+    End Sub
+
     Public Function TitleDataWorks() As String
         Dim Returnable As String = String.Empty
         If BeingUsed Then
             If IsNewProject Then
-                Returnable = "[New Project]"
+                Returnable = "<New Project>"
             Else
                 Returnable = ProjectPath.Substring(ProjectPath.LastIndexOf("\") + 1)
                 Returnable = Returnable.Substring(0, Returnable.LastIndexOf("."))
             End If
             CacheProjectName = Returnable
-            Returnable += " - " + Application.ProductName
+            Returnable += " - "
         End If
+        'Returnable += Application.ProductName + " " + If(IsPro, "Pro", "Free")
+        Returnable += Application.ProductName
         Return Returnable
     End Function
 
@@ -2220,5 +2420,50 @@ Module DSGMlib
     Function GetOSVersion() As Byte
         Return Convert.ToByte(System.Environment.OSVersion.Version.ToString.Substring(0, 1))
     End Function
+
+    Sub PrivacyBummer(ByVal Message As String, ByVal Action As String)
+        MsgError(Message + "." + vbcrlf + vbcrlf + Application.ProductName + " will " + Action + ".")
+    End Sub
+
+    Sub PiracyWorks()
+        Dim Baddies As New Collection
+        Dim PathBegin As String = CDrive
+        If GetOSVersion() = 5 Then
+            PathBegin += "Documents and Settings\" + Environment.UserName + "\My Documents"
+        Else
+            PathBegin += "Users\" + Environment.UserName
+        End If
+        PathBegin += "\Downloads\"
+        '3.0
+        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\readme.nfo")
+        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\DSGameMaker.exe")
+        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\DSGameMaker_3.0.exe")
+        '2.6B
+        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\readme.nfo")
+        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\DSGameMaker_2.6B.exe")
+        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\DSGameMaker.exe")
+        Baddies.Add(AppPath + "readme.nfo")
+        Dim ContainsBaddy As Boolean = False
+        For Each Baddy As String In Baddies
+            If System.IO.File.Exists(Baddy) Then ContainsBaddy = True : Exit For
+        Next
+        If ContainsBaddy Then
+            PrivacyBummer("An illegal copy of " + Application.ProductName + " was found on your computer", "remove the offending files and downgrade to the Free Edition")
+            For Each Baddy As String In Baddies
+                If IO.File.Exists(Baddy) Then IO.File.Delete(Baddy)
+            Next
+            ResetPro()
+            MsgInfo("The offending files were removed and your copy of " + Application.ProductName + " has been downgraded to the Free Edition.")
+            If Directory.Exists("C:/Program Files/uTorrent") Then
+                If MessageBox.Show("Would you like to close and remove µTorrent too?" + vbcrlf + vbcrlf + "This will stop you from distributing more illegal material (by accident!).", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    For Each p As Process In System.Diagnostics.Process.GetProcesses
+                        If p.ProcessName.ToLower = "utorrent" Then p.Kill()
+                    Next
+                    Directory.Delete("C:/Program Files/uTorrent", True)
+                    MsgInfo("µTorrent has been successfully closed and removed.")
+                End If
+            End If
+        End If
+    End Sub
 
 End Module

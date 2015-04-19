@@ -23,8 +23,8 @@ Partial Class Compile
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Compile))
-        Me.ProgressLabel = New System.Windows.Forms.Label
-        Me.MainProgressBar = New System.Windows.Forms.ProgressBar
+        Me.ProgressLabel = New System.Windows.Forms.Label()
+        Me.MainProgressBar = New System.Windows.Forms.ProgressBar()
         Me.SuspendLayout()
         '
         'ProgressLabel

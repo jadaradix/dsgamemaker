@@ -42,7 +42,7 @@ Partial Class MainForm
         Me.DeleteButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSep4 = New System.Windows.Forms.ToolStripSeparator()
         Me.FindInScriptsButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MenuSep5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuSep41 = New System.Windows.Forms.ToolStripSeparator()
         Me.FindResourceButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.GoToLastFoundButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.ResourcesMenu = New System.Windows.Forms.ToolStripMenuItem()
@@ -51,6 +51,9 @@ Partial Class MainForm
         Me.AddBackgroundButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddSoundButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddRoomButton = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuSep5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.AddPathButton = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddScriptButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.GameSettingsButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.GlobalVariablesButton = New System.Windows.Forms.ToolStripMenuItem()
@@ -71,18 +74,16 @@ Partial Class MainForm
         Me.MenuSep10 = New System.Windows.Forms.ToolStripSeparator()
         Me.GraphicsChangeButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.SoundChangeButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.WriteOriginalMakefileButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Write512MakefileButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.WriteCurrentMakefileButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.WindowMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpMenu = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HelpContentsButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.OnlineTutorialsButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSep11 = New System.Windows.Forms.ToolStripSeparator()
+        Me.NewsButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.WebsiteButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.ForumButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSep13 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ReinstallToolchainAndPAlibButton = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReinstallToolchainButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutDSGMButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.MainToolStrip = New System.Windows.Forms.ToolStrip()
         Me.NewProjectButtonTool = New System.Windows.Forms.ToolStripButton()
@@ -100,6 +101,7 @@ Partial Class MainForm
         Me.AddBackgroundButtonTool = New System.Windows.Forms.ToolStripButton()
         Me.AddSoundButtonTool = New System.Windows.Forms.ToolStripButton()
         Me.AddRoomButtonTool = New System.Windows.Forms.ToolStripButton()
+        Me.AddPathButtonTool = New System.Windows.Forms.ToolStripButton()
         Me.AddScriptButtonTool = New System.Windows.Forms.ToolStripButton()
         Me.ToolSep4 = New System.Windows.Forms.ToolStripSeparator()
         Me.GameSettingsButtonTool = New System.Windows.Forms.ToolStripButton()
@@ -115,7 +117,8 @@ Partial Class MainForm
         Me.DuplicateResourceRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteResourceRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.Splitter1 = New System.Windows.Forms.Splitter()
-        Me.AddScriptButton = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.CompilesToNitroFSButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.DMainMenuStrip.SuspendLayout()
         Me.MainToolStrip.SuspendLayout()
         Me.ResRightClickMenu.SuspendLayout()
@@ -159,7 +162,7 @@ Partial Class MainForm
         '
         Me.OpenLastProjectButton.Name = "OpenLastProjectButton"
         Me.OpenLastProjectButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+                    Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
         Me.OpenLastProjectButton.Size = New System.Drawing.Size(230, 22)
         Me.OpenLastProjectButton.Text = "Open Last Project"
         '
@@ -181,7 +184,7 @@ Partial Class MainForm
         Me.SaveAsButton.Image = Global.DS_Game_Maker.My.Resources.Resources.SaveAsIcon
         Me.SaveAsButton.Name = "SaveAsButton"
         Me.SaveAsButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+                    Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.SaveAsButton.Size = New System.Drawing.Size(230, 22)
         Me.SaveAsButton.Text = "Save As..."
         '
@@ -219,7 +222,7 @@ Partial Class MainForm
         '
         'EditMenu
         '
-        Me.EditMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicateButton, Me.DeleteButton, Me.MenuSep4, Me.FindResourceButton, Me.GoToLastFoundButton, Me.MenuSep5, Me.FindInScriptsButton})
+        Me.EditMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DuplicateButton, Me.DeleteButton, Me.MenuSep4, Me.FindInScriptsButton, Me.MenuSep41, Me.FindResourceButton, Me.GoToLastFoundButton})
         Me.EditMenu.Name = "EditMenu"
         Me.EditMenu.Size = New System.Drawing.Size(37, 20)
         Me.EditMenu.Text = "Edit"
@@ -228,7 +231,7 @@ Partial Class MainForm
         '
         Me.DuplicateButton.Image = Global.DS_Game_Maker.My.Resources.Resources.CopyIcon
         Me.DuplicateButton.Name = "DuplicateButton"
-        Me.DuplicateButton.Size = New System.Drawing.Size(219, 22)
+        Me.DuplicateButton.Size = New System.Drawing.Size(224, 22)
         Me.DuplicateButton.Text = "Duplicate"
         '
         'DeleteButton
@@ -236,44 +239,44 @@ Partial Class MainForm
         Me.DeleteButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
         Me.DeleteButton.Name = "DeleteButton"
         Me.DeleteButton.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Delete), System.Windows.Forms.Keys)
-        Me.DeleteButton.Size = New System.Drawing.Size(219, 22)
+        Me.DeleteButton.Size = New System.Drawing.Size(224, 22)
         Me.DeleteButton.Text = "Delete"
         '
         'MenuSep4
         '
         Me.MenuSep4.Name = "MenuSep4"
-        Me.MenuSep4.Size = New System.Drawing.Size(216, 6)
+        Me.MenuSep4.Size = New System.Drawing.Size(221, 6)
         '
         'FindInScriptsButton
         '
         Me.FindInScriptsButton.Name = "FindInScriptsButton"
-        Me.FindInScriptsButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-            Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
-        Me.FindInScriptsButton.Size = New System.Drawing.Size(219, 22)
+        Me.FindInScriptsButton.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
+        Me.FindInScriptsButton.Size = New System.Drawing.Size(224, 22)
         Me.FindInScriptsButton.Text = "Find in Scripts"
         '
-        'MenuSep5
+        'MenuSep41
         '
-        Me.MenuSep5.Name = "MenuSep5"
-        Me.MenuSep5.Size = New System.Drawing.Size(216, 6)
+        Me.MenuSep41.Name = "MenuSep41"
+        Me.MenuSep41.Size = New System.Drawing.Size(221, 6)
         '
         'FindResourceButton
         '
         Me.FindResourceButton.Name = "FindResourceButton"
-        Me.FindResourceButton.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
-        Me.FindResourceButton.Size = New System.Drawing.Size(219, 22)
+        Me.FindResourceButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+                    Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
+        Me.FindResourceButton.Size = New System.Drawing.Size(224, 22)
         Me.FindResourceButton.Text = "Find Resource"
         '
         'GoToLastFoundButton
         '
         Me.GoToLastFoundButton.Name = "GoToLastFoundButton"
-        Me.GoToLastFoundButton.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F3), System.Windows.Forms.Keys)
-        Me.GoToLastFoundButton.Size = New System.Drawing.Size(219, 22)
+        Me.GoToLastFoundButton.ShortcutKeys = CType((System.Windows.Forms.Keys.Shift Or System.Windows.Forms.Keys.F3), System.Windows.Forms.Keys)
+        Me.GoToLastFoundButton.Size = New System.Drawing.Size(224, 22)
         Me.GoToLastFoundButton.Text = "Last Found Resource"
         '
         'ResourcesMenu
         '
-        Me.ResourcesMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddSpriteButton, Me.AddObjectButton, Me.AddBackgroundButton, Me.AddSoundButton, Me.AddRoomButton, Me.AddScriptButton})
+        Me.ResourcesMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddSpriteButton, Me.AddObjectButton, Me.AddBackgroundButton, Me.AddSoundButton, Me.AddRoomButton, Me.MenuSep5, Me.AddPathButton, Me.AddScriptButton})
         Me.ResourcesMenu.Name = "ResourcesMenu"
         Me.ResourcesMenu.Size = New System.Drawing.Size(69, 20)
         Me.ResourcesMenu.Text = "Resources"
@@ -312,6 +315,26 @@ Partial Class MainForm
         Me.AddRoomButton.Name = "AddRoomButton"
         Me.AddRoomButton.Size = New System.Drawing.Size(152, 22)
         Me.AddRoomButton.Text = "Add Room"
+        '
+        'MenuSep5
+        '
+        Me.MenuSep5.Name = "MenuSep5"
+        Me.MenuSep5.Size = New System.Drawing.Size(149, 6)
+        '
+        'AddPathButton
+        '
+        Me.AddPathButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PathAddIcon
+        Me.AddPathButton.Name = "AddPathButton"
+        Me.AddPathButton.Size = New System.Drawing.Size(152, 22)
+        Me.AddPathButton.Text = "Add Path"
+        Me.AddPathButton.Visible = False
+        '
+        'AddScriptButton
+        '
+        Me.AddScriptButton.Image = Global.DS_Game_Maker.My.Resources.Resources.ScriptAddIcon
+        Me.AddScriptButton.Name = "AddScriptButton"
+        Me.AddScriptButton.Size = New System.Drawing.Size(152, 22)
+        Me.AddScriptButton.Text = "Add Script"
         '
         'ToolsMenu
         '
@@ -387,7 +410,7 @@ Partial Class MainForm
         '
         'AdvancedButton
         '
-        Me.AdvancedButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CleanUpButton, Me.EditInternalXDSButton, Me.MenuSep9, Me.OpenCompileTempButton, Me.OpenProjectTempButton, Me.MenuSep10, Me.GraphicsChangeButton, Me.SoundChangeButton, Me.ToolStripSeparator1, Me.WriteOriginalMakefileButton, Me.Write512MakefileButton, Me.WriteCurrentMakefileButton})
+        Me.AdvancedButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CleanUpButton, Me.EditInternalXDSButton, Me.MenuSep9, Me.OpenCompileTempButton, Me.OpenProjectTempButton, Me.MenuSep10, Me.GraphicsChangeButton, Me.SoundChangeButton})
         Me.AdvancedButton.Name = "AdvancedButton"
         Me.AdvancedButton.Size = New System.Drawing.Size(168, 22)
         Me.AdvancedButton.Text = "Advanced"
@@ -439,29 +462,6 @@ Partial Class MainForm
         Me.SoundChangeButton.Size = New System.Drawing.Size(191, 22)
         Me.SoundChangeButton.Text = "Signify Sound Change"
         '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(188, 6)
-        '
-        'WriteOriginalMakefileButton
-        '
-        Me.WriteOriginalMakefileButton.Name = "WriteOriginalMakefileButton"
-        Me.WriteOriginalMakefileButton.Size = New System.Drawing.Size(191, 22)
-        Me.WriteOriginalMakefileButton.Text = "Write Original Makefile"
-        '
-        'Write512MakefileButton
-        '
-        Me.Write512MakefileButton.Name = "Write512MakefileButton"
-        Me.Write512MakefileButton.Size = New System.Drawing.Size(191, 22)
-        Me.Write512MakefileButton.Text = "Write 5.12 Makefile"
-        '
-        'WriteCurrentMakefileButton
-        '
-        Me.WriteCurrentMakefileButton.Name = "WriteCurrentMakefileButton"
-        Me.WriteCurrentMakefileButton.Size = New System.Drawing.Size(191, 22)
-        Me.WriteCurrentMakefileButton.Text = "Write Current Makefile"
-        '
         'WindowMenu
         '
         Me.WindowMenu.Name = "WindowMenu"
@@ -470,56 +470,71 @@ Partial Class MainForm
         '
         'HelpMenu
         '
-        Me.HelpMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OnlineTutorialsButton, Me.MenuSep11, Me.WebsiteButton, Me.ForumButton, Me.MenuSep13, Me.ReinstallToolchainAndPAlibButton, Me.AboutDSGMButton})
+        Me.HelpMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HelpContentsButton, Me.OnlineTutorialsButton, Me.MenuSep11, Me.NewsButton, Me.WebsiteButton, Me.ForumButton, Me.MenuSep13, Me.ReinstallToolchainButton, Me.AboutDSGMButton})
         Me.HelpMenu.Name = "HelpMenu"
         Me.HelpMenu.Size = New System.Drawing.Size(40, 20)
         Me.HelpMenu.Text = "Help"
         '
+        'HelpContentsButton
+        '
+        Me.HelpContentsButton.Image = Global.DS_Game_Maker.My.Resources.Resources.QuestionIcon
+        Me.HelpContentsButton.Name = "HelpContentsButton"
+        Me.HelpContentsButton.ShortcutKeys = System.Windows.Forms.Keys.F1
+        Me.HelpContentsButton.Size = New System.Drawing.Size(181, 22)
+        Me.HelpContentsButton.Text = "Contents"
+        '
         'OnlineTutorialsButton
         '
         Me.OnlineTutorialsButton.Name = "OnlineTutorialsButton"
-        Me.OnlineTutorialsButton.Size = New System.Drawing.Size(202, 22)
+        Me.OnlineTutorialsButton.Size = New System.Drawing.Size(181, 22)
         Me.OnlineTutorialsButton.Text = "Online Tutorials"
         '
         'MenuSep11
         '
         Me.MenuSep11.Name = "MenuSep11"
-        Me.MenuSep11.Size = New System.Drawing.Size(199, 6)
+        Me.MenuSep11.Size = New System.Drawing.Size(178, 6)
+        '
+        'NewsButton
+        '
+        Me.NewsButton.Image = CType(resources.GetObject("NewsButton.Image"), System.Drawing.Image)
+        Me.NewsButton.Name = "NewsButton"
+        Me.NewsButton.Size = New System.Drawing.Size(181, 22)
+        Me.NewsButton.Text = "News..."
         '
         'WebsiteButton
         '
         Me.WebsiteButton.Image = Global.DS_Game_Maker.My.Resources.Resources.InternetIcon
         Me.WebsiteButton.Name = "WebsiteButton"
-        Me.WebsiteButton.Size = New System.Drawing.Size(202, 22)
+        Me.WebsiteButton.Size = New System.Drawing.Size(181, 22)
         Me.WebsiteButton.Text = "DSGameMaker.com"
         '
         'ForumButton
         '
         Me.ForumButton.Name = "ForumButton"
-        Me.ForumButton.Size = New System.Drawing.Size(202, 22)
+        Me.ForumButton.Size = New System.Drawing.Size(181, 22)
         Me.ForumButton.Text = "Discussion Forum"
         '
         'MenuSep13
         '
         Me.MenuSep13.Name = "MenuSep13"
-        Me.MenuSep13.Size = New System.Drawing.Size(199, 6)
+        Me.MenuSep13.Size = New System.Drawing.Size(178, 6)
         '
-        'ReinstallToolchainAndPAlibButton
+        'ReinstallToolchainButton
         '
-        Me.ReinstallToolchainAndPAlibButton.Name = "ReinstallToolchainAndPAlibButton"
-        Me.ReinstallToolchainAndPAlibButton.Size = New System.Drawing.Size(202, 22)
-        Me.ReinstallToolchainAndPAlibButton.Text = "Re-install Toolchain && PAlib"
+        Me.ReinstallToolchainButton.Name = "ReinstallToolchainButton"
+        Me.ReinstallToolchainButton.Size = New System.Drawing.Size(181, 22)
+        Me.ReinstallToolchainButton.Text = "Reinstall Toolchain"
         '
         'AboutDSGMButton
         '
         Me.AboutDSGMButton.Name = "AboutDSGMButton"
-        Me.AboutDSGMButton.Size = New System.Drawing.Size(202, 22)
+        Me.AboutDSGMButton.Size = New System.Drawing.Size(181, 22)
         Me.AboutDSGMButton.Text = "About DS Game Maker"
         '
         'MainToolStrip
         '
         Me.MainToolStrip.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MainToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewProjectButtonTool, Me.OpenProjectButtonTool, Me.OpenLastProjectButtonTool, Me.SaveButtonTool, Me.SaveAsButtonTool, Me.ToolSep1, Me.TestGameButtonTool, Me.CompileGameButtonTool, Me.OptionsButtonTool, Me.ToolSep3, Me.AddSpriteButtonTool, Me.AddObjectButtonTool, Me.AddBackgroundButtonTool, Me.AddSoundButtonTool, Me.AddRoomButtonTool, Me.AddScriptButtonTool, Me.ToolSep4, Me.GameSettingsButtonTool, Me.GlobalVariablesButtonTool, Me.GlobalArraysButtonTool, Me.GlobalStructuresButtonTool})
+        Me.MainToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewProjectButtonTool, Me.OpenProjectButtonTool, Me.OpenLastProjectButtonTool, Me.SaveButtonTool, Me.SaveAsButtonTool, Me.ToolSep1, Me.TestGameButtonTool, Me.CompileGameButtonTool, Me.OptionsButtonTool, Me.ToolSep3, Me.AddSpriteButtonTool, Me.AddObjectButtonTool, Me.AddBackgroundButtonTool, Me.AddSoundButtonTool, Me.AddRoomButtonTool, Me.AddPathButtonTool, Me.AddScriptButtonTool, Me.ToolSep4, Me.GameSettingsButtonTool, Me.GlobalVariablesButtonTool, Me.GlobalArraysButtonTool, Me.GlobalStructuresButtonTool})
         Me.MainToolStrip.Location = New System.Drawing.Point(0, 24)
         Me.MainToolStrip.Name = "MainToolStrip"
         Me.MainToolStrip.Size = New System.Drawing.Size(724, 25)
@@ -652,6 +667,16 @@ Partial Class MainForm
         Me.AddRoomButtonTool.Size = New System.Drawing.Size(23, 22)
         Me.AddRoomButtonTool.Text = "Add Room"
         '
+        'AddPathButtonTool
+        '
+        Me.AddPathButtonTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.AddPathButtonTool.Image = Global.DS_Game_Maker.My.Resources.Resources.PathAddIcon
+        Me.AddPathButtonTool.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.AddPathButtonTool.Name = "AddPathButtonTool"
+        Me.AddPathButtonTool.Size = New System.Drawing.Size(23, 22)
+        Me.AddPathButtonTool.Text = "Add Path"
+        Me.AddPathButtonTool.Visible = False
+        '
         'AddScriptButtonTool
         '
         Me.AddScriptButtonTool.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -726,26 +751,26 @@ Partial Class MainForm
         'ResRightClickMenu
         '
         Me.ResRightClickMenu.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ResRightClickMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenResourceRightClickButton, Me.RightClickSeparator, Me.AddResourceRightClickButton, Me.DuplicateResourceRightClickButton, Me.DeleteResourceRightClickButton})
+        Me.ResRightClickMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenResourceRightClickButton, Me.RightClickSeparator, Me.AddResourceRightClickButton, Me.DuplicateResourceRightClickButton, Me.DeleteResourceRightClickButton, Me.ToolStripSeparator1, Me.CompilesToNitroFSButton})
         Me.ResRightClickMenu.Name = "ResRightClickMenu"
-        Me.ResRightClickMenu.Size = New System.Drawing.Size(119, 98)
+        Me.ResRightClickMenu.Size = New System.Drawing.Size(168, 148)
         '
         'OpenResourceRightClickButton
         '
         Me.OpenResourceRightClickButton.Enabled = False
         Me.OpenResourceRightClickButton.Name = "OpenResourceRightClickButton"
-        Me.OpenResourceRightClickButton.Size = New System.Drawing.Size(118, 22)
+        Me.OpenResourceRightClickButton.Size = New System.Drawing.Size(167, 22)
         Me.OpenResourceRightClickButton.Text = "Open"
         '
         'RightClickSeparator
         '
         Me.RightClickSeparator.Name = "RightClickSeparator"
-        Me.RightClickSeparator.Size = New System.Drawing.Size(115, 6)
+        Me.RightClickSeparator.Size = New System.Drawing.Size(164, 6)
         '
         'AddResourceRightClickButton
         '
         Me.AddResourceRightClickButton.Name = "AddResourceRightClickButton"
-        Me.AddResourceRightClickButton.Size = New System.Drawing.Size(118, 22)
+        Me.AddResourceRightClickButton.Size = New System.Drawing.Size(167, 22)
         Me.AddResourceRightClickButton.Text = "Add X"
         '
         'DuplicateResourceRightClickButton
@@ -753,7 +778,7 @@ Partial Class MainForm
         Me.DuplicateResourceRightClickButton.Enabled = False
         Me.DuplicateResourceRightClickButton.Image = Global.DS_Game_Maker.My.Resources.Resources.CopyIcon
         Me.DuplicateResourceRightClickButton.Name = "DuplicateResourceRightClickButton"
-        Me.DuplicateResourceRightClickButton.Size = New System.Drawing.Size(118, 22)
+        Me.DuplicateResourceRightClickButton.Size = New System.Drawing.Size(167, 22)
         Me.DuplicateResourceRightClickButton.Text = "Duplicate"
         '
         'DeleteResourceRightClickButton
@@ -761,7 +786,7 @@ Partial Class MainForm
         Me.DeleteResourceRightClickButton.Enabled = False
         Me.DeleteResourceRightClickButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
         Me.DeleteResourceRightClickButton.Name = "DeleteResourceRightClickButton"
-        Me.DeleteResourceRightClickButton.Size = New System.Drawing.Size(118, 22)
+        Me.DeleteResourceRightClickButton.Size = New System.Drawing.Size(167, 22)
         Me.DeleteResourceRightClickButton.Text = "Delete"
         '
         'Splitter1
@@ -772,12 +797,17 @@ Partial Class MainForm
         Me.Splitter1.TabIndex = 6
         Me.Splitter1.TabStop = False
         '
-        'AddScriptButton
+        'ToolStripSeparator1
         '
-        Me.AddScriptButton.Image = Global.DS_Game_Maker.My.Resources.Resources.ScriptAddIcon
-        Me.AddScriptButton.Name = "AddScriptButton"
-        Me.AddScriptButton.Size = New System.Drawing.Size(152, 22)
-        Me.AddScriptButton.Text = "Add Script"
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(164, 6)
+        '
+        'CompilesToNitroFSButton
+        '
+        Me.CompilesToNitroFSButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
+        Me.CompilesToNitroFSButton.Name = "CompilesToNitroFSButton"
+        Me.CompilesToNitroFSButton.Size = New System.Drawing.Size(167, 22)
+        Me.CompilesToNitroFSButton.Text = "Compiles to NitroFS"
         '
         'MainForm
         '
@@ -793,8 +823,8 @@ Partial Class MainForm
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.DMainMenuStrip
         Me.Name = "MainForm"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "[..]"
+        Me.Text = "Loading..."
+        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.DMainMenuStrip.ResumeLayout(False)
         Me.DMainMenuStrip.PerformLayout()
         Me.MainToolStrip.ResumeLayout(False)
@@ -838,6 +868,9 @@ Partial Class MainForm
     Friend WithEvents MenuSep7 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents OptionsButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolSep1 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents MenuSep5 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents AddPathButton As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents AddScriptButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents TestGameButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents CompileGameButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents OptionsButtonTool As System.Windows.Forms.ToolStripButton
@@ -847,10 +880,12 @@ Partial Class MainForm
     Friend WithEvents AddBackgroundButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents AddSoundButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents AddRoomButtonTool As System.Windows.Forms.ToolStripButton
+    Friend WithEvents AddPathButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents AddScriptButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolSep4 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents GameSettingsButtonTool As System.Windows.Forms.ToolStripButton
     Friend WithEvents GlobalVariablesButtonTool As System.Windows.Forms.ToolStripButton
+    Friend WithEvents HelpContentsButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents OnlineTutorialsButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSep11 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents WebsiteButton As System.Windows.Forms.ToolStripMenuItem
@@ -877,7 +912,8 @@ Partial Class MainForm
     Friend WithEvents AboutDSGMButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GlobalStructuresButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GlobalStructuresButtonTool As System.Windows.Forms.ToolStripButton
-    Friend WithEvents ReinstallToolchainAndPAlibButton As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents NewsButton As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ReinstallToolchainButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSep10 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents GraphicsChangeButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SoundChangeButton As System.Windows.Forms.ToolStripMenuItem
@@ -888,13 +924,10 @@ Partial Class MainForm
     Friend WithEvents FindResourceButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GoToLastFoundButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents FindInScriptsButton As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MenuSep5 As System.Windows.Forms.ToolStripSeparator
+    Friend WithEvents MenuSep41 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents MenuSep9 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents OpenProjectTempButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents WriteOriginalMakefileButton As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents Write512MakefileButton As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents WriteCurrentMakefileButton As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents AddScriptButton As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CompilesToNitroFSButton As System.Windows.Forms.ToolStripMenuItem
 
 End Class

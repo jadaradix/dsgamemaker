@@ -11,7 +11,7 @@
         Dim NewGFX As Graphics = Graphics.FromImage(Returnable)
         NewGFX.DrawImage(TheImage, New Point(0, FrameNumber * ImageSize.Height * -1))
         NewGFX.Dispose()
-        If Convert.ToByte(GetOption("TRANSPARENT_ANIMATIONS")) = 1 Then Returnable = MakeBMPTransparent(Returnable, Color.Magenta)
+        If Convert.ToByte(GetSetting("TRANSPARENT_ANIMATIONS")) = 1 Then Returnable = MakeBMPTransparent(Returnable, Color.Magenta)
         Return Returnable
     End Function
 

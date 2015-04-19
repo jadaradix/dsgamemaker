@@ -273,6 +273,7 @@
         If Type = 5 Then Return "Background"
         If Type = 6 Then Return "Sound"
         If Type = 7 Then Return "Room"
+        If Type = 8 Then Return "Path"
         If Type = 9 Then Return "Script"
         If Type = 10 Then Return "Comparative"
         If Type = 11 Then Return "Font"
@@ -290,6 +291,7 @@
         If Type = "Background" Then Return 5
         If Type = "Sound" Then Return 6
         If Type = "Room" Then Return 7
+        If Type = "Path" Then Return 8
         If Type = "Script" Then Return 9
         If Type = "Comparative" Then Return 10
         If Type = "Font" Then Return 11

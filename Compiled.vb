@@ -32,6 +32,6 @@ Public Class Compiled
         IO.File.Copy(CompilePath + CompileName + ".nds", HBKitDrive + CacheProjectName + ".nds", True)
         Dim Response As Byte = MessageBox.Show("'" + CacheProjectName + "' was copied successfully." + vbCrLf + vbCrLf + "Safely disconnect USB Reader now?", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         If Not Response = MsgBoxResult.Yes Then Exit Sub
-        RunBatchString("EjectMedia " + HBKitDrive + vbCrLf + "RemoveDrive " + HBKitDrive, DevPath, False)
+        RunBatchString("EjectMedia " + HBKitDrive + vbCrLf + "RemoveDrive " + HBKitDrive, AppPath, False)
     End Sub
 End Class

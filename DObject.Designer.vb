@@ -68,6 +68,7 @@ Partial Class DObject
         Me.ClearActionsRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.ActionsPanel = New System.Windows.Forms.Panel()
         Me.ActionInfoPanel = New System.Windows.Forms.Panel()
+        Me.RequiresProBanner = New System.Windows.Forms.Label()
         Me.ArgumentsListLabel = New System.Windows.Forms.Label()
         Me.ArgumentsHeaderLabel = New System.Windows.Forms.Label()
         Me.ActionNameLabel = New System.Windows.Forms.Label()
@@ -86,7 +87,7 @@ Partial Class DObject
         Me.MainToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DAcceptButton, Me.SelectAllButton, Me.ToolStripSeparator2, Me.SelectManyButton, Me.SelectOneButton})
         Me.MainToolStrip.Location = New System.Drawing.Point(0, 0)
         Me.MainToolStrip.Name = "MainToolStrip"
-        Me.MainToolStrip.Size = New System.Drawing.Size(692, 25)
+        Me.MainToolStrip.Size = New System.Drawing.Size(708, 25)
         Me.MainToolStrip.TabIndex = 0
         Me.MainToolStrip.Text = "ToolStrip1"
         '
@@ -179,7 +180,7 @@ Partial Class DObject
         'EventsListBox
         '
         Me.EventsListBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.EventsListBox.ContextMenuStrip = Me.EventRightClickMenu
         Me.EventsListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.EventsListBox.FormattingEnabled = True
@@ -193,48 +194,48 @@ Partial Class DObject
         Me.EventRightClickMenu.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.EventRightClickMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AddEventRightClickButton, Me.RightClickSep4, Me.ChangeEventRightClickButton, Me.RightClickSep5, Me.DeleteEventRightClickButton, Me.RightClickSep6, Me.ClearEventsButton})
         Me.EventRightClickMenu.Name = "ActionRightClickMenu"
-        Me.EventRightClickMenu.Size = New System.Drawing.Size(153, 132)
+        Me.EventRightClickMenu.Size = New System.Drawing.Size(125, 110)
         '
         'AddEventRightClickButton
         '
         Me.AddEventRightClickButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PlusIcon
         Me.AddEventRightClickButton.Name = "AddEventRightClickButton"
-        Me.AddEventRightClickButton.Size = New System.Drawing.Size(152, 22)
+        Me.AddEventRightClickButton.Size = New System.Drawing.Size(124, 22)
         Me.AddEventRightClickButton.Text = "Add Event"
         '
         'RightClickSep4
         '
         Me.RightClickSep4.Name = "RightClickSep4"
-        Me.RightClickSep4.Size = New System.Drawing.Size(149, 6)
+        Me.RightClickSep4.Size = New System.Drawing.Size(121, 6)
         '
         'ChangeEventRightClickButton
         '
         Me.ChangeEventRightClickButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PencilIcon
         Me.ChangeEventRightClickButton.Name = "ChangeEventRightClickButton"
-        Me.ChangeEventRightClickButton.Size = New System.Drawing.Size(152, 22)
+        Me.ChangeEventRightClickButton.Size = New System.Drawing.Size(124, 22)
         Me.ChangeEventRightClickButton.Text = "Change"
         '
         'RightClickSep5
         '
         Me.RightClickSep5.Name = "RightClickSep5"
-        Me.RightClickSep5.Size = New System.Drawing.Size(149, 6)
+        Me.RightClickSep5.Size = New System.Drawing.Size(121, 6)
         '
         'DeleteEventRightClickButton
         '
         Me.DeleteEventRightClickButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
         Me.DeleteEventRightClickButton.Name = "DeleteEventRightClickButton"
-        Me.DeleteEventRightClickButton.Size = New System.Drawing.Size(152, 22)
+        Me.DeleteEventRightClickButton.Size = New System.Drawing.Size(124, 22)
         Me.DeleteEventRightClickButton.Text = "Delete"
         '
         'RightClickSep6
         '
         Me.RightClickSep6.Name = "RightClickSep6"
-        Me.RightClickSep6.Size = New System.Drawing.Size(149, 6)
+        Me.RightClickSep6.Size = New System.Drawing.Size(121, 6)
         '
         'ClearEventsButton
         '
         Me.ClearEventsButton.Name = "ClearEventsButton"
-        Me.ClearEventsButton.Size = New System.Drawing.Size(152, 22)
+        Me.ClearEventsButton.Size = New System.Drawing.Size(124, 22)
         Me.ClearEventsButton.Text = "Clear"
         '
         'SpriteGroupBox
@@ -328,7 +329,7 @@ Partial Class DObject
         Me.ActionsToAddTabControl.Location = New System.Drawing.Point(0, 0)
         Me.ActionsToAddTabControl.Name = "ActionsToAddTabControl"
         Me.ActionsToAddTabControl.SelectedIndex = 0
-        Me.ActionsToAddTabControl.Size = New System.Drawing.Size(312, 160)
+        Me.ActionsToAddTabControl.Size = New System.Drawing.Size(328, 160)
         Me.ActionsToAddTabControl.TabIndex = 2
         '
         'ActionsList
@@ -340,7 +341,7 @@ Partial Class DObject
         Me.ActionsList.Location = New System.Drawing.Point(210, 25)
         Me.ActionsList.Name = "ActionsList"
         Me.ActionsList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ActionsList.Size = New System.Drawing.Size(482, 357)
+        Me.ActionsList.Size = New System.Drawing.Size(498, 357)
         Me.ActionsList.TabIndex = 3
         '
         'ActionRightClickMenu
@@ -426,19 +427,33 @@ Partial Class DObject
         Me.ActionsPanel.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.ActionsPanel.Location = New System.Drawing.Point(210, 382)
         Me.ActionsPanel.Name = "ActionsPanel"
-        Me.ActionsPanel.Size = New System.Drawing.Size(482, 160)
+        Me.ActionsPanel.Size = New System.Drawing.Size(498, 160)
         Me.ActionsPanel.TabIndex = 4
         '
         'ActionInfoPanel
         '
+        Me.ActionInfoPanel.Controls.Add(Me.RequiresProBanner)
         Me.ActionInfoPanel.Controls.Add(Me.ArgumentsListLabel)
         Me.ActionInfoPanel.Controls.Add(Me.ArgumentsHeaderLabel)
         Me.ActionInfoPanel.Controls.Add(Me.ActionNameLabel)
         Me.ActionInfoPanel.Dock = System.Windows.Forms.DockStyle.Right
-        Me.ActionInfoPanel.Location = New System.Drawing.Point(312, 0)
+        Me.ActionInfoPanel.Location = New System.Drawing.Point(328, 0)
         Me.ActionInfoPanel.Name = "ActionInfoPanel"
         Me.ActionInfoPanel.Size = New System.Drawing.Size(170, 160)
         Me.ActionInfoPanel.TabIndex = 5
+        '
+        'RequiresProBanner
+        '
+        Me.RequiresProBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.RequiresProBanner.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.RequiresProBanner.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.RequiresProBanner.ForeColor = System.Drawing.Color.White
+        Me.RequiresProBanner.Location = New System.Drawing.Point(4, 133)
+        Me.RequiresProBanner.Name = "RequiresProBanner"
+        Me.RequiresProBanner.Padding = New System.Windows.Forms.Padding(3)
+        Me.RequiresProBanner.Size = New System.Drawing.Size(162, 23)
+        Me.RequiresProBanner.TabIndex = 3
+        Me.RequiresProBanner.Text = "Requires PRO"
         '
         'ArgumentsListLabel
         '
@@ -446,9 +461,9 @@ Partial Class DObject
         Me.ArgumentsListLabel.Location = New System.Drawing.Point(7, 58)
         Me.ArgumentsListLabel.Name = "ArgumentsListLabel"
         Me.ArgumentsListLabel.Padding = New System.Windows.Forms.Padding(0, 2, 4, 4)
-        Me.ArgumentsListLabel.Size = New System.Drawing.Size(156, 94)
+        Me.ArgumentsListLabel.Size = New System.Drawing.Size(156, 68)
         Me.ArgumentsListLabel.TabIndex = 2
-        Me.ArgumentsListLabel.Text = ""
+        Me.ArgumentsListLabel.Text = "<No Arguments>"
         '
         'ArgumentsHeaderLabel
         '
@@ -459,7 +474,7 @@ Partial Class DObject
         Me.ArgumentsHeaderLabel.Location = New System.Drawing.Point(4, 36)
         Me.ArgumentsHeaderLabel.Name = "ArgumentsHeaderLabel"
         Me.ArgumentsHeaderLabel.Padding = New System.Windows.Forms.Padding(2)
-        Me.ArgumentsHeaderLabel.Size = New System.Drawing.Size(162, 120)
+        Me.ArgumentsHeaderLabel.Size = New System.Drawing.Size(162, 94)
         Me.ArgumentsHeaderLabel.TabIndex = 1
         Me.ArgumentsHeaderLabel.Text = "Arguments:"
         '
@@ -480,14 +495,14 @@ Partial Class DObject
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(692, 542)
+        Me.ClientSize = New System.Drawing.Size(708, 542)
         Me.Controls.Add(Me.ActionsList)
         Me.Controls.Add(Me.ActionsPanel)
         Me.Controls.Add(Me.ObjectPropertiesPanel)
         Me.Controls.Add(Me.MainToolStrip)
         Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MinimumSize = New System.Drawing.Size(708, 580)
+        Me.MinimumSize = New System.Drawing.Size(724, 580)
         Me.Name = "DObject"
         Me.MainToolStrip.ResumeLayout(False)
         Me.MainToolStrip.PerformLayout()
@@ -545,6 +560,7 @@ Partial Class DObject
     Friend WithEvents ActionNameLabel As System.Windows.Forms.Label
     Friend WithEvents ArgumentsHeaderLabel As System.Windows.Forms.Label
     Friend WithEvents ArgumentsListLabel As System.Windows.Forms.Label
+    Friend WithEvents RequiresProBanner As System.Windows.Forms.Label
     Friend WithEvents SelectManyButton As System.Windows.Forms.ToolStripButton
     Friend WithEvents SelectOneButton As System.Windows.Forms.ToolStripButton
     Friend WithEvents SelectOneRightClickButton As System.Windows.Forms.ToolStripMenuItem

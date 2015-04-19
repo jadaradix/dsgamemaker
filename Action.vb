@@ -164,6 +164,11 @@ Public Class Action
                         DirectCast(InputControl, ComboBox).Items.Add(RoomName)
                     Next
                     InputControl.Name = "Room" + DOn.ToString
+                ElseIf ArgumentType = 8 Then
+                    For Each Y As String In GetXDSFilter("PATH ")
+                        DirectCast(InputControl, ComboBox).Items.Add(Y.Substring(5))
+                    Next
+                    InputControl.Name = "Path" + DOn.ToString
                 ElseIf ArgumentType = 9 Then
                     For Each Y As String In GetXDSFilter("SCRIPT ")
                         Dim ScriptName As String = Y.Substring(7)

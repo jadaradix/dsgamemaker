@@ -36,21 +36,23 @@ Public Class Options
             DefaultRoomHeightTB.Focus()
             Exit Sub
         End If
-        SetOption("OPEN_LAST_PROJECT_STARTUP", If(OpenLastProjectCheckBox.Checked, "1", "0"))
-        SetOption("TRANSPARENT_ANIMATIONS", If(TransparentAnimationsCheckBox.Checked, "1", "0"))
-        SetOption("USE_NOGBA", If(UseNOGBARadioButton.Checked, "1", "0"))
-        SetOption("IMAGE_EDITOR_PATH", ImageEditorTextBox.Text)
-        SetOption("SOUND_EDITOR_PATH", SoundEditorTextBox.Text)
-        SetOption("USE_EXTERNAL_SCRIPT_EDITOR", If(UseExternalScriptEditorRadioButton.Checked, "1", "0"))
-        SetOption("HIGHLIGHT_CURRENT_LINE", If(HighlightCurrentLineCheckBox.Checked, "1", "0"))
-        SetOption("MATCH_BRACES", If(MatchBracesCheckBox.Checked, "1", "0"))
-        SetOption("HIDE_OLD_ACTIONS", If(HideOldActionsChecker.Checked, "1", "0"))
-        SetOption("SHRINK_ACTIONS_LIST", If(ShrinkActionsListChecker.Checked, "1", "0"))
-        SetOption("SCRIPT_EDITOR_PATH", ScriptEditorTextBox.Text)
-        SetOption("DEFAULT_ROOM_WIDTH", DefaultRoomWidthTB.Text)
-        SetOption("DEFAULT_ROOM_HEIGHT", DefaultRoomHeightTB.Text)
-        SetOption("EMULATOR_PATH", CustomEmulatorTextBox.Text)
-        SaveOptions()
+        SetSetting("CLOSE_NEWS", If(CloseNewslineCheckBox.Checked, "1", "0"))
+        SetSetting("OPEN_LAST_PROJECT_STARTUP", If(OpenLastProjectCheckBox.Checked, "1", "0"))
+        SetSetting("SHOW_NEWS", If(ShowNewsCheckBox.Checked, "1", "0"))
+        SetSetting("TRANSPARENT_ANIMATIONS", If(TransparentAnimationsCheckBox.Checked, "1", "0"))
+        SetSetting("USE_NOGBA", If(UseNOGBARadioButton.Checked, "1", "0"))
+        SetSetting("IMAGE_EDITOR_PATH", ImageEditorTextBox.Text)
+        SetSetting("SOUND_EDITOR_PATH", SoundEditorTextBox.Text)
+        SetSetting("USE_EXTERNAL_SCRIPT_EDITOR", If(UseExternalScriptEditorRadioButton.Checked, "1", "0"))
+        SetSetting("HIGHLIGHT_CURRENT_LINE", If(HighlightCurrentLineCheckBox.Checked, "1", "0"))
+        SetSetting("MATCH_BRACES", If(MatchBracesCheckBox.Checked, "1", "0"))
+        SetSetting("HIDE_OLD_ACTIONS", If(HideOldActionsChecker.Checked, "1", "0"))
+        SetSetting("SHRINK_ACTIONS_LIST", If(ShrinkActionsListChecker.Checked, "1", "0"))
+        SetSetting("SCRIPT_EDITOR_PATH", ScriptEditorTextBox.Text)
+        SetSetting("DEFAULT_ROOM_WIDTH", DefaultRoomWidthTB.Text)
+        SetSetting("DEFAULT_ROOM_HEIGHT", DefaultRoomHeightTB.Text)
+        SetSetting("EMULATOR_PATH", CustomEmulatorTextBox.Text)
+        SaveSettings()
         For Each X As Form In MainForm.MdiChildren
             Dim TheText As String = X.Text
             If TheText.StartsWith("Outputted C Preview for ") Then
@@ -68,26 +70,28 @@ Public Class Options
     End Sub
 
     Private Sub Options_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        OpenLastProjectCheckBox.Checked = (GetOption("OPEN_LAST_PROJECT_STARTUP") = "1")
-        HighlightCurrentLineCheckBox.Checked = (GetOption("HIGHLIGHT_CURRENT_LINE") = "1")
-        MatchBracesCheckBox.Checked = (GetOption("MATCH_BRACES") = "1")
-        TransparentAnimationsCheckBox.Checked = (GetOption("TRANSPARENT_ANIMATIONS") = "1")
-        UseNOGBARadioButton.Checked = (GetOption("USE_NOGBA") = "1")
-        ImageEditorTextBox.Text = GetOption("IMAGE_EDITOR_PATH")
-        SoundEditorTextBox.Text = GetOption("SOUND_EDITOR_PATH")
-        CustomEmulatorTextBox.Text = GetOption("EMULATOR_PATH")
-        If GetOption("USE_EXTERNAL_SCRIPT_EDITOR") = "1" Then
+        CloseNewslineCheckBox.Checked = (GetSetting("CLOSE_NEWS") = "1")
+        OpenLastProjectCheckBox.Checked = (GetSetting("OPEN_LAST_PROJECT_STARTUP") = "1")
+        ShowNewsCheckBox.Checked = (GetSetting("SHOW_NEWS") = "1")
+        HighlightCurrentLineCheckBox.Checked = (GetSetting("HIGHLIGHT_CURRENT_LINE") = "1")
+        MatchBracesCheckBox.Checked = (GetSetting("MATCH_BRACES") = "1")
+        TransparentAnimationsCheckBox.Checked = (GetSetting("TRANSPARENT_ANIMATIONS") = "1")
+        UseNOGBARadioButton.Checked = (GetSetting("USE_NOGBA") = "1")
+        ImageEditorTextBox.Text = GetSetting("IMAGE_EDITOR_PATH")
+        SoundEditorTextBox.Text = GetSetting("SOUND_EDITOR_PATH")
+        CustomEmulatorTextBox.Text = GetSetting("EMULATOR_PATH")
+        If GetSetting("USE_EXTERNAL_SCRIPT_EDITOR") = "1" Then
             UseExternalScriptEditorRadioButton.Checked = True
             UseInternalScriptEditorRadioButton.Checked = False
         Else
             UseExternalScriptEditorRadioButton.Checked = False
             UseInternalScriptEditorRadioButton.Checked = True
         End If
-        ScriptEditorTextBox.Text = GetOption("SCRIPT_EDITOR_PATH")
-        DefaultRoomWidthTB.Text = GetOption("DEFAULT_ROOM_WIDTH")
-        DefaultRoomHeightTB.Text = GetOption("DEFAULT_ROOM_HEIGHT")
-        HideOldActionsChecker.Checked = (GetOption("HIDE_OLD_ACTIONS") = "1")
-        ShrinkActionsListChecker.Checked = (GetOption("SHRINK_ACTIONS_LIST") = "1")
+        ScriptEditorTextBox.Text = GetSetting("SCRIPT_EDITOR_PATH")
+        DefaultRoomWidthTB.Text = GetSetting("DEFAULT_ROOM_WIDTH")
+        DefaultRoomHeightTB.Text = GetSetting("DEFAULT_ROOM_HEIGHT")
+        HideOldActionsChecker.Checked = (GetSetting("HIDE_OLD_ACTIONS") = "1")
+        ShrinkActionsListChecker.Checked = (GetSetting("SHRINK_ACTIONS_LIST") = "1")
     End Sub
 
     Private Sub ImageEditorBrowseButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ImageEditorBrowseButton.Click

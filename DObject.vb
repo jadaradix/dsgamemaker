@@ -49,8 +49,19 @@ Public Class DObject
                 ArgumentCount += 1
             End If
         Next
-        'If ArgumentCount = 0 Then ArgumentsListLabel.Text = "<No Arguments>"
-        If ArgumentCount = 0 Then ArgumentsListLabel.Text = String.Empty
+        If ArgumentCount = 0 Then ArgumentsListLabel.Text = "<No Arguments>"
+        Dim RequiresPro As Boolean = False
+        For Each X As String In ProActions
+            If X = ActionName Then RequiresPro = True
+        Next
+        RequiresProBanner.Visible = RequiresPro
+        If RequiresPro Then
+            ArgumentsHeaderLabel.Height = 94
+            ArgumentsListLabel.Height = 68
+        Else
+            ArgumentsHeaderLabel.Height = 120
+            ArgumentsListLabel.Height = 94
+        End If
     End Sub
 
     Sub ActionMouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
@@ -61,6 +72,15 @@ Public Class DObject
             Exit Sub
         End If
         If Not DragFromBottom Then Exit Sub
+        If Not IsPro Then
+            Dim RequiresPro As Boolean = False
+            For Each X As String In ProActions
+                If X = ActionName Then RequiresPro = True
+            Next
+            If RequiresPro Then
+                MsgInfo("This action requires the Pro Edition.")
+            End If
+        End If
         'MsgError(Location.X.ToString)
         'MsgError(Location.Y.ToString)
         'Dim MDIID As Byte = 10
@@ -247,7 +267,7 @@ Public Class DObject
     End Sub
 
     Public Sub PopulateActionsTabControl(ByRef RAppliesTo As TabControl)
-        Dim Hide As Boolean = (GetOption("HIDE_OLD_ACTIONS") = "1")
+        Dim Hide As Boolean = (GetSetting("HIDE_OLD_ACTIONS") = "1")
         Dim BannedActions As New List(Of String)
         With BannedActions
             .Add("load collision map")
@@ -280,6 +300,10 @@ Public Class DObject
             Dim Y As New TabPage
             Y.Text = ActionTypeToString(X)
             Y.Name = ActionTypeToString(X) + "TabPage"
+
+            Y.AutoScroll = True
+            Y.SetAutoScrollMargin(8, 8)
+
             Dim Actions As New List(Of String)
             For Each Z As String In Directory.GetFiles(AppPath + "Actions")
                 Dim ActionName As String = Z.Substring(Z.LastIndexOf("\") + 1)
@@ -334,7 +358,7 @@ Public Class DObject
 
     Private Sub DObject_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         SelectedEvent = 100
-        ThinList = (GetOption("SHRINK_ACTIONS_LIST") = "1")
+        ThinList = (GetSetting("SHRINK_ACTIONS_LIST") = "1")
         MainToolStrip.Renderer = New clsToolstripRenderer
         ActionRightClickMenu.Renderer = New clsMenuRenderer
         EventRightClickMenu.Renderer = New clsMenuRenderer
@@ -370,6 +394,8 @@ Public Class DObject
             SelectedEvent = 0
             EventsListBox.SelectedIndex = 0
         End If
+        If IsPro Then RequiresProBanner.BackColor = Color.FromArgb(35, 200, 0) Else RequiresProBanner.BackColor = Color.FromArgb(192, 0, 0)
+        RequiresProBanner.Visible = False
         ArgumentsHeaderLabel.Height = 120
         ArgumentsListLabel.Height = 94
     End Sub
@@ -412,8 +438,8 @@ Public Class DObject
             If X.Name = "Room" Then
                 Dim DForm As Room = DirectCast(X, Room)
                 DForm.RenameObjectDropper(ObjectName, NewName)
-                For DOn As Byte = 0 To DForm.Instances.Length - 1
-                    If DForm.Instances(DOn).InUse And DForm.Instances(DOn).ObjectName = ObjectName Then DForm.Instances(DOn).ObjectName = NewName
+                For DOn As Byte = 0 To DForm.Objects.Length - 1
+                    If DForm.Objects(DOn).InUse And DForm.Objects(DOn).ObjectName = ObjectName Then DForm.Objects(DOn).ObjectName = NewName
                 Next
             End If
         Next

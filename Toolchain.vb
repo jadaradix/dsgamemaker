@@ -8,11 +8,11 @@ Module Toolchain
         For Each TheProcess As Process In ProcessesList
             If TheProcess.ProcessName.StartsWith("devkitProUpdater") Then EXECount += 1
         Next
-        Return (EXECount > 0)
+        If EXECount > 0 Then Return True Else Return False
     End Function
 
     Public Sub MessageThing()
-        MsgInfo("The installer is running. Once it is complete, you can return to " + Application.ProductName)
+        MsgInfo("Please wait patiently while the installer is running. Press OK to continue.")
         If IsInstallerRunning() Then
             MessageThing()
         Else
@@ -21,21 +21,32 @@ Module Toolchain
     End Sub
 
     Public Sub RundevkitProUpdater()
-        System.Diagnostics.Process.Start(DevPath + "devkitProUpdater-1.5.0.exe")
-        Threading.Thread.Sleep(750)
+        MsgInfo("When presented with the option to choose components, select only 'devkitARM'.")
+        System.Diagnostics.Process.Start(AppPath + "devkitProUpdater-1.5.0.exe")
+        Threading.Thread.Sleep(1000)
         MessageThing()
     End Sub
 
     Public Sub ReinstallPAlib()
-        Directory.CreateDirectory(CDrive + "devkitPro\PAlib")
-        File.Copy(DevPath + "PAlib.7z", CDrive + "devkitPro\PAlib\PAlib.7z", True)
-        RunBatchString("zip.exe x PAlib.7z -y" + vbcrlf + "exit", CDrive + "devkitPro\PAlib\", True)
-        File.Delete(CDrive + "devkitPro\PAlib\PAlib.7z")
+        System.IO.File.Copy(AppPath + "devkitPro32.zip", CDrive + "devkitPro32.zip")
+        System.IO.File.Copy(AppPath + "zip.exe", CDrive + "zip.exe")
+        Dim BatchText As String = "zip.exe x devkitPro32.zip"
+        Dim BatchProcess As New Process
+        System.IO.File.WriteAllText(CDrive + "Generate.bat", BatchText)
+        Dim BatchProcessInfo As New ProcessStartInfo(CDrive + "Generate.bat")
+        With BatchProcessInfo
+            .WorkingDirectory = CDrive
+            .WindowStyle = ProcessWindowStyle.Normal
+        End With
+        BatchProcess.StartInfo = BatchProcessInfo
+        BatchProcess.Start()
+        BatchProcess.WaitForExit()
+        System.IO.File.Delete(CDrive + "Generate.bat")
+        System.IO.File.Delete(CDrive + "devkitPro32.zip")
+        System.IO.File.Delete(CDrive + "zip.exe")
+        My.Computer.FileSystem.MoveDirectory(CDrive + "devkitPro", System.IO.Path.GetTempPath + "Toolchain")
+        My.Computer.FileSystem.RenameDirectory(CDrive + "devkitPro32", "devkitPro")
         MsgInfo("Thank you for installing devkitARM and PAlib!")
-    End Sub
-
-    Sub ReplaceMakefile(ByVal FromName As String)
-        File.Copy(DevPath + FromName, CDrive + "devkitPro\PAlib\lib\PA_Makefile", True)
     End Sub
 
     'Sub SetSystemVariable(ByVal name As String, ByVal value As String, ByVal UseElevatedPermissions As Boolean)

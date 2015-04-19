@@ -385,10 +385,10 @@ Public Class Sprite
                 Dim DForm As Room = DirectCast(X, Room)
                 Dim TopAffected As Byte = 0
                 Dim BottomAffected As Byte = 0
-                For DOn As Byte = 0 To DForm.Instances.Count - 1
-                    If AffectedObjects.Contains(DForm.Instances(DOn).ObjectName) Then
-                        If DForm.Instances(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
-                        DForm.Instances(DOn).CacheImage = ObjectGetImage(DForm.Instances(DOn).ObjectName)
+                For DOn As Byte = 0 To DForm.Objects.Count - 1
+                    If AffectedObjects.Contains(DForm.Objects(DOn).ObjectName) Then
+                        If DForm.Objects(DOn).Screen Then TopAffected += 1 Else BottomAffected += 1
+                        DForm.Objects(DOn).CacheImage = ObjectGetImage(DForm.Objects(DOn).ObjectName)
                     End If
                 Next
                 If TopAffected > 0 Then DForm.RefreshRoom(True)

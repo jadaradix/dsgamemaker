@@ -23,40 +23,42 @@ Partial Class Options
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Options))
-        Me.OpenLastProjectCheckBox = New System.Windows.Forms.CheckBox()
-        Me.MainTabControl = New System.Windows.Forms.TabControl()
-        Me.GeneralTabPage = New System.Windows.Forms.TabPage()
-        Me.ShrinkActionsListChecker = New System.Windows.Forms.CheckBox()
-        Me.HideOldActionsChecker = New System.Windows.Forms.CheckBox()
-        Me.RoomsGroupBox = New System.Windows.Forms.GroupBox()
-        Me.DefaultRoomHeightTB = New System.Windows.Forms.TextBox()
-        Me.DefaultRoomWidthTB = New System.Windows.Forms.TextBox()
-        Me.DefaultRoomHeightLabel = New System.Windows.Forms.Label()
-        Me.DefaultRoomWidthLabel = New System.Windows.Forms.Label()
-        Me.TransparentAnimationsCheckBox = New System.Windows.Forms.CheckBox()
-        Me.CodeEditorGroupBox = New System.Windows.Forms.GroupBox()
-        Me.MatchBracesCheckBox = New System.Windows.Forms.CheckBox()
-        Me.HighlightCurrentLineCheckBox = New System.Windows.Forms.CheckBox()
-        Me.EditorsTabPage = New System.Windows.Forms.TabPage()
-        Me.ScriptEditorGroupBox = New System.Windows.Forms.GroupBox()
-        Me.ScriptEditorBrowseButton = New System.Windows.Forms.Button()
-        Me.ScriptEditorTextBox = New System.Windows.Forms.TextBox()
-        Me.UseExternalScriptEditorRadioButton = New System.Windows.Forms.RadioButton()
-        Me.UseInternalScriptEditorRadioButton = New System.Windows.Forms.RadioButton()
-        Me.SoundEditorGroupBox = New System.Windows.Forms.GroupBox()
-        Me.SoundEditorBrowseButton = New System.Windows.Forms.Button()
-        Me.SoundEditorTextBox = New System.Windows.Forms.TextBox()
-        Me.ImageEditorGroupBox = New System.Windows.Forms.GroupBox()
-        Me.ImageEditorBrowseButton = New System.Windows.Forms.Button()
-        Me.ImageEditorTextBox = New System.Windows.Forms.TextBox()
-        Me.EmulatorTabPage = New System.Windows.Forms.TabPage()
-        Me.EmulatorInfoLabel = New System.Windows.Forms.Label()
-        Me.CustomEmulatorBrowseButton = New System.Windows.Forms.Button()
-        Me.CustomEmulatorTextBox = New System.Windows.Forms.TextBox()
-        Me.RunCustomExecutableRadioButton = New System.Windows.Forms.RadioButton()
-        Me.UseNOGBARadioButton = New System.Windows.Forms.RadioButton()
-        Me.StartupTabPage = New System.Windows.Forms.TabPage()
-        Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.OpenLastProjectCheckBox = New System.Windows.Forms.CheckBox
+        Me.MainTabControl = New System.Windows.Forms.TabControl
+        Me.GeneralTabPage = New System.Windows.Forms.TabPage
+        Me.HideOldActionsChecker = New System.Windows.Forms.CheckBox
+        Me.CloseNewslineCheckBox = New System.Windows.Forms.CheckBox
+        Me.RoomsGroupBox = New System.Windows.Forms.GroupBox
+        Me.DefaultRoomHeightTB = New System.Windows.Forms.TextBox
+        Me.DefaultRoomWidthTB = New System.Windows.Forms.TextBox
+        Me.DefaultRoomHeightLabel = New System.Windows.Forms.Label
+        Me.DefaultRoomWidthLabel = New System.Windows.Forms.Label
+        Me.TransparentAnimationsCheckBox = New System.Windows.Forms.CheckBox
+        Me.CodeEditorGroupBox = New System.Windows.Forms.GroupBox
+        Me.MatchBracesCheckBox = New System.Windows.Forms.CheckBox
+        Me.HighlightCurrentLineCheckBox = New System.Windows.Forms.CheckBox
+        Me.EditorsTabPage = New System.Windows.Forms.TabPage
+        Me.ScriptEditorGroupBox = New System.Windows.Forms.GroupBox
+        Me.ScriptEditorBrowseButton = New System.Windows.Forms.Button
+        Me.ScriptEditorTextBox = New System.Windows.Forms.TextBox
+        Me.UseExternalScriptEditorRadioButton = New System.Windows.Forms.RadioButton
+        Me.UseInternalScriptEditorRadioButton = New System.Windows.Forms.RadioButton
+        Me.SoundEditorGroupBox = New System.Windows.Forms.GroupBox
+        Me.SoundEditorBrowseButton = New System.Windows.Forms.Button
+        Me.SoundEditorTextBox = New System.Windows.Forms.TextBox
+        Me.ImageEditorGroupBox = New System.Windows.Forms.GroupBox
+        Me.ImageEditorBrowseButton = New System.Windows.Forms.Button
+        Me.ImageEditorTextBox = New System.Windows.Forms.TextBox
+        Me.EmulatorTabPage = New System.Windows.Forms.TabPage
+        Me.EmulatorInfoLabel = New System.Windows.Forms.Label
+        Me.CustomEmulatorBrowseButton = New System.Windows.Forms.Button
+        Me.CustomEmulatorTextBox = New System.Windows.Forms.TextBox
+        Me.RunCustomExecutableRadioButton = New System.Windows.Forms.RadioButton
+        Me.UseNOGBARadioButton = New System.Windows.Forms.RadioButton
+        Me.StartupTabPage = New System.Windows.Forms.TabPage
+        Me.ShowNewsCheckBox = New System.Windows.Forms.CheckBox
+        Me.DOkayButton = New System.Windows.Forms.Button
+        Me.ShrinkActionsListChecker = New System.Windows.Forms.CheckBox
         Me.MainTabControl.SuspendLayout()
         Me.GeneralTabPage.SuspendLayout()
         Me.RoomsGroupBox.SuspendLayout()
@@ -96,6 +98,7 @@ Partial Class Options
         '
         Me.GeneralTabPage.Controls.Add(Me.ShrinkActionsListChecker)
         Me.GeneralTabPage.Controls.Add(Me.HideOldActionsChecker)
+        Me.GeneralTabPage.Controls.Add(Me.CloseNewslineCheckBox)
         Me.GeneralTabPage.Controls.Add(Me.RoomsGroupBox)
         Me.GeneralTabPage.Controls.Add(Me.TransparentAnimationsCheckBox)
         Me.GeneralTabPage.Controls.Add(Me.CodeEditorGroupBox)
@@ -107,16 +110,6 @@ Partial Class Options
         Me.GeneralTabPage.Text = "General"
         Me.GeneralTabPage.UseVisualStyleBackColor = True
         '
-        'ShrinkActionsListChecker
-        '
-        Me.ShrinkActionsListChecker.AutoSize = True
-        Me.ShrinkActionsListChecker.Location = New System.Drawing.Point(16, 233)
-        Me.ShrinkActionsListChecker.Name = "ShrinkActionsListChecker"
-        Me.ShrinkActionsListChecker.Size = New System.Drawing.Size(112, 17)
-        Me.ShrinkActionsListChecker.TabIndex = 5
-        Me.ShrinkActionsListChecker.Text = "Shrink Actions List"
-        Me.ShrinkActionsListChecker.UseVisualStyleBackColor = True
-        '
         'HideOldActionsChecker
         '
         Me.HideOldActionsChecker.AutoSize = True
@@ -126,6 +119,16 @@ Partial Class Options
         Me.HideOldActionsChecker.TabIndex = 4
         Me.HideOldActionsChecker.Text = "Hide 'Old' Actions"
         Me.HideOldActionsChecker.UseVisualStyleBackColor = True
+        '
+        'CloseNewslineCheckBox
+        '
+        Me.CloseNewslineCheckBox.AutoSize = True
+        Me.CloseNewslineCheckBox.Location = New System.Drawing.Point(16, 16)
+        Me.CloseNewslineCheckBox.Name = "CloseNewslineCheckBox"
+        Me.CloseNewslineCheckBox.Size = New System.Drawing.Size(213, 17)
+        Me.CloseNewslineCheckBox.TabIndex = 3
+        Me.CloseNewslineCheckBox.Text = "Close Newsline when opening a Project"
+        Me.CloseNewslineCheckBox.UseVisualStyleBackColor = True
         '
         'RoomsGroupBox
         '
@@ -198,7 +201,7 @@ Partial Class Options
         Me.MatchBracesCheckBox.AutoSize = True
         Me.MatchBracesCheckBox.Location = New System.Drawing.Point(8, 43)
         Me.MatchBracesCheckBox.Name = "MatchBracesCheckBox"
-        Me.MatchBracesCheckBox.Size = New System.Drawing.Size(92, 17)
+        Me.MatchBracesCheckBox.Size = New System.Drawing.Size(90, 17)
         Me.MatchBracesCheckBox.TabIndex = 1
         Me.MatchBracesCheckBox.Text = "Match Braces"
         Me.MatchBracesCheckBox.UseVisualStyleBackColor = True
@@ -208,7 +211,7 @@ Partial Class Options
         Me.HighlightCurrentLineCheckBox.AutoSize = True
         Me.HighlightCurrentLineCheckBox.Location = New System.Drawing.Point(8, 20)
         Me.HighlightCurrentLineCheckBox.Name = "HighlightCurrentLineCheckBox"
-        Me.HighlightCurrentLineCheckBox.Size = New System.Drawing.Size(133, 17)
+        Me.HighlightCurrentLineCheckBox.Size = New System.Drawing.Size(131, 17)
         Me.HighlightCurrentLineCheckBox.TabIndex = 0
         Me.HighlightCurrentLineCheckBox.Text = "Highlight Working Line"
         Me.HighlightCurrentLineCheckBox.UseVisualStyleBackColor = True
@@ -260,7 +263,7 @@ Partial Class Options
         Me.UseExternalScriptEditorRadioButton.AutoSize = True
         Me.UseExternalScriptEditorRadioButton.Location = New System.Drawing.Point(12, 46)
         Me.UseExternalScriptEditorRadioButton.Name = "UseExternalScriptEditorRadioButton"
-        Me.UseExternalScriptEditorRadioButton.Size = New System.Drawing.Size(115, 17)
+        Me.UseExternalScriptEditorRadioButton.Size = New System.Drawing.Size(117, 17)
         Me.UseExternalScriptEditorRadioButton.TabIndex = 2
         Me.UseExternalScriptEditorRadioButton.TabStop = True
         Me.UseExternalScriptEditorRadioButton.Text = "Use External Editor"
@@ -271,7 +274,7 @@ Partial Class Options
         Me.UseInternalScriptEditorRadioButton.AutoSize = True
         Me.UseInternalScriptEditorRadioButton.Location = New System.Drawing.Point(12, 20)
         Me.UseInternalScriptEditorRadioButton.Name = "UseInternalScriptEditorRadioButton"
-        Me.UseInternalScriptEditorRadioButton.Size = New System.Drawing.Size(112, 17)
+        Me.UseInternalScriptEditorRadioButton.Size = New System.Drawing.Size(115, 17)
         Me.UseInternalScriptEditorRadioButton.TabIndex = 0
         Me.UseInternalScriptEditorRadioButton.TabStop = True
         Me.UseInternalScriptEditorRadioButton.Text = "Use Internal Editor"
@@ -356,7 +359,7 @@ Partial Class Options
         Me.EmulatorInfoLabel.Size = New System.Drawing.Size(242, 44)
         Me.EmulatorInfoLabel.TabIndex = 6
         Me.EmulatorInfoLabel.Text = "You can test your game accurately on your computer to save time with an Emulator." & _
-    ""
+            ""
         Me.EmulatorInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'CustomEmulatorBrowseButton
@@ -399,6 +402,7 @@ Partial Class Options
         '
         'StartupTabPage
         '
+        Me.StartupTabPage.Controls.Add(Me.ShowNewsCheckBox)
         Me.StartupTabPage.Controls.Add(Me.OpenLastProjectCheckBox)
         Me.StartupTabPage.Location = New System.Drawing.Point(4, 22)
         Me.StartupTabPage.Name = "StartupTabPage"
@@ -407,6 +411,16 @@ Partial Class Options
         Me.StartupTabPage.TabIndex = 3
         Me.StartupTabPage.Text = "Startup"
         Me.StartupTabPage.UseVisualStyleBackColor = True
+        '
+        'ShowNewsCheckBox
+        '
+        Me.ShowNewsCheckBox.AutoSize = True
+        Me.ShowNewsCheckBox.Location = New System.Drawing.Point(16, 39)
+        Me.ShowNewsCheckBox.Name = "ShowNewsCheckBox"
+        Me.ShowNewsCheckBox.Size = New System.Drawing.Size(182, 17)
+        Me.ShowNewsCheckBox.TabIndex = 1
+        Me.ShowNewsCheckBox.Text = "Show DSGM Newsline on Startup"
+        Me.ShowNewsCheckBox.UseVisualStyleBackColor = True
         '
         'DOkayButton
         '
@@ -417,6 +431,16 @@ Partial Class Options
         Me.DOkayButton.TabIndex = 2
         Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
+        '
+        'ShrinkActionsListChecker
+        '
+        Me.ShrinkActionsListChecker.AutoSize = True
+        Me.ShrinkActionsListChecker.Location = New System.Drawing.Point(16, 233)
+        Me.ShrinkActionsListChecker.Name = "ShrinkActionsListChecker"
+        Me.ShrinkActionsListChecker.Size = New System.Drawing.Size(112, 17)
+        Me.ShrinkActionsListChecker.TabIndex = 5
+        Me.ShrinkActionsListChecker.Text = "Shrink Actions List"
+        Me.ShrinkActionsListChecker.UseVisualStyleBackColor = True
         '
         'Options
         '
@@ -486,6 +510,8 @@ Partial Class Options
     Friend WithEvents CustomEmulatorTextBox As System.Windows.Forms.TextBox
     Friend WithEvents EmulatorInfoLabel As System.Windows.Forms.Label
     Friend WithEvents StartupTabPage As System.Windows.Forms.TabPage
+    Friend WithEvents ShowNewsCheckBox As System.Windows.Forms.CheckBox
+    Friend WithEvents CloseNewslineCheckBox As System.Windows.Forms.CheckBox
     Friend WithEvents HideOldActionsChecker As System.Windows.Forms.CheckBox
     Friend WithEvents ShrinkActionsListChecker As System.Windows.Forms.CheckBox
 End Class

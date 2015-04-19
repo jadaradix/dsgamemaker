@@ -21,21 +21,19 @@
     Dim BottomScroll As Boolean
     Public BottomBG As String = String.Empty
 
-    Public Instances(128) As AnObject
+    Public Objects(128) As AnObject
     Dim SlotAppliesTo As New List(Of Byte)
     Dim VisualAppliesTo As New List(Of Byte)
 
-    Dim InstanceOn As UInt16 = 0
+    Dim InstanceOn As Byte = 0
     Public ObjectToPlot As String = String.Empty
 
-    Sub ClearInstances()
-        For Each X As AnObject In Instances
-            With X
-                .InUse = False
-                .X = 0
-                .Y = 0
-                .Screen = True
-            End With
+    Sub ClearObjects()
+        For Each X As AnObject In Objects
+            X.InUse = False
+            X.X = 0
+            X.Y = 0
+            X.Screen = True
         Next
     End Sub
 
@@ -47,87 +45,6 @@
     Dim TX As Int16 = 0
     Dim TY As Int16 = 0
     Dim TS As Boolean = False
-
-    Private Sub Room_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        SnapToGrid = (GetOption("SNAP_OBJECTS") = "1")
-        ShowGrid = (GetOption("SHOW_GRID") = "1")
-        UseRightClickMenuChecker.Checked = (GetOption("RIGHT_CLICK") = "1")
-        SnapX = Convert.ToByte(GetOption("SNAP_X"))
-        SnapY = Convert.ToByte(GetOption("SNAP_Y"))
-        Dim ColorString As String = GetOption("GRID_COLOR")
-        Dim R As Byte = Convert.ToByte(iGet(ColorString, 0, ","))
-        Dim G As Byte = Convert.ToByte(iGet(ColorString, 1, ","))
-        Dim B As Byte = Convert.ToByte(iGet(ColorString, 2, ","))
-        ShowGridChecker.Checked = ShowGrid
-        SnapToGridChecker.Checked = SnapToGrid
-        SnapXTextBox.Text = SnapX.ToString
-        SnapYTextBox.Text = SnapY.ToString
-        GridColor = Color.FromArgb(R, G, B)
-        ObjectRightClickMenu.Renderer = New clsMenuRenderer
-        Dim XDSLine As String = GetXDSLine("ROOM " + RoomName + ",")
-        XDSLine = XDSLine.Substring(6 + RoomName.Length)
-        TopWidth = Convert.ToInt16(iGet(XDSLine, 0, ","))
-        TopHeight = Convert.ToInt16(iGet(XDSLine, 1, ","))
-        BottomWidth = Convert.ToInt16(iGet(XDSLine, 4, ","))
-        'MsgError("Extracted BottomWidth is " + BottomWidth.ToString)
-        BottomHeight = Convert.ToInt16(iGet(XDSLine, 5, ","))
-        Dim MidWidth As Int16 = TopWidth
-        If BottomWidth > MidWidth Then MidWidth = BottomWidth
-        If MidWidth > 700 Then MidWidth = 700
-        Dim BackupWidth As Int16 = Me.Width
-        Dim BackupHeight As Int16 = Me.Height
-        'XXX
-        'Dim DoTopScroll As Boolean = If(TopWidth > TopScreen.Width, True, False)
-        'Dim DoBottomScroll As Boolean = If(BottomWidth > BottomScreen.Width, True, False)
-        'If DoTopScroll Then Me.Height += 36
-        'If DoBottomScroll Then Me.Height += 36
-        MainToolStrip.Renderer = New clsToolstripRenderer
-        NameTextBox.Text = RoomName
-        Text = RoomName
-        TopScreenBGDropper.Items.Clear()
-        TopScreenBGDropper.Items.Add(String.Empty)
-        BottomScreenBGDropper.Items.Clear()
-        BottomScreenBGDropper.Items.Add(String.Empty)
-        For Each X As String In GetXDSFilter("BACKGROUND ")
-            X = X.Substring(11)
-            TopScreenBGDropper.Items.Add(X)
-            BottomScreenBGDropper.Items.Add(X)
-        Next
-        ObjectDropper.Items.Clear()
-        For Each X As String In GetXDSFilter("OBJECT ")
-            X = X.Substring(7)
-            ObjectDropper.Items.Add(iGet(X, 0, ","))
-        Next
-        TopScroll = (iGet(XDSLine, 2, ",") = "1")
-        TopBG = iGet(XDSLine, 3, ",")
-        BottomWidthDropper.Value = BottomWidth
-        'MsgError(BottomHeight.ToString)
-        BottomHeightDropper.Value = BottomHeight
-        TopWidthDropper.Value = TopWidth
-        TopHeightDropper.Value = TopHeight
-        TopScreenScrollChecker.Checked = TopScroll
-        BottomScroll = (iGet(XDSLine, 6, ",") = "1")
-        BottomBG = iGet(XDSLine, 7, ",")
-        Me.Width = MidWidth + 194
-        Me.Height = ((TopHeight + BottomHeight) / 2) + 259
-        TopScreen.Width = 256 + (Me.Width - BackupWidth)
-        BottomScreen.Width = 256 + (Me.Width - BackupWidth)
-        BottomScreenScrollChecker.Checked = BottomScroll
-        TopScreenBGDropper.Text = TopBG
-        BottomScreenBGDropper.Text = BottomBG
-        ClearInstances()
-        For Each TheLine As String In GetXDSFilter("OBJECTPLOT ")
-            TheLine = TheLine.Substring(11)
-            If Not iGet(TheLine, 1, ",") = RoomName Then Continue For
-            Dim ObjectName As String = iGet(TheLine, 0, ",")
-            Dim Screen As Boolean = (iGet(TheLine, 2, ",") = "1")
-            Dim X As Int16 = Convert.ToInt16(iGet(TheLine, 3, ","))
-            Dim Y As Int16 = Convert.ToInt16(iGet(TheLine, 4, ","))
-            PlotObject(ObjectName, Screen, X, Y)
-        Next
-        RefreshRoom(True) : RefreshRoom(False)
-        ObjectToPlot = String.Empty
-    End Sub
 
     Function GetBGImage(ByVal BackgroundName As String) As Bitmap
         Return MakeBMPTransparent(PathToImage(SessionPath + "Backgrounds\" + BackgroundName + ".png"), Color.Magenta)
@@ -177,7 +94,7 @@
         'ElseIf Not WhichScreen And BottomBG.Length > 0 Then
         '    ReturnableGFX.DrawImage(GetBGImage(BottomBG), New Point(0, 0))
         'End If
-        For Each X As AnObject In Instances
+        For Each X As AnObject In Objects
             If Not X.InUse Then Continue For
             If Not X.Screen = WhichScreen Then Continue For
             ReturnableGFX.DrawImageUnscaled(X.CacheImage, New Point(X.X, X.Y))
@@ -280,6 +197,87 @@
         If WhichScreen Then : TopScreen.Invalidate() : Else : BottomScreen.Invalidate() : End If
     End Sub
 
+    Private Sub Room_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        SnapToGrid = (GetSetting("SNAP_OBJECTS") = "1")
+        ShowGrid = (GetSetting("SHOW_GRID") = "1")
+        UseRightClickMenuChecker.Checked = (GetSetting("RIGHT_CLICK") = "1")
+        SnapX = Convert.ToByte(GetSetting("SNAP_X"))
+        SnapY = Convert.ToByte(GetSetting("SNAP_Y"))
+        Dim ColorString As String = GetSetting("GRID_COLOR")
+        Dim R As Byte = Convert.ToByte(iGet(ColorString, 0, ","))
+        Dim G As Byte = Convert.ToByte(iGet(ColorString, 1, ","))
+        Dim B As Byte = Convert.ToByte(iGet(ColorString, 2, ","))
+        ShowGridChecker.Checked = ShowGrid
+        SnapToGridChecker.Checked = SnapToGrid
+        SnapXTextBox.Text = SnapX.ToString
+        SnapYTextBox.Text = SnapY.ToString
+        GridColor = Color.FromArgb(R, G, B)
+        ObjectRightClickMenu.Renderer = New clsMenuRenderer
+        Dim XDSLine As String = GetXDSLine("ROOM " + RoomName + ",")
+        XDSLine = XDSLine.Substring(6 + RoomName.Length)
+        TopWidth = Convert.ToInt16(iGet(XDSLine, 0, ","))
+        TopHeight = Convert.ToInt16(iGet(XDSLine, 1, ","))
+        BottomWidth = Convert.ToInt16(iGet(XDSLine, 4, ","))
+        'MsgError("Extracted BottomWidth is " + BottomWidth.ToString)
+        BottomHeight = Convert.ToInt16(iGet(XDSLine, 5, ","))
+        Dim MidWidth As Int16 = TopWidth
+        If BottomWidth > MidWidth Then MidWidth = BottomWidth
+        If MidWidth > 700 Then MidWidth = 700
+        Dim BackupWidth As Int16 = Me.Width
+        Dim BackupHeight As Int16 = Me.Height
+        'XXX
+        'Dim DoTopScroll As Boolean = If(TopWidth > TopScreen.Width, True, False)
+        'Dim DoBottomScroll As Boolean = If(BottomWidth > BottomScreen.Width, True, False)
+        'If DoTopScroll Then Me.Height += 36
+        'If DoBottomScroll Then Me.Height += 36
+        MainToolStrip.Renderer = New clsToolstripRenderer
+        NameTextBox.Text = RoomName
+        Text = RoomName
+        TopScreenBGDropper.Items.Clear()
+        TopScreenBGDropper.Items.Add(String.Empty)
+        BottomScreenBGDropper.Items.Clear()
+        BottomScreenBGDropper.Items.Add(String.Empty)
+        For Each X As String In GetXDSFilter("BACKGROUND ")
+            X = X.Substring(11)
+            TopScreenBGDropper.Items.Add(iGet(X, 0, ","))
+            BottomScreenBGDropper.Items.Add(iGet(X, 0, ","))
+        Next
+        ObjectDropper.Items.Clear()
+        For Each X As String In GetXDSFilter("OBJECT ")
+            X = X.Substring(7)
+            ObjectDropper.Items.Add(iGet(X, 0, ","))
+        Next
+        TopScroll = (iGet(XDSLine, 2, ",") = "1")
+        TopBG = iGet(XDSLine, 3, ",")
+        BottomWidthDropper.Value = BottomWidth
+        'MsgError(BottomHeight.ToString)
+        BottomHeightDropper.Value = BottomHeight
+        TopWidthDropper.Value = TopWidth
+        TopHeightDropper.Value = TopHeight
+        TopScreenScrollChecker.Checked = TopScroll
+        BottomScroll = (iGet(XDSLine, 6, ",") = "1")
+        BottomBG = iGet(XDSLine, 7, ",")
+        Me.Width = MidWidth + 194
+        Me.Height = ((TopHeight + BottomHeight) / 2) + 259
+        TopScreen.Width = 256 + (Me.Width - BackupWidth)
+        BottomScreen.Width = 256 + (Me.Width - BackupWidth)
+        BottomScreenScrollChecker.Checked = BottomScroll
+        TopScreenBGDropper.Text = TopBG
+        BottomScreenBGDropper.Text = BottomBG
+        ClearObjects()
+        For Each TheLine As String In GetXDSFilter("OBJECTPLOT ")
+            TheLine = TheLine.Substring(11)
+            If Not iGet(TheLine, 1, ",") = RoomName Then Continue For
+            Dim ObjectName As String = iGet(TheLine, 0, ",")
+            Dim Screen As Boolean = (iGet(TheLine, 2, ",") = "1")
+            Dim X As Int16 = Convert.ToInt16(iGet(TheLine, 3, ","))
+            Dim Y As Int16 = Convert.ToInt16(iGet(TheLine, 4, ","))
+            PlotObject(ObjectName, Screen, X, Y)
+        Next
+        RefreshRoom(True) : RefreshRoom(False)
+        ObjectToPlot = String.Empty
+    End Sub
+
     Private Sub DAcceptButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DAcceptButton.Click
         Dim NewName As String = NameTextBox.Text
         If Not NewName = RoomName Then
@@ -295,7 +293,7 @@
         For Each X As String In GetXDSFilter("OBJECTPLOT ")
             If iGet(X, 1, ",") = RoomName Then XDSRemoveLine(X)
         Next
-        For Each X As AnObject In Instances
+        For Each X As AnObject In Objects
             If Not X.InUse Then Continue For
             Dim TheLine As String = "OBJECTPLOT " + X.ObjectName + "," + NewName + ","
             If X.Screen Then TheLine += "1" Else TheLine += "0"
@@ -310,9 +308,9 @@
         For Each X As TreeNode In MainForm.ResourcesTreeView.Nodes(ResourceIDs.Room).Nodes
             If X.Text = RoomName Then X.Text = NewName
         Next
-        SetOption("SNAP_OBJECTS", If(SnapToGrid, "1", "0"))
-        SetOption("SHOW_GRID", If(ShowGrid, "1", "0"))
-        SetOption("RIGHT_CLICK", If(UseRightClickMenuChecker.Checked, "1", "0"))
+        SetSetting("SNAP_OBJECTS", If(SnapToGrid, "1", "0"))
+        SetSetting("SHOW_GRID", If(ShowGrid, "1", "0"))
+        SetSetting("RIGHT_CLICK", If(UseRightClickMenuChecker.Checked, "1", "0"))
         Me.Close()
     End Sub
 
@@ -326,7 +324,7 @@
             .ObjectName = ObjectName
             .CacheImage = ObjectGetImage(ObjectName)
         End With
-        Instances(InstanceOn) = ToAdd
+        Objects(InstanceOn) = ToAdd
         InstanceOn += 1
         RefreshRoom(Screen)
     End Sub
@@ -343,7 +341,7 @@
 
     Private Sub TopScreen_MouseClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles TopScreen.MouseClick
         Dim PlottedCount As Byte = 0
-        For Each Z As AnObject In Instances
+        For Each Z As AnObject In Objects
             If Z.InUse Then PlottedCount += 1
         Next
         If PlottedCount >= 128 Then MsgError("You can only plot 128 instances.") : Exit Sub
@@ -380,7 +378,7 @@
     Sub DeleteShizzle(ByVal X As Int16, ByVal Y As Int16, ByVal WhichScreen As Boolean)
         Dim AppliesTo As New List(Of Byte)
         Dim DOn As Byte = 0
-        For Each Z As AnObject In Instances
+        For Each Z As AnObject In Objects
             If Z.InUse Then
                 'MsgError("(" + DOn.ToString + ") name: " + Z.ObjectName + " at pos. " + Z.X.ToString + ", " + Z.Y.ToString)
                 If Z.Screen = WhichScreen And X >= Z.X And Y >= Z.Y And X < (Z.X + Z.CacheImage.Width) And Y < (Z.Y + Z.CacheImage.Height) Then
@@ -390,10 +388,10 @@
             DOn += 1
         Next
         For Each Z As Byte In AppliesTo
-            Instances(Z).CacheImage = Nothing
-            Instances(Z).InUse = False
-            Instances(Z).ObjectName = String.Empty
-            Instances(Z).X = 0 : Instances(Z).Y = 0
+            Objects(Z).CacheImage = Nothing
+            Objects(Z).InUse = False
+            Objects(Z).ObjectName = String.Empty
+            Objects(Z).X = 0 : Objects(Z).Y = 0
         Next
         If AppliesTo.Count > 0 Then
             RefreshRoom(WhichScreen)
@@ -458,24 +456,28 @@
     End Sub
 
     Private Sub TopWidthDropper_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TopWidthDropper.ValueChanged
+        Me.Size = New System.Drawing.Size(450 + TopWidthDropper.Value - 256, 452 + TopHeightDropper.Value - 192)
         TopScreen.AutoScrollMinSize = New Size(TopWidthDropper.Value, TopHeight)
         TopWidth = TopWidthDropper.Value
         TopScreen_Scroll()
     End Sub
 
     Private Sub TopHeightDropper_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TopHeightDropper.ValueChanged
+        Me.Size = New System.Drawing.Size(450 + TopWidthDropper.Value - 256, 452 + TopHeightDropper.Value - 192)
         TopScreen.AutoScrollMinSize = New Size(TopWidth, TopHeightDropper.Value)
         TopHeight = TopHeightDropper.Value
         TopScreen_Scroll()
     End Sub
 
     Private Sub BottomWidthDropper_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BottomWidthDropper.ValueChanged
+        Me.Size = New System.Drawing.Size(450 + BottomWidthDropper.Value - 256, 452 + BottomHeightDropper.Value - 192)
         BottomScreen.AutoScrollMinSize = New Size(BottomWidthDropper.Value, BottomHeight)
         BottomWidth = BottomWidthDropper.Value
         BottomScreen_Scroll()
     End Sub
 
     Private Sub BottomHeightDropper_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BottomHeightDropper.ValueChanged
+        Me.Size = New System.Drawing.Size(450 + BottomWidthDropper.Value - 256, 452 + BottomHeightDropper.Value - 192)
         BottomScreen.AutoScrollMinSize = New Size(BottomWidth, BottomHeightDropper.Value)
         BottomHeight = BottomHeightDropper.Value
         BottomScreen_Scroll()
@@ -495,10 +497,10 @@
         If Convert.ToInt16(TheValue) = 0 Or Convert.ToInt16(TheValue) > 255 Then Exit Sub
         If sender.name.ToString.Contains("X") Then
             SnapX = Convert.ToByte(TheValue)
-            SetOption("SNAP_X", TheValue)
+            SetSetting("SNAP_X", TheValue)
         Else
             SnapY = Convert.ToByte(TheValue)
-            SetOption("SNAP_Y", TheValue)
+            SetSetting("SNAP_Y", TheValue)
         End If
         If ShowGrid Then
             TopScreen.Refresh()
@@ -529,7 +531,7 @@
             TopScreen.Refresh()
             BottomScreen.Refresh()
         End If
-        SetOption("GRID_COLOR", GridColor.R.ToString + "," + GridColor.G.ToString + "," + GridColor.B.ToString)
+        SetSetting("GRID_COLOR", GridColor.R.ToString + "," + GridColor.G.ToString + "," + GridColor.B.ToString)
     End Sub
 
     Private Sub Screens_MouseMove(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles BottomScreen.MouseMove, TopScreen.MouseMove
@@ -551,7 +553,7 @@
         VisualAppliesTo.Clear()
         Dim DOn As Byte = 0
         Dim AOn As Byte = 0
-        For Each Z As AnObject In Instances
+        For Each Z As AnObject In Objects
             If Z.InUse Then
                 'If UseRightClickMenuChecker.Checked = True Then MsgError("(" + DOn.ToString + ") name: " + Z.ObjectName + " at pos. " + Z.X.ToString + ", " + Z.Y.ToString)
                 If Z.Screen = WhichScreen And X >= Z.X And Y >= Z.Y And X < (Z.X + Z.CacheImage.Width) And Y < (Z.Y + Z.CacheImage.Height) Then
@@ -565,7 +567,7 @@
         Dim FinalString As String = String.Empty
         DOn = 0
         For Each Z As Byte In SlotAppliesTo
-            FinalString += "[" + VisualAppliesTo(DOn).ToString + "] " + Instances(Z).ObjectName + " at " + Instances(Z).X.ToString + ", " + Instances(Z).Y.ToString + vbcrlf
+            FinalString += "[" + VisualAppliesTo(DOn).ToString + "] " + Objects(Z).ObjectName + " at " + Objects(Z).X.ToString + ", " + Objects(Z).Y.ToString + vbcrlf
             DOn += 1
         Next
         ObjectInfoLabel.Text = FinalString
@@ -586,9 +588,9 @@
         For Each X As Byte In SlotAppliesTo
             Dim CanAdd As Boolean = True
             For Each Y As String In ObjectsToOpen
-                If Y = Instances(X).ObjectName Then CanAdd = False
+                If Y = Objects(X).ObjectName Then CanAdd = False
             Next
-            If CanAdd Then ObjectsToOpen.Add(Instances(X).ObjectName)
+            If CanAdd Then ObjectsToOpen.Add(Objects(X).ObjectName)
         Next
         If ObjectsToOpen.Count > 1 Then
             OpenObjectButton.Text += "s"
@@ -609,9 +611,9 @@
         For Each X As Byte In SlotAppliesTo
             Dim CanAdd As Boolean = True
             For Each Y As String In ObjectsToOpen
-                If Y = Instances(X).ObjectName Then CanAdd = False
+                If Y = Objects(X).ObjectName Then CanAdd = False
             Next
-            If CanAdd Then ObjectsToOpen.Add(Instances(X).ObjectName)
+            If CanAdd Then ObjectsToOpen.Add(Objects(X).ObjectName)
         Next
         For Each X As String In ObjectsToOpen
             Dim DoShow As Boolean = True
@@ -631,12 +633,12 @@
 
     Private Sub SetCoOrdinatesButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SetCoOrdinatesButton.Click
         Dim ID As Int16 = SlotAppliesTo(0)
-        SetCoOrdinates.X = Instances(ID).X
-        SetCoOrdinates.Y = Instances(ID).Y
+        SetCoOrdinates.X = Objects(ID).X
+        SetCoOrdinates.Y = Objects(ID).Y
         SetCoOrdinates.ShowDialog()
         'If Not SetCoOrdinates.ShowDialog() = Windows.Forms.DialogResult.OK Then Exit Sub
-        Instances(ID).X = SetCoOrdinates.X
-        Instances(ID).Y = SetCoOrdinates.Y
-        RefreshRoom(Instances(ID).Screen)
+        Objects(ID).X = SetCoOrdinates.X
+        Objects(ID).Y = SetCoOrdinates.Y
+        RefreshRoom(Objects(ID).Screen)
     End Sub
 End Class

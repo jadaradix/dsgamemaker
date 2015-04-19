@@ -61,7 +61,7 @@ Public Class Script
         'End With
         MainToolStrip.Renderer = New clsToolstripRenderer
         MainTextBox.AcceptsTab = True
-        MainTextBox.Caret.HighlightCurrentLine = (Convert.ToByte(GetOption("HIGHLIGHT_CURRENT_LINE")) = 1)
+        MainTextBox.Caret.HighlightCurrentLine = (Convert.ToByte(GetSetting("HIGHLIGHT_CURRENT_LINE")) = 1)
         'MsgError("""" + ScriptName + """")
         ScriptContent = PathToString(SessionPath + "Scripts\" + ScriptName + ".dbas")
         MainTextBox.Text = ScriptContent

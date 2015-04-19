@@ -4,10 +4,46 @@ Imports Microsoft.Win32
 
 Public Class MainForm
 
+    Dim ShownPro As Boolean = False
     Dim NeedsDKP As Boolean = False
     Dim CacheHasTinternet As Boolean = True
 
+    Function ScriptArgumentStringToType(ByVal Type As String) As Byte
+        If Type = "Integer" Then Return 0
+        If Type = "Boolean" Then Return 1
+        If Type = "Float" Then Return 2
+        If Type = "Signed Byte" Then Return 3
+        If Type = "Unsigned Byte" Then Return 4
+        If Type = "String" Then Return 5
+        Return 0
+    End Function
+
+    Sub PatchSetting(ByVal SettingName As String, ByVal SettingValue As String)
+        Dim DoTheAdd As Boolean = True
+        Dim FS As String = String.Empty
+        For Each SettingLine As String In File.ReadAllLines(SettingsPath)
+            'If SettingLine.Length = 0 Then Continue For
+            If SettingLine.StartsWith(SettingName + " ") Then DoTheAdd = False
+            FS += SettingLine + vbcrlf
+        Next
+        If DoTheAdd Then
+            FS += SettingName + " " + SettingValue
+            File.WriteAllText(SettingsPath, FS)
+        End If
+    End Sub
+
     Private Sub MainForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        'If Not System.IO.Directory.Exists(System.IO.Path.GetTempPath + "DSGameMaker") Then
+        'My.Computer.FileSystem.CreateDirectory(System.IO.Path.GetTempPath + "DSGameMaker")
+        'End If
+
+        'Load plugins
+        'For Each X As String In File.ReadAllLines(AppPath + "pluginList.dat")
+        'PluginsToolStripMenuItem.DropDownItems.Add(X, Nothing, New EventHandler(AddressOf RunPlugin))
+        'PluginsToolStripMenuItem.DropDownItems.Add(X)
+        'PluginsToolStripMenuItem.DropDownItems.Item(PluginsToolStripMenuItem.DropDownItems.Count - 1)
+        'Next
+
         'Initialize Apply Finders
         With ApplyFinders
             .Add("[X]")
@@ -29,35 +65,36 @@ Public Class MainForm
             .Add("Unsigned Byte")
             .Add("String")
         End With
-        'Path Works
         AppPath = Application.StartupPath
         If AppPath.EndsWith("\bin\Debug") Then AppPath = My.Computer.FileSystem.SpecialDirectories.ProgramFiles + "\" + Application.ProductName
         AppPath += "\"
-        DevPath = AppPath + "Dev\"
+        'Set Up Action icons
+        ActionBG = If(File.Exists(AppPath + "ActionBG.png"), PathToImage(AppPath + "ActionBG.png"), My.Resources.ActionBG)
+        ActionConditionalBG = If(File.Exists(AppPath + "ActionConditionalBG.png"), PathToImage(AppPath + "ActionConditionalBG.png"), My.Resources.ActionConditionalBG)
         CDrive = AppPath.Substring(0, 3)
         For Each ctl As Control In Me.Controls
             If TypeOf ctl Is MdiClient Then ctl.BackgroundImage = My.Resources.MDIBG
         Next ctl
         Dim System32Path As String = Environment.GetFolderPath(Environment.SpecialFolder.System)
-        'CacheHasTinternet = HasInternetConnection("http://invisionsoft.co.uk")
+        CacheHasTinternet = HasInternetConnection("http://invisionsoft.co.uk")
         If Not File.Exists(System32Path + "\SciLexer.dll") Then
-            File.Copy(DevPath + "SciLexer.dll", System32Path + "\SciLexer.dll")
+            File.Copy(AppPath + "SciLexer.dll", System32Path + "\SciLexer.dll")
         End If
         If Not File.Exists(System32Path + "\ScintillaNet.dll") Then
-            File.Copy(DevPath + "ScintillaNet.dll", System32Path + "\ScintillaNet.dll")
+            File.Copy(AppPath + "ScintillaNet.dll", System32Path + "\ScintillaNet.dll")
         End If
         'Also into Windows... nasty, rare suggested fix
         Dim WindowsPath As String = System32Path.Substring(0, System32Path.LastIndexOf("\"))
         If Not File.Exists(WindowsPath + "\SciLexer.dll") Then
-            File.Copy(DevPath + "SciLexer.dll", WindowsPath + "\SciLexer.dll")
+            File.Copy(AppPath + "SciLexer.dll", WindowsPath + "\SciLexer.dll")
         End If
         If Not File.Exists(WindowsPath + "\ScintillaNet.dll") Then
-            File.Copy(DevPath + "ScintillaNet.dll", WindowsPath + "\ScintillaNet.dll")
+            File.Copy(AppPath + "ScintillaNet.dll", WindowsPath + "\ScintillaNet.dll")
         End If
-        If Not File.Exists(DevPath + "devkitProUpdater-1.5.0.exe") Then
+        If Not File.Exists(AppPath + "devkitProUpdater-1.5.0.exe") Then
             If CacheHasTinternet Then
                 Dim ReqURL As String = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/murphy.php")
-                WC.DownloadFile(ReqURL, DevPath + "devkitProUpdater-1.5.0.exe")
+                WC.DownloadFile(ReqURL, AppPath + "devkitProUpdater-1.5.0.exe")
             End If
         End If
         Try
@@ -66,8 +103,8 @@ Public Class MainForm
             AddAction("DSGMFile", "open", "Open")
             SetExtensionCommandLine("open", "DSGMFile", """" + AppPath + Application.ProductName + ".exe"" ""%1""")
             SetDefaultIcon("DSGMFile", """" + AppPath + "Icon.ico""")
-        Catch WhatsBad As Exception
-            MsgWarn("You should run " + Application.ProductName + " as an Administrator." + vbCrLf + vbCrLf + "(" + WhatsBad.Message + ")")
+        Catch ex As Exception
+            MsgWarn("You should run " + Application.ProductName + " as an Administrator." + vbCrLf + vbCrLf + "(" + ex.Message + ")")
         End Try
         Dim VitalFiles As New Collection
         With VitalFiles
@@ -104,102 +141,86 @@ Public Class MainForm
         ResourceTypes(6) = "Scripts"
         MainImageList.Images.Add("ScriptIcon", My.Resources.ScriptIcon)
         'Imagelist Setup
+        'MainImageList.Images.Add("ScriptIcon", My.Resources.ScriptIcon)
         MainImageList.Images.Add("FolderIcon", My.Resources.FolderIcon)
         'Resources Setup
         For Resource As Byte = 0 To ResourceTypes.Length - 1
             ResourcesTreeView.Nodes.Add(String.Empty, ResourceTypes(Resource), 7, 7)
         Next
         'Settings
-        OptionPath = AppPath + "Settings.dat"
-        If Not File.Exists(OptionPath) Then
-            IO.File.Copy(AppPath + "SettingsRestore.dat", OptionPath)
+        If Not File.Exists(AppPath + "data.dat") Then
+            IO.File.Copy(AppPath + "restore.dat", AppPath + "data.dat")
         End If
-        PatchOption("USE_EXTERNAL_SCRIPT_EDITOR", "0")
-        PatchOption("RIGHT_CLICK", "1")
-        PatchOption("HIDE_OLD_ACTIONS", "1")
-        PatchOption("SHRINK_ACTIONS_LIST", "0")
-        LoadOptions()
+        SettingsPath = AppPath + "data.dat"
+        PatchSetting("USE_EXTERNAL_SCRIPT_EDITOR", "0")
+        PatchSetting("RIGHT_CLICK", "1")
+        PatchSetting("HIDE_OLD_ACTIONS", "1")
+        PatchSetting("SHRINK_ACTIONS_LIST", "0")
+        LoadSettings()
         'Fonts Setup
         For Each FontFile As String In Directory.GetFiles(AppPath + "Fonts")
             Dim FontName As String = FontFile.Substring(FontFile.LastIndexOf("\") + 1)
             FontName = FontName.Substring(0, FontName.IndexOf("."))
             FontNames.Add(FontName)
         Next
+        'PiracyWorks()
+        If CacheHasTinternet Then
+            Dim Result As String = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/version.php")
+            UpdateVersion = Convert.ToInt16(Result)
+            Result = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/forcedupdate.php?id=" + IDVersion.ToString)
+            If Result.Length > 0 Then
+                MsgInfo("You are using a version of " + Application.ProductName + " that is widely pirated and therefore you must upgrade to the latest version as soon as possible." + vbCrLf + vbCrLf + "You will now be directed to the download page.")
+                URL("http://dsgamemaker.com/?dlchange")
+                End
+            End If
+        End If
+        'IsPro = ReallyPro()
+        'EquateProButton()
         Text = TitleDataWorks()
     End Sub
 
-    Private Sub MainForm_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
-        Dim BlankNew As Boolean = True
-        If UpdateVersion > IDVersion Then
-            DUpdate.ShowDialog()
-        End If
-        If Not Directory.Exists(CDrive + "devkitPro") Then
-            MsgInfo("Thank you for installing " + Application.ProductName + "." + vbcrlf + vbcrlf + "'devkitPro Updater' will now launch so that you may install devkitARM (to compile your games).")
-            RundevkitProUpdater()
-        End If
-        Dim SkipAuto As Boolean = False
-        Dim Args As New List(Of String)
-        For Each X As String In My.Application.CommandLineArgs
-            If X = "/skipauto" Then SkipAuto = True : Continue For
-            Args.Add(X)
-        Next
-        If Args.Count > 1 Then
-            MsgWarn("You can only open one Project with " + Application.ProductName + " at once.")
-        ElseIf Args.Count = 1 Then
-            If File.Exists(Args(0)) Then OpenProject(Args(0))
-            BlankNew = False
-        Else
-            If Not SkipAuto Then
-                If Convert.ToByte(GetOption("OPEN_LAST_PROJECT_STARTUP")) = 1 Then
-                    LoadLastProject(True)
-                    BlankNew = False
-                End If
-            End If
-        End If
-        If BlankNew Then
+    'Public Sub EquateProButton()
+    '    If IsPro Then
+    '        UpgradeToProButtonTool.Text = "Using Pro!"
+    '        UpgradeToProButton.Text = "Pro Edition"
+    '    Else
+    '        UpgradeToProButtonTool.Text = "Upgrade to Pro"
+    '        UpgradeToProButton.Text = "Upgrade to Pro"
+    '    End If
+    'End Sub
 
-            Dim NewName As String = "NewProject"
+    Sub GenerateShite(ByVal DisplayResult As String)
+        Dim DW As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_WIDTH"))
+        Dim DH As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_HEIGHT"))
 
-            BeingUsed = True
-            Dim SessionName As String = String.Empty
-            For Looper As Byte = 0 To 10
-                SessionName = NewName + MakeSessionName()
-                If Not IO.Directory.Exists(AppPath + "ProjectTemp\" + SessionName) Then Exit For
-            Next
-            FormSession(SessionName)
-            FormSessionFS()
-            IsNewProject = True
-            ProjectPath = AppPath + "NewProjects\" + SessionName + ".dsgm"
-            Text = TitleDataWorks()
 
-            Dim DW As UInt16 = Convert.ToUInt16(GetOption("DEFAULT_ROOM_WIDTH"))
-            Dim DH As UInt16 = Convert.ToUInt16(GetOption("DEFAULT_ROOM_HEIGHT"))
-            If DW < 256 Then DW = 256
-            If DW > 4096 Then DW = 4096
-            If DW < 192 Then DW = 192
-            If DH > 4096 Then DH = 4096
-            CurrentXDS += "BOOTROOM Room_1" + vbCrLf
-            CurrentXDS += "SCORE 0" + vbCrLf
-            CurrentXDS += "LIVES 3" + vbCrLf
-            CurrentXDS += "HEALTH 100" + vbCrLf
-            CurrentXDS += "PROJECTNAME " + NewName + vbCrLf
-            CurrentXDS += "TEXT2 " + vbCrLf
-            CurrentXDS += "TEXT3 " + vbCrLf
-            CurrentXDS += "FAT_CALL 0" + vbCrLf
-            CurrentXDS += "NITROFS_CALL 1" + vbCrLf
-            CurrentXDS += "MIDPOINT_COLLISIONS 0" + vbCrLf
-            CurrentXDS += "INCLUDE_WIFI_LIB 0" + vbCrLf
 
-            RedoAllGraphics = True
-            RedoSprites = True
-            BGsToRedo.Clear()
-            ToggleShowWindow()
-            AddObject("Object_1")
-            AddRoom("Room_1")
-            ToggleShowWindow()
-            InternalSave()
 
-        End If
+        ' FIX:
+        If DW < 256 Then DW = 256
+        If DW > 4096 Then DW = 4096
+        If DW < 192 Then DW = 192
+        If DH > 4096 Then DH = 4096
+
+
+
+
+        CurrentXDS = "ROOM Room_1," + DW.ToString + "," + DH.ToString + ",1,," + DW.ToString + "," + DH.ToString + ",1," + vbCrLf
+        CurrentXDS += "BOOTROOM Room_1" + vbCrLf
+        CurrentXDS += "SCORE 0" + vbCrLf
+        CurrentXDS += "LIVES 3" + vbCrLf
+        CurrentXDS += "HEALTH 100" + vbCrLf
+        CurrentXDS += "PROJECTNAME " + DisplayResult + vbCrLf
+        CurrentXDS += "TEXT2 " + vbCrLf
+        CurrentXDS += "TEXT3 " + vbCrLf
+        CurrentXDS += "FAT_CALL 0" + vbCrLf
+        CurrentXDS += "NITROFS_CALL 1" + vbCrLf
+        CurrentXDS += "MIDPOINT_COLLISIONS 0" + vbCrLf
+        CurrentXDS += "INCLUDE_WIFI_LIB 0" + vbCrLf
+    End Sub
+
+    Private Sub NewProject_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewProjectButton.Click, NewProjectButtonTool.Click
+        Shell(AppPath + ProductName + ".exe /skipauto")
     End Sub
 
     Private Sub MainForm_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
@@ -209,7 +230,7 @@ Public Class MainForm
             If Not IsNewProject Then
                 TheText = "'" + CacheProjectName + "'"
             End If
-            Dim Result As Integer = MessageBox.Show(TheText + " may have unsaved changes." + vbcrlf + vbcrlf + "Do you want to save just in case?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            Dim Result As Integer = MessageBox.Show(TheText + " may have unsaved changes." + vbCrLf + vbCrLf + "Do you want to save just in case?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
             If Result = MsgBoxResult.Yes Then : SaveButton_Click(New Object, New System.EventArgs) : WillExit = True
             ElseIf Result = MsgBoxResult.No Then : e.Cancel = False : WillExit = True
             ElseIf Result = MsgBoxResult.Cancel Then : e.Cancel = True
@@ -224,16 +245,12 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub NewProject_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewProjectButton.Click, NewProjectButtonTool.Click
-        Shell(AppPath + ProductName + ".exe /skipauto")
-    End Sub
-
     Public Sub InternalSave()
         CleanInternalXDS()
         SaveButton.Enabled = False
         SaveButtonTool.Enabled = False
         IO.File.WriteAllText(SessionPath + "XDS.xds", CurrentXDS)
-        Dim MyBAT As String = "zip.exe a save.zip Sprites Backgrounds Sounds Scripts IncludeFiles NitroFSFiles XDS.xds" + vbcrlf + "exit"
+        Dim MyBAT As String = "zip.exe a save.zip Sprites Backgrounds Sounds Scripts IncludeFiles NitroFSFiles XDS.xds" + vbCrLf + "exit"
         RunBatchString(MyBAT, SessionPath, True)
         'File.Delete(ProjectPath)
         File.Copy(SessionPath + "save.zip", ProjectPath, True)
@@ -255,38 +272,92 @@ Public Class MainForm
 
     Private Sub AddSpriteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddSpriteButton.Click, AddSpriteButtonTool.Click
         Dim NewName As String = MakeResourceName("Sprite", "SPRITE")
-        AddSprite(NewName)
+        File.Copy(AppPath + "DefaultResources\Sprite.png", SessionPath + "Sprites\0_" + NewName + ".png")
+        XDSAddLine("SPRITE " + NewName + ",32,32")
+        AddResourceNode(ResourceIDs.Sprite, NewName, "SpriteNode", True)
+        For Each X As Form In MdiChildren
+            If Not IsObject(X.Text) Then Continue For
+            DirectCast(X, DObject).AddSprite(NewName)
+        Next
+        RedoSprites = True
     End Sub
 
     Private Sub AddObjectButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddObjectButton.Click, AddObjectButtonTool.Click
+        Dim ObjectCount As Byte = GetXDSFilter("OBJECT ").Length
+        If Not IsPro And ObjectCount >= 10 Then ProPlease("use more than 10 Objects") : Exit Sub
         Dim NewName As String = MakeResourceName("Object", "OBJECT")
-        AddObject(NewName)
+        XDSAddLine("OBJECT " + NewName + ",None,0")
+        AddResourceNode(ResourceIDs.DObject, NewName, "ObjectNode", True)
+        For Each X As Form In MdiChildren
+            If Not X.Name = "Room" Then Continue For
+            DirectCast(X, Room).AddObjectToDropper(NewName)
+        Next
     End Sub
 
     Private Sub AddBackgroundButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddBackgroundButton.Click, AddBackgroundButtonTool.Click
         Dim NewName As String = MakeResourceName("Background", "BACKGROUND")
-        AddBackground(NewName)
+        File.Copy(AppPath + "DefaultResources\Background.png", SessionPath + "Backgrounds\" + NewName + ".png")
+        XDSAddLine("BACKGROUND " + NewName)
+        AddResourceNode(ResourceIDs.Background, NewName, "BackgroundNode", True)
+        For Each X As Form In MdiChildren
+            If Not IsRoom(X.Text) Then Continue For
+            For Each Y As Control In X.Controls
+                If Not Y.Name = "ObjectsTabControl" Then Continue For
+                For Each Z As Control In DirectCast(Y, TabControl).TabPages(0).Controls
+                    If Z.Name = "TopScreenGroupBox" Or Z.Name = "BottomScreenGroupBox" Then
+                        For Each I As Control In Z.Controls
+                            If I.Name.EndsWith("BGDropper") Then
+                                DirectCast(I, ComboBox).Items.Add(NewName)
+                            End If
+                        Next
+                    End If
+                Next
+            Next
+        Next
+        BGsToRedo.Add(NewName)
     End Sub
 
     Private Sub AddSoundButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddSoundButton.Click, AddSoundButtonTool.Click
         Dim NewName As String = MakeResourceName("Sound", "SOUND")
-        AddSound(NewName)
+        SoundType.ShowDialog()
+        Dim SB As Boolean = SoundType.IsSoundEffect
+        File.Copy(AppPath + "DefaultResources\Sound." + If(SB, "wav", "mp3"), SessionPath + "Sounds\" + NewName + "." + If(SB, "wav", "mp3"))
+        XDSAddLine("SOUND " + NewName + "," + If(SB, "0", "1"))
+        AddResourceNode(ResourceIDs.Sound, NewName, "SoundNode", True)
+        SoundsToRedo.Add(NewName)
     End Sub
 
     Private Sub AddRoomButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddRoomButton.Click, AddRoomButtonTool.Click
+        Dim RoomCount As Byte = GetXDSFilter("ROOM ").Length
+        If Not IsPro And RoomCount >= 5 Then ProPlease("use more than 5 Rooms") : Exit Sub
         Dim NewName As String = MakeResourceName("Room", "ROOM")
-        AddRoom(NewName)
+        Dim DW As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_WIDTH"))
+        Dim DH As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_HEIGHT"))
+        If DW < 256 Then DW = 256
+        If DW > 4096 Then DW = 4096
+        If DW < 192 Then DW = 192
+        If DH > 4096 Then DH = 4096
+        XDSAddLine("ROOM " + NewName + "," + DW.ToString + "," + DH.ToString + ",1,," + DW.ToString + "," + DH.ToString + ",1,")
+        AddResourceNode(ResourceIDs.Room, NewName, "RoomNode", True)
     End Sub
 
-    Private Sub AddScriptButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddScriptButton.click, AddScriptButtonTool.Click
+    Private Sub AddPathButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddPathButton.Click, AddPathButtonTool.Click
+        Dim NewName As String = MakeResourceName("Path", "PATH")
+        XDSAddLine("PATH " + NewName)
+        AddResourceNode(ResourceIDs.Path, NewName, "PathNode", True)
+    End Sub
+
+    Private Sub AddScriptButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddScriptButton.Click, AddScriptButtonTool.Click
         Dim NewName As String = MakeResourceName("Script", "SCRIPT")
-        AddScript(NewName, True)
+        File.CreateText(SessionPath + "Scripts\" + NewName + ".dbas").Dispose()
+        XDSAddLine("SCRIPT " + NewName + ",1")
+        AddResourceNode(ResourceIDs.Script, NewName, "ScriptNode", True)
     End Sub
 
     Public Function OpenWarn() As Boolean
         Dim TheText As String = "'" + CacheProjectName + "'"
         If IsNewProject Then TheText = "your new Project"
-        Dim Answer As Byte = MessageBox.Show("Are you sure you want to open another Project?" + vbcrlf + vbcrlf + "You will lose any changes you have made to " + TheText + ".", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+        Dim Answer As Byte = MessageBox.Show("Are you sure you want to open another Project?" + vbCrLf + vbCrLf + "You will lose any changes you have made to " + TheText + ".", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
         If Answer = MsgBoxResult.Yes Then Return True Else Return False
     End Function
 
@@ -299,7 +370,7 @@ Public Class MainForm
 
     Sub LoadLastProject(ByVal Automatic As Boolean)
         'IsNewProject = False
-        Dim LastPath As String = GetOption("LAST_PROJECT")
+        Dim LastPath As String = GetSetting("LAST_PROJECT")
         If Automatic Then
             If File.Exists(LastPath) Then
                 OpenProject(LastPath)
@@ -310,12 +381,7 @@ Public Class MainForm
             If LastPath = ProjectPath Then
                 'Same Project - Reload job
                 Dim Result As Byte = MessageBox.Show("Do you want to reload the current Project?", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                If Result = MsgBoxResult.Yes Then
-                    CleanFresh()
-                    OpenProject(ProjectPath)
-                    Exit Sub
-                End If
-
+                If Result = MsgBoxResult.Yes Then CleanFresh(False) : OpenProject(ProjectPath) : Exit Sub
             Else
                 'Loading a different project
                 If Not OpenWarn() Then Exit Sub
@@ -355,7 +421,7 @@ Public Class MainForm
         SaveButton.Enabled = False
         SaveButtonTool.Enabled = False
         IO.File.WriteAllText(SessionPath + "XDS.xds", CurrentXDS)
-        Dim MyBAT As String = "zip.exe a save.zip Sprites Backgrounds Sounds Scripts IncludeFiles NitroFSFiles XDS.xds" + vbcrlf + "exit"
+        Dim MyBAT As String = "zip.exe a save.zip Sprites Backgrounds Sounds Scripts IncludeFiles NitroFSFiles XDS.xds" + vbCrLf + "exit"
         RunBatchString(MyBAT, SessionPath, True)
         'File.Delete(ProjectPath)
         ProjectPath = Result
@@ -388,15 +454,13 @@ Public Class MainForm
 
     Private Sub TestGameButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TestGameButton.Click, TestGameButtonTool.Click
         If Not CompileWrapper() Then Exit Sub
-        With Compile
-            .HasDoneIt = False
-            .ShowDialog()
-            If .Success Then
-                NOGBAShizzle()
-            Else
-                CompileFail()
-            End If
-        End With
+        Compile.HasDoneIt = False
+        Compile.ShowDialog()
+        If Compile.Success Then
+            NOGBAShizzle()
+        Else
+            CompileFail()
+        End If
     End Sub
 
     Private Sub CompileGameButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CompileGameButton.Click, CompileGameButtonTool.Click
@@ -448,7 +512,7 @@ Public Class MainForm
 
     Private Sub CleanUpButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CleanUpButton.Click
         'If ProjectPath.Length > 0 Then MsgError("You have a project loaded, so temporary data may not be cleared.") : Exit Sub
-        MsgWarn("This will clean up all unused data created by the sessions system." + vbcrlf + vbcrlf + "Ensure you do not have other instances of the application open.")
+        MsgWarn("This will clean up all unused data created by the sessions system." + vbCrLf + vbCrLf + "Ensure you do not have other instances of the application open.")
         ActuallyCleanUp()
         MsgInfo("The process completed successfully.")
     End Sub
@@ -504,19 +568,136 @@ Public Class MainForm
         AboutDSGM.ShowDialog()
     End Sub
 
+    Private Sub MainForm_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
+        Dim BlankNew As Boolean = True
+        If UpdateVersion > IDVersion Then
+            DUpdate.ShowDialog()
+        End If
+        If Not Directory.Exists(CDrive + "devkitPro") Then
+            MsgInfo("Thank you for installing " + Application.ProductName + "." + vbCrLf + vbCrLf + "the toolchain will now be installed (to compile your games).")
+            RundevkitProUpdater()
+        End If
+        If Not IsPro Then
+            If HasInternetConnection("http://dsgamemaker.com") Then
+                If Not ShownPro Then Pro.ShowDialog() : ShownPro = True
+            End If
+        End If
+        Dim SkipAuto As Boolean = False
+        Dim Args As New List(Of String)
+        For Each X As String In My.Application.CommandLineArgs
+            If X = "/skipauto" Then SkipAuto = True : Continue For
+            Args.Add(X)
+        Next
+        If Args.Count > 1 Then
+            MsgWarn("You can only open one Project with " + Application.ProductName + " at once.")
+        ElseIf Args.Count = 1 Then
+            If File.Exists(Args(0)) Then OpenProject(Args(0))
+            BlankNew = False
+        Else
+            If Not SkipAuto Then
+                If Convert.ToByte(GetSetting("OPEN_LAST_PROJECT_STARTUP")) = 1 Then
+                    LoadLastProject(True)
+                    BlankNew = False
+                End If
+            End If
+        End If
+        If BlankNew Then
+            BeingUsed = True
+            Dim SessionName As String = String.Empty
+            For Looper As Byte = 0 To 10
+                SessionName = "NewProject" + MakeSessionName()
+                If Not IO.Directory.Exists(AppPath + "ProjectTemp\" + SessionName) Then Exit For
+            Next
+            FormSession(SessionName)
+            FormSessionFS()
+            IsNewProject = True
+            ProjectPath = AppPath + "NewProjects\" + SessionName + ".dsgm"
+            Me.Text = TitleDataWorks()
+            GenerateShite("<New Project>")
+            RedoAllGraphics = True
+            RedoSprites = True
+            BGsToRedo.Clear()
+            AddResourceNode(ResourceIDs.Room, "Room_1", "RoomNode", False)
+            InternalSave()
+            If CacheHasTinternet And GetSetting("SHOW_NEWS") = "1" Then
+                Newsline.Location = New Point(24, 24)
+                ShowInternalForm(Newsline)
+            End If
+        End If
+    End Sub
+
+    Private Sub UpgradeToProButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Pro.ShowDialog()
+    End Sub
+
     Private Sub DeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeleteButton.Click
         DeleteResource(ActiveMdiChild.Text, ActiveMdiChild.Name)
+    End Sub
+
+    Private Sub CompilesToNitroFSButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CompilesToNitroFSButton.Click
+        RedoAllGraphics = True
+        RedoSprites = True
+        BGsToRedo.Clear()
+        Dim ResourceName As String = ResourcesTreeView.SelectedNode.Text
+        If File.Exists(CompilePath + "nitrofiles\" + ResourceName + ".c") Then
+            File.Delete(CompilePath + "nitrofiles\" + ResourceName + ".c")
+        End If
+        If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Map.bin") Then
+            File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Map.bin")
+        End If
+        If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Tiles.bin") Then
+            File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Tiles.bin")
+        End If
+        If File.Exists(CompilePath + "nitrofiles\" + ResourceName + "_Pal.bin") Then
+            File.Delete(CompilePath + "nitrofiles\" + ResourceName + "_Pal.bin")
+        End If
+        Dim OldLine As String = GetXDSLine(ResourcesTreeView.SelectedNode.Parent.Text.ToUpper.Substring(0, ResourcesTreeView.SelectedNode.Parent.Text.Length - 1) + " " + ResourcesTreeView.SelectedNode.Text)
+        Dim NewLine As String = GetXDSLine(ResourcesTreeView.SelectedNode.Parent.Text.ToUpper.Substring(0, ResourcesTreeView.SelectedNode.Parent.Text.Length - 1) + " " + ResourcesTreeView.SelectedNode.Text)
+        If ResourcesTreeView.SelectedNode.Parent.Text = "Sprites" Then
+            If iGet(NewLine, 3, ",") = "NoNitro" Then
+                NewLine = NewLine.Replace(",NoNitro", ",Nitro")
+            Else
+                NewLine = NewLine.Replace(",Nitro", ",NoNitro")
+            End If
+            If iGet(NewLine, 3, ",") = String.Empty Then
+                NewLine += ",Nitro"
+            End If
+        End If
+        If ResourcesTreeView.SelectedNode.Parent.Text = "Backgrounds" Then
+            If iGet(NewLine, 1, ",") = "NoNitro" Then
+                NewLine = NewLine.Replace(",NoNitro", ",Nitro")
+            Else
+                NewLine = NewLine.Replace(",Nitro", ",NoNitro")
+            End If
+            If iGet(NewLine, 1, ",") = String.Empty Then
+                NewLine += ",Nitro"
+            End If
+        End If
+        XDSChangeLine(OldLine, NewLine)
+        'MsgBox(ResourcesTreeView.SelectedNode.Parent.Text.ToUpper.Substring(0, ResourcesTreeView.SelectedNode.Parent.Text.Length - 1) + " " + ResourcesTreeView.SelectedNode.Text)
+    End Sub
+
+    Private Sub ManualButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HelpContentsButton.Click
+        HelpViewer.ShowDialog()
     End Sub
 
     Private Sub TutorialsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OnlineTutorialsButton.Click
         URL(Domain + "dsgmforum/viewforum.php?f=6")
     End Sub
 
+    Private Sub EnterSerialCodeButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        EnterSerial.ShowDialog()
+    End Sub
+
     Private Sub GlobalStructuresButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GlobalStructuresButton.Click, GlobalStructuresButtonTool.Click
         GlobalStructures.ShowDialog()
     End Sub
 
-    Private Sub ReinstallToolchainAndPAlibButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReinstallToolchainAndPAlibButton.Click
+    Private Sub NewsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewsButton.Click
+        ShowInternalForm(Newsline)
+    End Sub
+
+    Private Sub RunDevkitProUpdaterButton(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReinstallToolchainButton.Click
         RundevkitProUpdater()
     End Sub
 
@@ -550,12 +731,16 @@ Public Class MainForm
             DeleteResourceRightClickButton.Enabled = True
             OpenResourceRightClickButton.Enabled = True
             DuplicateResourceRightClickButton.Enabled = True
+            CompilesToNitroFSButton.Enabled = True
+            CompilesToNitroFSButton.Image = DS_Game_Maker.My.Resources.Resources.DeleteIcon
             If ToWorkFrom.Text = String.Empty Then Exit Try
         Catch ex As Exception
             ToWorkFrom = ResourcesTreeView.SelectedNode
             DeleteResourceRightClickButton.Enabled = False
             OpenResourceRightClickButton.Enabled = False
             DuplicateResourceRightClickButton.Enabled = False
+            CompilesToNitroFSButton.Enabled = False
+            CompilesToNitroFSButton.Image = DS_Game_Maker.My.Resources.Resources.DeleteIcon
         End Try
         With AddResourceRightClickButton
             .Image = My.Resources.PlusIcon
@@ -564,10 +749,32 @@ Public Class MainForm
                 Case "Background" : .Image = AddBackgroundButton.Image
                 Case "Script" : .Image = AddScriptButton.Image
                 Case "Room" : .Image = AddRoomButton.Image
+                Case "Path" : .Image = AddPathButton.Image
                 Case "Object" : .Image = AddObjectButton.Image
                 Case "Sound" : .Image = AddSoundButton.Image
             End Select
             .Text = "Add " + ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1)
+        End With
+        With CompilesToNitroFSButton
+            If Not ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1) = "Sprite" And Not ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1) = "Background" Then
+                .Enabled = False
+                If Not ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1) = "Sound" Then
+                    .Image = DS_Game_Maker.My.Resources.Resources.DeleteIcon
+                Else
+                    .Image = DS_Game_Maker.My.Resources.Resources.AcceptIcon
+                End If
+            Else
+                If ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1) = "Sprite" Then
+                    If iGet(GetXDSLine("SPRITE " + ResourcesTreeView.SelectedNode.Text), 3, ",") = "Nitro" Then
+                        .Image = DS_Game_Maker.My.Resources.Resources.AcceptIcon
+                    End If
+                End If
+                If ToWorkFrom.Text.Substring(0, ToWorkFrom.Text.Length - 1) = "Background" Then
+                    If iGet(GetXDSLine("BACKGROUND " + ResourcesTreeView.SelectedNode.Text), 1, ",") = "Nitro" Then
+                        .Image = DS_Game_Maker.My.Resources.Resources.AcceptIcon
+                    End If
+                End If
+            End If
         End With
     End Sub
 
@@ -594,6 +801,7 @@ Public Class MainForm
             Case "Object" : AddObjectButton_Click(New Object, New System.EventArgs)
             Case "Sound" : AddSoundButton_Click(New Object, New System.EventArgs)
             Case "Room" : AddRoomButton_Click(New Object, New System.EventArgs)
+            Case "Path" : AddPathButton_Click(New Object, New System.EventArgs)
             Case "Script" : AddScriptButton_Click(New Object, New System.EventArgs)
         End Select
     End Sub
@@ -629,30 +837,67 @@ Public Class MainForm
         Select Case ActiveMdiChild.Name
             Case "Sprite"
                 ResT = ResourceIDs.Sprite
-            Case "DObject"
-                ResT = ResourceIDs.DObject
             Case "Background"
                 ResT = ResourceIDs.Background
-            Case "Sound"
-                ResT = ResourceIDs.Sound
+            Case "DObject"
+                ResT = ResourceIDs.DObject
             Case "Room"
                 ResT = ResourceIDs.Room
+            Case "Path"
+                ResT = ResourceIDs.Path
             Case "Script"
                 ResT = ResourceIDs.Script
+            Case "Sound"
+                ResT = ResourceIDs.Sound
         End Select
         CopyResource(TheName, GenerateDuplicateResourceName(TheName), ResT)
     End Sub
 
-    Private Sub WriteOriginalMakefileButton_Click(sender As System.Object, e As System.EventArgs) Handles WriteOriginalMakefileButton.Click
-        ReplaceMakefile("Original_Makefile")
-    End Sub
+    'Private Sub InstallPluginButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles InstallPluginButton.Click, InstallPluginToolStripMenuItem.Click
+    ' Dim FilePath As String = OpenFile(String.Empty, "DS Game Maker Plugins|*.dsgmp")
+    '     If FilePath.Length = 0 Then Exit Sub
+    'Dim P As String = AppPath + "PluginInstall\"
+    '   Directory.CreateDirectory(P)
+    '   File.Copy(FilePath, P + "Plugin.zip")
+    'Dim MyBAT As String = "zip.exe x Plugin.zip -y" + vbCrLf + "exit"
+    '    RunBatchString(MyBAT, P, True)
+    'Dim PName As String = String.Empty
+    'Dim PAuthor As String = String.Empty
+    'Dim PLink As String = String.Empty
+    'Dim Files As New List(Of String)
+    'Dim MakeLines As New List(Of String)
 
-    Private Sub Write512MakefileButton_Click(sender As System.Object, e As System.EventArgs) Handles Write512MakefileButton.Click
-        ReplaceMakefile("512_Makefile")
-    End Sub
+    '   For Each X As String In File.ReadAllLines(P + "data.txt")
+    '       If X.StartsWith("NAME ") Then PName = X.Substring(5)
+    '       If X.StartsWith("AUTHOR ") Then PAuthor = X.Substring(7)
+    '       If X.StartsWith("LINK ") Then PLink = X.Substring(5)
+    '   Next
 
-    Private Sub WriteCurrentMakefileButton_Click(sender As System.Object, e As System.EventArgs) Handles WriteCurrentMakefileButton.Click
-        ReplaceMakefile("Current_Makefile")
-    End Sub
+    '        File.Copy(P + "Executable.exe", AppPath + "Plugins\" + PName + ".exe")
+    '       File.WriteAllText(AppPath + "pluginList.dat", File.ReadAllText(AppPath + "pluginList.dat") + PName + vbCrLf)
+    '      My.Computer.FileSystem.DeleteDirectory(P, FileIO.DeleteDirectoryOption.DeleteAllContents)
+    ' End Sub
+
+    'Private Sub RunPlugin(ByVal sender As Object, ByVal e As System.EventArgs)
+
+    'DirectCast(sender, ToolStripMenuItem).Name
+
+
+    ' Dim Plugins As Integer
+    'Dim SelectedPlugin As Integer
+    '   For Each X As String In File.ReadAllLines(AppPath + "pluginList.dat")
+    '      Plugins += 1
+    ' Next
+    'If PluginsToolStripMenuItem.DropDownItems.Item(3).Pressed Then
+    '   MsgBox("fdm")
+    'End If
+    'MsgBox(PluginsToolStripMenuItem.DropDownItems.Item(3).Text)
+    'For LoopVar As Integer = 2 To Plugins + 2
+    '    If PluginsToolStripMenuItem.DropDownItems.Item(LoopVar).Pressed Then
+    '       SelectedPlugin = LoopVar
+    '  End If
+    '  Next
+    ' MsgInfo("Running Plugin " + PluginsToolStripMenuItem.DropDownItems.Item(SelectedPlugin).Text)
+    'End Sub
 
 End Class

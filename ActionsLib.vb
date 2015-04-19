@@ -57,9 +57,9 @@ Module ActionsLib
             TBMPGFX.DrawImageUnscaled(TIcon, New Point(0, 0))
         Else
             If ActionIsConditional(ActionName) Then
-                TBMPGFX.DrawImageUnscaled(My.Resources.ActionConditionalBG, 0, 0)
+                TBMPGFX.DrawImageUnscaled(ActionConditionalBG, 0, 0)
             Else
-                TBMPGFX.DrawImageUnscaled(My.Resources.ActionBG, 0, 0)
+                TBMPGFX.DrawImageUnscaled(ActionBG, 0, 0)
             End If
             TBMPGFX.DrawImageUnscaled(TIcon, New Point(8, 8))
         End If

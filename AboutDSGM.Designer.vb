@@ -31,13 +31,12 @@ Partial Class AboutDSGM
         Me.WrittenByLabel = New System.Windows.Forms.Label()
         Me.VersionLabel = New System.Windows.Forms.Label()
         Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.MainPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'DSGMTopPanel
         '
-        Me.DSGMTopPanel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DSGMTopPanel.BackgroundImage = Global.DS_Game_Maker.My.Resources.Resources.DSGMTopBanner
         Me.DSGMTopPanel.Location = New System.Drawing.Point(0, 0)
         Me.DSGMTopPanel.Name = "DSGMTopPanel"
@@ -46,38 +45,36 @@ Partial Class AboutDSGM
         '
         'MainPanel
         '
-        Me.MainPanel.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MainPanel.BackColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
+        Me.MainPanel.Controls.Add(Me.Label1)
         Me.MainPanel.Controls.Add(Me.AdditionalCreditsLabel)
         Me.MainPanel.Controls.Add(Me.WebAddressLabel)
         Me.MainPanel.Controls.Add(Me.MainInfoLabel)
         Me.MainPanel.Controls.Add(Me.WrittenByLabel)
         Me.MainPanel.Location = New System.Drawing.Point(0, 130)
         Me.MainPanel.Name = "MainPanel"
-        Me.MainPanel.Size = New System.Drawing.Size(338, 255)
+        Me.MainPanel.Size = New System.Drawing.Size(338, 235)
         Me.MainPanel.TabIndex = 1
         '
         'AdditionalCreditsLabel
         '
         Me.AdditionalCreditsLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.AdditionalCreditsLabel.ForeColor = System.Drawing.Color.Silver
-        Me.AdditionalCreditsLabel.Location = New System.Drawing.Point(8, 38)
+        Me.AdditionalCreditsLabel.Location = New System.Drawing.Point(8, 60)
         Me.AdditionalCreditsLabel.Name = "AdditionalCreditsLabel"
-        Me.AdditionalCreditsLabel.Size = New System.Drawing.Size(314, 132)
+        Me.AdditionalCreditsLabel.Size = New System.Drawing.Size(314, 67)
         Me.AdditionalCreditsLabel.TabIndex = 3
-        Me.AdditionalCreditsLabel.Text = resources.GetString("AdditionalCreditsLabel.Text")
+        Me.AdditionalCreditsLabel.Text = "Additional components and assistance contributed by Dave J Murphy, Michael Noland" & _
+            ", Jason Rogers, Gregory Potdevin, Chris Rickard, Nick Thissen, Robert Dixon, Dav" & _
+            "e Tabba, Cilein Kearns and Baron Khan."
         '
         'WebAddressLabel
         '
-        Me.WebAddressLabel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.WebAddressLabel.AutoSize = True
         Me.WebAddressLabel.Cursor = System.Windows.Forms.Cursors.Hand
         Me.WebAddressLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Underline), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.WebAddressLabel.ForeColor = System.Drawing.Color.White
-        Me.WebAddressLabel.Location = New System.Drawing.Point(8, 227)
+        Me.WebAddressLabel.Location = New System.Drawing.Point(8, 207)
         Me.WebAddressLabel.Name = "WebAddressLabel"
         Me.WebAddressLabel.Size = New System.Drawing.Size(157, 14)
         Me.WebAddressLabel.TabIndex = 2
@@ -85,16 +82,15 @@ Partial Class AboutDSGM
         '
         'MainInfoLabel
         '
-        Me.MainInfoLabel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MainInfoLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MainInfoLabel.ForeColor = System.Drawing.Color.White
-        Me.MainInfoLabel.Location = New System.Drawing.Point(8, 189)
+        Me.MainInfoLabel.Location = New System.Drawing.Point(8, 127)
         Me.MainInfoLabel.Name = "MainInfoLabel"
-        Me.MainInfoLabel.Size = New System.Drawing.Size(314, 35)
+        Me.MainInfoLabel.Size = New System.Drawing.Size(314, 80)
         Me.MainInfoLabel.TabIndex = 1
-        Me.MainInfoLabel.Text = "For DS Game Maker updates, more information, discussion and games, visit the webs" & _
-    "ite:"
+        Me.MainInfoLabel.Text = "Copyright James Garner, Invisionsoft 2008-2011" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "For DS Game Maker updates, rela" & _
+            "ted products (such as DS Homebrew Kits), more information, discussion and games," & _
+            " visit our website:"
         '
         'WrittenByLabel
         '
@@ -109,10 +105,9 @@ Partial Class AboutDSGM
         '
         'VersionLabel
         '
-        Me.VersionLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.VersionLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.VersionLabel.ForeColor = System.Drawing.Color.Gray
-        Me.VersionLabel.Location = New System.Drawing.Point(6, 395)
+        Me.VersionLabel.Location = New System.Drawing.Point(6, 375)
         Me.VersionLabel.Name = "VersionLabel"
         Me.VersionLabel.Size = New System.Drawing.Size(200, 18)
         Me.VersionLabel.TabIndex = 3
@@ -120,19 +115,29 @@ Partial Class AboutDSGM
         '
         'DOkayButton
         '
-        Me.DOkayButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DOkayButton.Location = New System.Drawing.Point(234, 389)
+        Me.DOkayButton.Location = New System.Drawing.Point(234, 369)
         Me.DOkayButton.Name = "DOkayButton"
         Me.DOkayButton.Size = New System.Drawing.Size(100, 28)
         Me.DOkayButton.TabIndex = 2
         Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.ForeColor = System.Drawing.Color.White
+        Me.Label1.Location = New System.Drawing.Point(12, 35)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(277, 14)
+        Me.Label1.TabIndex = 4
+        Me.Label1.Text = "Updates (version 5.2+) written by Chris Ertl"
+        '
         'AboutDSGM
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(338, 422)
+        Me.ClientSize = New System.Drawing.Size(338, 402)
         Me.Controls.Add(Me.VersionLabel)
         Me.Controls.Add(Me.DOkayButton)
         Me.Controls.Add(Me.MainPanel)
@@ -158,4 +163,5 @@ Partial Class AboutDSGM
     Friend WithEvents WebAddressLabel As System.Windows.Forms.Label
     Friend WithEvents VersionLabel As System.Windows.Forms.Label
     Friend WithEvents AdditionalCreditsLabel As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 End Class

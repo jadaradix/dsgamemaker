@@ -9,7 +9,9 @@
         LoadInButton.Enabled = ImportExport
         SaveOutButton.Enabled = ImportExport
         Dim NewCode As String = ReturnableCode
-        NewCode = NewCode.Replace("<br|>", vbcrlf).Replace("<com>", ",").Replace("<sem>", ";")
+        If Not CodeMode = 1 Then
+            NewCode = NewCode.Replace("<br|>", vbCrLf).Replace("<com>", ",").Replace("<sem>", ";")
+        End If
         MainTextBox.Text = NewCode
         UpdateLineStats()
     End Sub

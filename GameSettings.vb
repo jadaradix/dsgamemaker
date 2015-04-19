@@ -9,6 +9,9 @@
         ProjectNameTextBox.Text = GetXDSLine("PROJECTNAME ").Substring(12)
         Text2TextBox.Text = GetXDSLine("TEXT2 ").Substring(6)
         Text3TextBox.Text = GetXDSLine("TEXT3 ").Substring(6)
+        If GetXDSLine("PROJECTLOGO ").Length > 12 Then
+            IconFileTextbox.Text = GetXDSLine("PROJECTLOGO ").Substring(12)
+        End If
         ScoreDropper.Value = Convert.ToInt16(GetXDSLine("SCORE ").Substring(6))
         LivesDropper.Value = Convert.ToInt16(GetXDSLine("LIVES ").Substring(6))
         HealthDropper.Value = Convert.ToInt16(GetXDSLine("HEALTH ").ToString.Substring(7))
@@ -32,6 +35,11 @@
     End Sub
 
     Private Sub DOkayButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DOkayButton.Click
+        Dim Logo As Image = PathToImage(IconOpenFileDialog.FileName)
+        If Not Logo.Width = 32 And Not Logo.Height = 32 Then
+            MsgError("Your project's icon must be 32 x 32!")
+            Exit Sub
+        End If
         XDSChangeLine(GetXDSLine("BOOTROOM "), "BOOTROOM " + StartingRoomDropper.Text)
         XDSChangeLine(GetXDSLine("PROJECTNAME "), "PROJECTNAME " + ProjectNameTextBox.Text)
         CacheProjectName = ProjectNameTextBox.Text
@@ -44,6 +52,11 @@
         XDSChangeLine(GetXDSLine("NITROFS_CALL "), "NITROFS_CALL " + If(NitroFSCallCheckBox.Checked, "1", "0"))
         XDSChangeLine(GetXDSLine("MIDPOINT_COLLISIONS "), "MIDPOINT_COLLISIONS " + If(MidPointCheckBox.Checked, "1", "0"))
         XDSChangeLine(GetXDSLine("INCLUDE_WIFI_LIB "), "INCLUDE_WIFI_LIB " + If(IncludeWiFiLibChecker.Checked, "1", "0"))
+        If GetXDSLine("PROJECTLOGO ") = String.Empty Then
+            XDSAddLine("PROJECTLOGO " + IconFileTextbox.Text)
+        Else
+            XDSChangeLine(GetXDSLine("PROJECTLOGO "), "PROJECTLOGO " + IconFileTextbox.Text)
+        End If
         Me.Close()
     End Sub
 
@@ -94,4 +107,13 @@
         MsgError(SessionPath + "NitroFSFiles\" + NitroFSFilesList.Items(NitroFSFilesList.SelectedIndex))
         URL(SessionPath + "NitroFSFiles\" + NitroFSFilesList.Items(NitroFSFilesList.SelectedIndex))
     End Sub
+
+    Private Sub BrowseButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BrowseButton.Click
+        IconOpenFileDialog.ShowDialog()
+    End Sub
+
+    Private Sub IconOpenFileDialog_FileOk(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles IconOpenFileDialog.FileOk
+        IconFileTextbox.Text = IconOpenFileDialog.FileName
+    End Sub
+
 End Class

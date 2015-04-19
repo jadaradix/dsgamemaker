@@ -23,46 +23,50 @@ Partial Class GameSettings
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(GameSettings))
-        Me.MainTabControl = New System.Windows.Forms.TabControl
-        Me.GeneralTabPage = New System.Windows.Forms.TabPage
-        Me.MidPointCheckBox = New System.Windows.Forms.CheckBox
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.NitroFSCallCheckBox = New System.Windows.Forms.CheckBox
-        Me.FATCallCheckBox = New System.Windows.Forms.CheckBox
-        Me.StartingRoomDropper = New System.Windows.Forms.ComboBox
-        Me.StartingRoomLabel = New System.Windows.Forms.Label
-        Me.ProjectInfoTabPage = New System.Windows.Forms.TabPage
-        Me.ProjectInfoInfoLabel = New System.Windows.Forms.Label
-        Me.Text3TextBox = New System.Windows.Forms.TextBox
-        Me.Text3Label = New System.Windows.Forms.Label
-        Me.Text2TextBox = New System.Windows.Forms.TextBox
-        Me.Text2Label = New System.Windows.Forms.Label
-        Me.ProjectNameTextBox = New System.Windows.Forms.TextBox
-        Me.ProjectNameLabel = New System.Windows.Forms.Label
-        Me.ScoringTabPage = New System.Windows.Forms.TabPage
-        Me.HealthDropper = New System.Windows.Forms.NumericUpDown
-        Me.ScoreDropper = New System.Windows.Forms.NumericUpDown
-        Me.LivesDropper = New System.Windows.Forms.NumericUpDown
-        Me.HealthLabel = New System.Windows.Forms.Label
-        Me.LivesLabel = New System.Windows.Forms.Label
-        Me.ScoreLabel = New System.Windows.Forms.Label
-        Me.ScoringInfoLabel = New System.Windows.Forms.Label
-        Me.DCancelButton = New System.Windows.Forms.Button
-        Me.DOkayButton = New System.Windows.Forms.Button
-        Me.CodingTabPage = New System.Windows.Forms.TabPage
-        Me.IncludeWiFiLibChecker = New System.Windows.Forms.CheckBox
-        Me.IncludeFilesList = New System.Windows.Forms.ListBox
-        Me.IncludeFilesLabel = New System.Windows.Forms.Label
-        Me.NitroFSFilesLabel = New System.Windows.Forms.Label
-        Me.NitroFSFilesList = New System.Windows.Forms.ListBox
-        Me.AddIncludeFileButton = New System.Windows.Forms.Button
-        Me.IncludeFilesControlPanel = New System.Windows.Forms.Panel
-        Me.NitroFSFilesControlPanel = New System.Windows.Forms.Panel
-        Me.EditIncludeFileButton = New System.Windows.Forms.Button
-        Me.DeleteIncludeFileButton = New System.Windows.Forms.Button
-        Me.DeleteNitroFSFileButton = New System.Windows.Forms.Button
-        Me.EditNitroFSFileButton = New System.Windows.Forms.Button
-        Me.AddNitroFSFileButton = New System.Windows.Forms.Button
+        Me.MainTabControl = New System.Windows.Forms.TabControl()
+        Me.GeneralTabPage = New System.Windows.Forms.TabPage()
+        Me.MidPointCheckBox = New System.Windows.Forms.CheckBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.NitroFSCallCheckBox = New System.Windows.Forms.CheckBox()
+        Me.FATCallCheckBox = New System.Windows.Forms.CheckBox()
+        Me.StartingRoomDropper = New System.Windows.Forms.ComboBox()
+        Me.StartingRoomLabel = New System.Windows.Forms.Label()
+        Me.ProjectInfoTabPage = New System.Windows.Forms.TabPage()
+        Me.BrowseButton = New System.Windows.Forms.Button()
+        Me.IconFileTextbox = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.ProjectInfoInfoLabel = New System.Windows.Forms.Label()
+        Me.Text3TextBox = New System.Windows.Forms.TextBox()
+        Me.Text3Label = New System.Windows.Forms.Label()
+        Me.Text2TextBox = New System.Windows.Forms.TextBox()
+        Me.Text2Label = New System.Windows.Forms.Label()
+        Me.ProjectNameTextBox = New System.Windows.Forms.TextBox()
+        Me.ProjectNameLabel = New System.Windows.Forms.Label()
+        Me.ScoringTabPage = New System.Windows.Forms.TabPage()
+        Me.HealthDropper = New System.Windows.Forms.NumericUpDown()
+        Me.ScoreDropper = New System.Windows.Forms.NumericUpDown()
+        Me.LivesDropper = New System.Windows.Forms.NumericUpDown()
+        Me.HealthLabel = New System.Windows.Forms.Label()
+        Me.LivesLabel = New System.Windows.Forms.Label()
+        Me.ScoreLabel = New System.Windows.Forms.Label()
+        Me.ScoringInfoLabel = New System.Windows.Forms.Label()
+        Me.CodingTabPage = New System.Windows.Forms.TabPage()
+        Me.NitroFSFilesControlPanel = New System.Windows.Forms.Panel()
+        Me.DeleteNitroFSFileButton = New System.Windows.Forms.Button()
+        Me.EditNitroFSFileButton = New System.Windows.Forms.Button()
+        Me.AddNitroFSFileButton = New System.Windows.Forms.Button()
+        Me.IncludeFilesControlPanel = New System.Windows.Forms.Panel()
+        Me.DeleteIncludeFileButton = New System.Windows.Forms.Button()
+        Me.EditIncludeFileButton = New System.Windows.Forms.Button()
+        Me.AddIncludeFileButton = New System.Windows.Forms.Button()
+        Me.NitroFSFilesLabel = New System.Windows.Forms.Label()
+        Me.NitroFSFilesList = New System.Windows.Forms.ListBox()
+        Me.IncludeFilesLabel = New System.Windows.Forms.Label()
+        Me.IncludeFilesList = New System.Windows.Forms.ListBox()
+        Me.IncludeWiFiLibChecker = New System.Windows.Forms.CheckBox()
+        Me.DCancelButton = New System.Windows.Forms.Button()
+        Me.DOkayButton = New System.Windows.Forms.Button()
+        Me.IconOpenFileDialog = New System.Windows.Forms.OpenFileDialog()
         Me.MainTabControl.SuspendLayout()
         Me.GeneralTabPage.SuspendLayout()
         Me.ProjectInfoTabPage.SuspendLayout()
@@ -71,8 +75,8 @@ Partial Class GameSettings
         CType(Me.ScoreDropper, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.LivesDropper, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.CodingTabPage.SuspendLayout()
-        Me.IncludeFilesControlPanel.SuspendLayout()
         Me.NitroFSFilesControlPanel.SuspendLayout()
+        Me.IncludeFilesControlPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'MainTabControl
@@ -162,6 +166,9 @@ Partial Class GameSettings
         '
         'ProjectInfoTabPage
         '
+        Me.ProjectInfoTabPage.Controls.Add(Me.BrowseButton)
+        Me.ProjectInfoTabPage.Controls.Add(Me.IconFileTextbox)
+        Me.ProjectInfoTabPage.Controls.Add(Me.Label2)
         Me.ProjectInfoTabPage.Controls.Add(Me.ProjectInfoInfoLabel)
         Me.ProjectInfoTabPage.Controls.Add(Me.Text3TextBox)
         Me.ProjectInfoTabPage.Controls.Add(Me.Text3Label)
@@ -176,6 +183,31 @@ Partial Class GameSettings
         Me.ProjectInfoTabPage.TabIndex = 2
         Me.ProjectInfoTabPage.Text = "Project Info."
         Me.ProjectInfoTabPage.UseVisualStyleBackColor = True
+        '
+        'BrowseButton
+        '
+        Me.BrowseButton.Image = Global.DS_Game_Maker.My.Resources.Resources.FolderIcon
+        Me.BrowseButton.Location = New System.Drawing.Point(232, 183)
+        Me.BrowseButton.Name = "BrowseButton"
+        Me.BrowseButton.Size = New System.Drawing.Size(24, 24)
+        Me.BrowseButton.TabIndex = 15
+        Me.BrowseButton.UseVisualStyleBackColor = True
+        '
+        'IconFileTextbox
+        '
+        Me.IconFileTextbox.Location = New System.Drawing.Point(119, 183)
+        Me.IconFileTextbox.Name = "IconFileTextbox"
+        Me.IconFileTextbox.Size = New System.Drawing.Size(107, 21)
+        Me.IconFileTextbox.TabIndex = 14
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(20, 186)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(32, 13)
+        Me.Label2.TabIndex = 13
+        Me.Label2.Text = "Icon:"
         '
         'ProjectInfoInfoLabel
         '
@@ -325,25 +357,6 @@ Partial Class GameSettings
             " lives, health and score variables."
         Me.ScoringInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'DCancelButton
-        '
-        Me.DCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.DCancelButton.Location = New System.Drawing.Point(201, 267)
-        Me.DCancelButton.Name = "DCancelButton"
-        Me.DCancelButton.Size = New System.Drawing.Size(75, 28)
-        Me.DCancelButton.TabIndex = 1
-        Me.DCancelButton.Text = "Cancel"
-        Me.DCancelButton.UseVisualStyleBackColor = True
-        '
-        'DOkayButton
-        '
-        Me.DOkayButton.Location = New System.Drawing.Point(123, 267)
-        Me.DOkayButton.Name = "DOkayButton"
-        Me.DOkayButton.Size = New System.Drawing.Size(75, 28)
-        Me.DOkayButton.TabIndex = 2
-        Me.DOkayButton.Text = "OK"
-        Me.DOkayButton.UseVisualStyleBackColor = True
-        '
         'CodingTabPage
         '
         Me.CodingTabPage.Controls.Add(Me.NitroFSFilesControlPanel)
@@ -361,71 +374,6 @@ Partial Class GameSettings
         Me.CodingTabPage.Text = "Coding"
         Me.CodingTabPage.UseVisualStyleBackColor = True
         '
-        'IncludeWiFiLibChecker
-        '
-        Me.IncludeWiFiLibChecker.AutoSize = True
-        Me.IncludeWiFiLibChecker.Location = New System.Drawing.Point(20, 20)
-        Me.IncludeWiFiLibChecker.Name = "IncludeWiFiLibChecker"
-        Me.IncludeWiFiLibChecker.Size = New System.Drawing.Size(100, 17)
-        Me.IncludeWiFiLibChecker.TabIndex = 0
-        Me.IncludeWiFiLibChecker.Text = "Include WiFi Lib"
-        Me.IncludeWiFiLibChecker.UseVisualStyleBackColor = True
-        '
-        'IncludeFilesList
-        '
-        Me.IncludeFilesList.FormattingEnabled = True
-        Me.IncludeFilesList.Location = New System.Drawing.Point(20, 62)
-        Me.IncludeFilesList.Name = "IncludeFilesList"
-        Me.IncludeFilesList.Size = New System.Drawing.Size(113, 108)
-        Me.IncludeFilesList.TabIndex = 1
-        '
-        'IncludeFilesLabel
-        '
-        Me.IncludeFilesLabel.AutoSize = True
-        Me.IncludeFilesLabel.Location = New System.Drawing.Point(17, 46)
-        Me.IncludeFilesLabel.Name = "IncludeFilesLabel"
-        Me.IncludeFilesLabel.Size = New System.Drawing.Size(70, 13)
-        Me.IncludeFilesLabel.TabIndex = 2
-        Me.IncludeFilesLabel.Text = "Include Files:"
-        '
-        'NitroFSFilesLabel
-        '
-        Me.NitroFSFilesLabel.AutoSize = True
-        Me.NitroFSFilesLabel.Location = New System.Drawing.Point(140, 46)
-        Me.NitroFSFilesLabel.Name = "NitroFSFilesLabel"
-        Me.NitroFSFilesLabel.Size = New System.Drawing.Size(70, 13)
-        Me.NitroFSFilesLabel.TabIndex = 4
-        Me.NitroFSFilesLabel.Text = "NitroFS Files:"
-        '
-        'NitroFSFilesList
-        '
-        Me.NitroFSFilesList.FormattingEnabled = True
-        Me.NitroFSFilesList.Location = New System.Drawing.Point(143, 62)
-        Me.NitroFSFilesList.Name = "NitroFSFilesList"
-        Me.NitroFSFilesList.Size = New System.Drawing.Size(113, 108)
-        Me.NitroFSFilesList.TabIndex = 3
-        '
-        'AddIncludeFileButton
-        '
-        Me.AddIncludeFileButton.AccessibleName = "Add Include File"
-        Me.AddIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PlusIcon
-        Me.AddIncludeFileButton.Location = New System.Drawing.Point(2, 2)
-        Me.AddIncludeFileButton.Name = "AddIncludeFileButton"
-        Me.AddIncludeFileButton.Size = New System.Drawing.Size(30, 26)
-        Me.AddIncludeFileButton.TabIndex = 5
-        Me.AddIncludeFileButton.UseVisualStyleBackColor = True
-        '
-        'IncludeFilesControlPanel
-        '
-        Me.IncludeFilesControlPanel.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        Me.IncludeFilesControlPanel.Controls.Add(Me.DeleteIncludeFileButton)
-        Me.IncludeFilesControlPanel.Controls.Add(Me.EditIncludeFileButton)
-        Me.IncludeFilesControlPanel.Controls.Add(Me.AddIncludeFileButton)
-        Me.IncludeFilesControlPanel.Location = New System.Drawing.Point(20, 173)
-        Me.IncludeFilesControlPanel.Name = "IncludeFilesControlPanel"
-        Me.IncludeFilesControlPanel.Size = New System.Drawing.Size(113, 30)
-        Me.IncludeFilesControlPanel.TabIndex = 6
-        '
         'NitroFSFilesControlPanel
         '
         Me.NitroFSFilesControlPanel.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
@@ -436,26 +384,6 @@ Partial Class GameSettings
         Me.NitroFSFilesControlPanel.Name = "NitroFSFilesControlPanel"
         Me.NitroFSFilesControlPanel.Size = New System.Drawing.Size(113, 30)
         Me.NitroFSFilesControlPanel.TabIndex = 7
-        '
-        'EditIncludeFileButton
-        '
-        Me.EditIncludeFileButton.AccessibleName = "Edit Include File"
-        Me.EditIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PencilIcon
-        Me.EditIncludeFileButton.Location = New System.Drawing.Point(32, 2)
-        Me.EditIncludeFileButton.Name = "EditIncludeFileButton"
-        Me.EditIncludeFileButton.Size = New System.Drawing.Size(30, 26)
-        Me.EditIncludeFileButton.TabIndex = 6
-        Me.EditIncludeFileButton.UseVisualStyleBackColor = True
-        '
-        'DeleteIncludeFileButton
-        '
-        Me.DeleteIncludeFileButton.AccessibleName = "Delete Include File"
-        Me.DeleteIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
-        Me.DeleteIncludeFileButton.Location = New System.Drawing.Point(62, 2)
-        Me.DeleteIncludeFileButton.Name = "DeleteIncludeFileButton"
-        Me.DeleteIncludeFileButton.Size = New System.Drawing.Size(30, 26)
-        Me.DeleteIncludeFileButton.TabIndex = 7
-        Me.DeleteIncludeFileButton.UseVisualStyleBackColor = True
         '
         'DeleteNitroFSFileButton
         '
@@ -487,6 +415,115 @@ Partial Class GameSettings
         Me.AddNitroFSFileButton.TabIndex = 8
         Me.AddNitroFSFileButton.UseVisualStyleBackColor = True
         '
+        'IncludeFilesControlPanel
+        '
+        Me.IncludeFilesControlPanel.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
+        Me.IncludeFilesControlPanel.Controls.Add(Me.DeleteIncludeFileButton)
+        Me.IncludeFilesControlPanel.Controls.Add(Me.EditIncludeFileButton)
+        Me.IncludeFilesControlPanel.Controls.Add(Me.AddIncludeFileButton)
+        Me.IncludeFilesControlPanel.Location = New System.Drawing.Point(20, 173)
+        Me.IncludeFilesControlPanel.Name = "IncludeFilesControlPanel"
+        Me.IncludeFilesControlPanel.Size = New System.Drawing.Size(113, 30)
+        Me.IncludeFilesControlPanel.TabIndex = 6
+        '
+        'DeleteIncludeFileButton
+        '
+        Me.DeleteIncludeFileButton.AccessibleName = "Delete Include File"
+        Me.DeleteIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.DeleteIcon
+        Me.DeleteIncludeFileButton.Location = New System.Drawing.Point(62, 2)
+        Me.DeleteIncludeFileButton.Name = "DeleteIncludeFileButton"
+        Me.DeleteIncludeFileButton.Size = New System.Drawing.Size(30, 26)
+        Me.DeleteIncludeFileButton.TabIndex = 7
+        Me.DeleteIncludeFileButton.UseVisualStyleBackColor = True
+        '
+        'EditIncludeFileButton
+        '
+        Me.EditIncludeFileButton.AccessibleName = "Edit Include File"
+        Me.EditIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PencilIcon
+        Me.EditIncludeFileButton.Location = New System.Drawing.Point(32, 2)
+        Me.EditIncludeFileButton.Name = "EditIncludeFileButton"
+        Me.EditIncludeFileButton.Size = New System.Drawing.Size(30, 26)
+        Me.EditIncludeFileButton.TabIndex = 6
+        Me.EditIncludeFileButton.UseVisualStyleBackColor = True
+        '
+        'AddIncludeFileButton
+        '
+        Me.AddIncludeFileButton.AccessibleName = "Add Include File"
+        Me.AddIncludeFileButton.Image = Global.DS_Game_Maker.My.Resources.Resources.PlusIcon
+        Me.AddIncludeFileButton.Location = New System.Drawing.Point(2, 2)
+        Me.AddIncludeFileButton.Name = "AddIncludeFileButton"
+        Me.AddIncludeFileButton.Size = New System.Drawing.Size(30, 26)
+        Me.AddIncludeFileButton.TabIndex = 5
+        Me.AddIncludeFileButton.UseVisualStyleBackColor = True
+        '
+        'NitroFSFilesLabel
+        '
+        Me.NitroFSFilesLabel.AutoSize = True
+        Me.NitroFSFilesLabel.Location = New System.Drawing.Point(140, 46)
+        Me.NitroFSFilesLabel.Name = "NitroFSFilesLabel"
+        Me.NitroFSFilesLabel.Size = New System.Drawing.Size(70, 13)
+        Me.NitroFSFilesLabel.TabIndex = 4
+        Me.NitroFSFilesLabel.Text = "NitroFS Files:"
+        '
+        'NitroFSFilesList
+        '
+        Me.NitroFSFilesList.FormattingEnabled = True
+        Me.NitroFSFilesList.Location = New System.Drawing.Point(143, 62)
+        Me.NitroFSFilesList.Name = "NitroFSFilesList"
+        Me.NitroFSFilesList.Size = New System.Drawing.Size(113, 108)
+        Me.NitroFSFilesList.TabIndex = 3
+        '
+        'IncludeFilesLabel
+        '
+        Me.IncludeFilesLabel.AutoSize = True
+        Me.IncludeFilesLabel.Location = New System.Drawing.Point(17, 46)
+        Me.IncludeFilesLabel.Name = "IncludeFilesLabel"
+        Me.IncludeFilesLabel.Size = New System.Drawing.Size(70, 13)
+        Me.IncludeFilesLabel.TabIndex = 2
+        Me.IncludeFilesLabel.Text = "Include Files:"
+        '
+        'IncludeFilesList
+        '
+        Me.IncludeFilesList.FormattingEnabled = True
+        Me.IncludeFilesList.Location = New System.Drawing.Point(20, 62)
+        Me.IncludeFilesList.Name = "IncludeFilesList"
+        Me.IncludeFilesList.Size = New System.Drawing.Size(113, 108)
+        Me.IncludeFilesList.TabIndex = 1
+        '
+        'IncludeWiFiLibChecker
+        '
+        Me.IncludeWiFiLibChecker.AutoSize = True
+        Me.IncludeWiFiLibChecker.Location = New System.Drawing.Point(20, 20)
+        Me.IncludeWiFiLibChecker.Name = "IncludeWiFiLibChecker"
+        Me.IncludeWiFiLibChecker.Size = New System.Drawing.Size(102, 17)
+        Me.IncludeWiFiLibChecker.TabIndex = 0
+        Me.IncludeWiFiLibChecker.Text = "Include WiFi Lib"
+        Me.IncludeWiFiLibChecker.UseVisualStyleBackColor = True
+        '
+        'DCancelButton
+        '
+        Me.DCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.DCancelButton.Location = New System.Drawing.Point(201, 267)
+        Me.DCancelButton.Name = "DCancelButton"
+        Me.DCancelButton.Size = New System.Drawing.Size(75, 28)
+        Me.DCancelButton.TabIndex = 1
+        Me.DCancelButton.Text = "Cancel"
+        Me.DCancelButton.UseVisualStyleBackColor = True
+        '
+        'DOkayButton
+        '
+        Me.DOkayButton.Location = New System.Drawing.Point(123, 267)
+        Me.DOkayButton.Name = "DOkayButton"
+        Me.DOkayButton.Size = New System.Drawing.Size(75, 28)
+        Me.DOkayButton.TabIndex = 2
+        Me.DOkayButton.Text = "OK"
+        Me.DOkayButton.UseVisualStyleBackColor = True
+        '
+        'IconOpenFileDialog
+        '
+        Me.IconOpenFileDialog.Filter = "BMP Images|*.bmp"
+        Me.IconOpenFileDialog.Title = "Select your project's icon"
+        '
         'GameSettings
         '
         Me.AcceptButton = Me.DOkayButton
@@ -501,6 +538,7 @@ Partial Class GameSettings
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(290, 330)
         Me.MinimizeBox = False
         Me.Name = "GameSettings"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
@@ -517,8 +555,8 @@ Partial Class GameSettings
         CType(Me.LivesDropper, System.ComponentModel.ISupportInitialize).EndInit()
         Me.CodingTabPage.ResumeLayout(False)
         Me.CodingTabPage.PerformLayout()
-        Me.IncludeFilesControlPanel.ResumeLayout(False)
         Me.NitroFSFilesControlPanel.ResumeLayout(False)
+        Me.IncludeFilesControlPanel.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -562,4 +600,8 @@ Partial Class GameSettings
     Friend WithEvents DeleteNitroFSFileButton As System.Windows.Forms.Button
     Friend WithEvents EditNitroFSFileButton As System.Windows.Forms.Button
     Friend WithEvents AddNitroFSFileButton As System.Windows.Forms.Button
+    Friend WithEvents BrowseButton As System.Windows.Forms.Button
+    Friend WithEvents IconFileTextbox As System.Windows.Forms.TextBox
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents IconOpenFileDialog As System.Windows.Forms.OpenFileDialog
 End Class

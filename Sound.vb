@@ -86,7 +86,7 @@ Public Class Sound
     End Sub
 
     Private Sub EditButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EditButton.Click
-        Dim FinalEXE As String = GetOption("SOUND_EDITOR_PATH")
+        Dim FinalEXE As String = GetSetting("SOUND_EDITOR_PATH")
         If FinalEXE.Length = 0 Then
             MsgWarn("No Sound Editor has been defined. See 'Options'.")
             Exit Sub
