@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("James Garner")> 
 <Assembly: AssemblyProduct("DS Game Maker")> 
-<Assembly: AssemblyCopyright("Copyright © James Garner 2015")> 
+<Assembly: AssemblyCopyright("Copyright © James Garner 2010")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
