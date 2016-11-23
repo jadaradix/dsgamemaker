@@ -124,16 +124,16 @@
   <data name="NewsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAACFUlEQVQ4T6WSS8uhYRjH7zX5
-        ArPUO59gsrK3s5KNhWy878yYGabUSym+gOIrSPkAQkgO5RQSOR+yUBKR85lrnv9dj2Y3M81Tv3rU87v8
-        7/99MafTyVwul1rg9S95cTgczG63M5vNxhh+CLwdj0fa7/e02+1os9nQcrmk+XxO0+mUJpMJJ5PJEL4V
-        eHkOwIvA2+FwoO12S+v1mlarFS0WCy6Px2MajUY0HA4pHA4THnwv8JEnsFqt4PPpdKJEIkHZbJYPiUaj
-        lEwmKZfLUTAY5EP8fv8ThULxU4Axi8UCvpzP5+cR/pQEx4EDl5lMJsAHeDweCgQC1Gw2SavVkl6vJ6FY
-        8nq9/Dhut5t8Ph9VKhWCA5cZjUbw9XK5ULfbpU6nw5P8LpvNZt5JtVrlMobBgcsMBgMwXa9XSqVSVCgU
-        CIWK/wwZaVBsJBLhPc1mM4IDl+l0OvDtdrtRr9fjoFAMEa9V7KTRaFCtVuNXDAcu02g04DsGoPlisUjo
-        A2ny+TwnFArxK8ZtYAj2BA5cplarwY/7/U79fp+DPpBE7KTdbvMFa7VavGC8w4HLVCoVMD8eDyqVSnzb
-        0Ec6neZpEBkpcBwkwZ7gHQ5cplQqgQUbNhgMODgOkoidIAk6QRKAdzhwmUQiYXK53IpVLZfLFI/H+ZBY
-        LEb1ep2nQB8YgiTYTAyBAxfPJ6lU+iqTyd7/BThwMeDD//ALZuV/gBaU25wAAAAASUVORK5CYII=
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAACE0lEQVQ4T52Sy2paURiF91jx
+        BTIM6RMUR86dORInDsSJSVvbakGogqAvIOgriOADiIoGMQreUBHF+wUHgohi0MT77e9ZP0RCJ70IHxzh
+        fIu119nC5XIJt9utkbj/S+6cTqdwOBzCbrcLgT8SD9vtltbrNa1WK3p5eaHn52eazWY0mUxoPB4z6XSa
+        8K7E3TUADxIPm82GXl9fablc0mKxoPl8zvJoNKLhcEiDwYAikQjhh/clPnCAzWYDn3a7HSUSCcpkMhwS
+        i8UomUxSNpulUCjEIYFA4IpSqfwhIYTVagWf9/v99Qh/aoLjwIErzGYz4ACv10vBYJAajQbpdDoyGAwk
+        jUY+n49DPB4P+f1+KpfLBAeuMJlM4MvhcKBOp0PtdpubvJctFgs3qVQqLCMMDlxhNBqB+Xg80tPTE+Xz
+        ecKg72W0wXGi0SjvNJ1OCQ5codfrwdfT6UTdbpfBoAj5fZN6vU7VapU/MRy4QqvVgm8IwPKFQoGwB9rk
+        cjkmHA5zCL4GQnBP4MAVGo0GfD+fz9Tr9RjsgSZvm7RaLW7SbDZ5YDzDgSvUajWwXC4XKhaLfNuwRyqV
+        4jaojBY4DprgnuAZDlyhUqmAFTes3+8zOA6avG2CJtgETQCe4cAVMplM3N7e2nBBSqUSPT4+ckg8Hqda
+        rcYtsAdC0AQ3EyFw4OL3US6X3ysUip//Ahy4CLj5f8TNL2blf4Cbk+lOAAAAAElFTkSuQmCC
 </value>
   </data>
   <metadata name="MainToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

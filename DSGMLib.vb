@@ -6,10 +6,8 @@ Module DSGMlib
 
     Public ResourceTypes(6) As String
 
-    Public IsPro As Boolean = True
-    Public IDVersion As Int16 = 512
-    Public Domain As String = "http://dsgamemaker.com/"
-    Public OrderURL As String = "http://order." + Domain.Substring(7)
+    Public IDVersion As Int16 = 530
+    Public Domain As String = "http://dsgm.co/"
     Public UpdateVersion As Int16 = 0
 
     Public ActionBG As New Bitmap(32, 32)
@@ -136,38 +134,6 @@ Module DSGMlib
         End Try
     End Function
 
-    Function ReallyPro() As Boolean
-        Dim Email As String = GetSetting("PRO_EMAIL")
-        Dim Serial As String = GetSetting("PRO_SERIAL")
-        Dim UserPro As Boolean = If(Convert.ToByte(GetSetting("PRO")) = 1, True, False)
-        If Not UserPro = My.Settings.ProActivated Then UserPro = My.Settings.ProActivated
-        If Not UserPro Then Return False
-        If Not Email = My.Settings.ProEmail Then Email = My.Settings.ProEmail
-        If Not Serial = My.Settings.ProSerial Then Serial = My.Settings.ProSerial
-        If UserPro Then
-            'Okay, using Pro... let's check those details baby
-            If HasInternetConnection(Domain) Then
-                Dim Request As String = Domain + "DSGM5RegClient/key.php?data1=" + Email + "&data2=" + Serial
-                Dim Response As String = WC.DownloadString(Request)
-                If Response = "0" Then Return False
-                WC.Dispose()
-                Return True
-            Else
-                If Not Email.Contains("@") Then Return False
-                If Not Serial.StartsWith("DSGM") Then Return False
-                Return True
-            End If
-        End If
-    End Function
-
-    Public Function SQLSanitize(ByVal InputData As String, ByVal AlsoSpaces As Boolean) As String
-        InputData = InputData.Replace("(", String.Empty)
-        InputData = InputData.Replace("'", String.Empty)
-        InputData = InputData.Replace("""", String.Empty)
-        If AlsoSpaces Then InputData = InputData.Replace(" ", String.Empty)
-        Return InputData
-    End Function
-
     Function MakeSpaces(ByVal HowMany As Byte)
         Dim Returnable As String = String.Empty
         If HowMany = 0 Then Return Returnable
@@ -273,14 +239,6 @@ Module DSGMlib
         If Not Directory.Exists(CompilePath + "gfx\bin") Then
             Directory.CreateDirectory(CompilePath + "gfx\bin")
         End If
-        If Not IsPro Then
-            If Not File.Exists(CompilePath + "gfx\bin\DSGMPro.c") Then
-                File.Copy(AppPath + "CompiledBINs\DSGMPro.c", CompilePath + "gfx\bin\DSGMPro.c", True)
-                File.Copy(AppPath + "CompiledBINs\DSGMPro_Tiles.bin", CompilePath + "gfx\bin\DSGMPro_Tiles.bin", True)
-                File.Copy(AppPath + "CompiledBINs\DSGMPro_Map.bin", CompilePath + "gfx\bin\DSGMPro_Map.bin", True)
-                File.Copy(AppPath + "CompiledBINs\DSGMPro_Pal.bin", CompilePath + "gfx\bin\DSGMPro_Pal.bin", True)
-            End If
-        End If
         'Remove fonts not used this time
         For Each X As String In FontsUsedLastTime
             If Not FontsUsedThisTime.Contains(X) Then
@@ -310,7 +268,6 @@ Module DSGMlib
             End If
             FontH += "extern const PA_BgStruct " + X + ";" + vbcrlf
         Next
-        If Not IsPro Then FontH += "extern const PA_BgStruct DSGMPro;" + vbcrlf
         'FontH += "#ifdef __cplusplus" + vbcrlf
         'FontH += "  }" + vbcrlf
         'FontH += "#endif"
@@ -482,906 +439,877 @@ Module DSGMlib
         If XDSCountLines("SOUND ") > 0 Then
             FinalString += "  DSGM_Init_Sound();" + vbCrLf
         End If
-        If IsPro Then
-            FinalString += "  " + BootRoom + "();" + vbCrLf
-        Else
-            FinalString += "  PA_LoadBackground(1, 2, &DSGMPro);" + vbCrLf
-            FinalString += "  PA_LoadBackground(0, 2, &DSGMPro);" + vbCrLf
-            FinalString += "  PA_EasyBgScrollXY(0, 2, 256, 0);" + vbCrLf
-            FinalString += "  bool ProDir = false;" + vbCrLf
-            FinalString += "  s8 ProFadeAmount = 0;" + vbCrLf
-            FinalString += "  u8 ProFrameOn = 0;" + vbCrLf
-            FinalString += "  while (true) {" + vbCrLf
-            FinalString += "    if (ProFrameOn % 4 == 0) {" + vbCrLf
-            FinalString += "      if (ProFadeAmount <= -15) {" + vbCrLf
-            FinalString += "        ProDir = true;" + vbCrLf
-            FinalString += "      }" + vbCrLf
-            FinalString += "      if (ProFadeAmount >= 0) {" + vbCrLf
-            FinalString += "        ProDir = false;" + vbCrLf
-            FinalString += "      }" + vbCrLf
-            FinalString += "      if (ProDir) ProFadeAmount += 1;" + vbCrLf
-            FinalString += "      if (!ProDir) ProFadeAmount -= 1;" + vbCrLf
-            FinalString += "      PA_SetBrightness(0, ProFadeAmount);" + vbCrLf
-            FinalString += "    }" + vbCrLf
-            FinalString += "    if (Stylus.Newpress || Pad.Newpress.Anykey) {" + vbCrLf
-            FinalString += "      PA_SetBrightness(0, 0);" + vbCrLf
-            FinalString += "      " + BootRoom + "();" + vbCrLf
-            FinalString += "    }" + vbCrLf
-            FinalString += "    ProFrameOn += 1;" + vbCrLf
-            FinalString += "    if (ProFrameOn == 200) ProFrameOn = 0;" + vbCrLf
-            FinalString += "    PA_WaitForVBL();" + vbCrLf
-            FinalString += "  }" + vbCrLf
-        End If
+        FinalString += "  " + BootRoom + "();" + vbCrLf
         FinalString += "  return 0;" + vbCrLf
         FinalString += "}" + vbCrLf
         Dim PAini As String = "#TranspColor Magenta"
         PAini += vbCrLf + "#Backgrounds : " + vbCrLf
         Dim DOn As Int16 = 0
-        If RedoAllGraphics Then
-            For Each XDSLine As String In GetXDSFilter("BACKGROUND ")
-                XDSLine = XDSLine.Substring(11)
-                Dim BackgroundName As String = iGet(XDSLine, 0, ",")
-                Dim BGImage As Image = PathToImage(SessionPath + "Backgrounds\" + BackgroundName + ".png")
-                PAini += BackgroundName + ".png "
-                If BGImage.Width > 256 And BGImage.Height > 256 Then
-                    PAini += "LargeMap" : Else : PAini += "EasyBG"
-                End If
-                File.Copy(SessionPath + "Backgrounds\" + BackgroundName + ".png", CompilePath + "gfx\" + BackgroundName + ".png")
-                PAini += vbCrLf
-            Next
-        Else
-            For Each X As String In BGsToRedo
-                'Dim IsBG As Boolean = DoesXDSLineExist("BACKGROUND " + X)
-                'If Not IsBG Then Continue For
-                Dim BGImage As Image = PathToImage(SessionPath + "Backgrounds\" + X + ".png")
-                PAini += X + ".png "
-                If BGImage.Width > 256 And BGImage.Height > 256 Then
-                    PAini += "LargeMap" : Else : PAini += "EasyBG"
-                End If
-                PAini += vbCrLf
-                File.Copy(SessionPath + "Backgrounds\" + X + ".png", CompilePath + "gfx\" + X + ".png", True)
-                BGImage.Dispose()
-                DOn += 1
-            Next
-        End If
-        'FinalString += "u8 ObjectGetPallet(char *ObjectName) {" + vbcrlf
-        'For Each X As String In GetXDSFilter("OBJECT ")
-        '    X = X.Substring(7)
-        '    Dim ObjectName As String = iget(X, 0, ",")
-        '    Dim SpriteName As String = iget(GetXDSLine("OBJECT " + ObjectName + ","), 1, ",")
-        '    Dim PalletNumber As Byte = 0
-        '    For Each PalletString As String In PalletNumbers
-        '        If PalletString.StartsWith(SpriteName + ",") Then
-        '            PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
-        '        End If
-        '    Next
-        '    FinalString += " if (strcmp(ObjectName, """ + ObjectName + """) == 0) return " + PalletNumber.ToString + ";" + vbcrlf
-        'Next
-        'FinalString += " return 0;" + vbcrlf
-        'FinalString += "}" + vbcrlf
-        'Dim EventsHeaderString As String = String.Empty
-        'For Each XDSLine As String In GetXDSFilter("EVENT ")
-        '    DOn = 0
-        '    XDSLine = XDSLine.Substring(6)
-        '    Dim ObjectName As String = iget(XDSLine, 0, ",")
-        '    Dim MainClass As String = iget(XDSLine, 1, ",")
-        '    Dim StringMainClass As String = MainClassTypeToString(MainClass).Replace(" ", String.Empty)
-        '    Dim SubClass As String = iget(XDSLine, 2, ",")
-        '    Dim StringSubClass As String = SubClass.Replace(" ", String.Empty)
-        '    If StringSubClass = "NoData" Then StringSubClass = String.Empty
-        '    EventsHeaderString += "void " + ObjectName + StringMainClass + StringSubClass + "_Event(u8 DAppliesTo);" + vbcrlf
-        'Next
-        PAini += vbCrLf + "#Sprites : " + vbCrLf
-        Dim PalletNumbers As New Collection
-        Dim PalletNames As New Collection
-        Dim PalletNumbers_Nitro As New Collection
-        Dim PalletNames_Nitro As New Collection
-        Dim AllColors As Int16 = 0
-        Dim PalletOn As Byte = 0
-        Dim AllColors_Nitro As Int16 = 0
-        Dim PalletOn_Nitro As Byte = 0
-        Dim FirstRun As Boolean = True
-        For Each XDSLine As String In GetXDSFilter("SPRITE ")
-            XDSLine = XDSLine.Substring(7)
-            Dim SpriteName As String = iGet(XDSLine, 0, ",")
-            Dim TheImage As Bitmap = GenerateDSSprite(SpriteName)
-            Dim SpriteNameExtension As String = SpriteName + ".png"
-            Dim CurrentColors As Int16 = ImageCountColors(TheImage)
-            If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
-                If AllColors_Nitro + CurrentColors >= 256 Then
-                    AllColors_Nitro = 0
-                    PalletOn_Nitro += 1
-                Else
-                    AllColors_Nitro += CurrentColors
-                End If
-                PalletNumbers_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
+            If RedoAllGraphics Then
+                For Each XDSLine As String In GetXDSFilter("BACKGROUND ")
+                    XDSLine = XDSLine.Substring(11)
+                    Dim BackgroundName As String = iGet(XDSLine, 0, ",")
+                    Dim BGImage As Image = PathToImage(SessionPath + "Backgrounds\" + BackgroundName + ".png")
+                    PAini += BackgroundName + ".png "
+                    If BGImage.Width > 256 And BGImage.Height > 256 Then
+                        PAini += "LargeMap" : Else : PAini += "EasyBG"
+                    End If
+                    File.Copy(SessionPath + "Backgrounds\" + BackgroundName + ".png", CompilePath + "gfx\" + BackgroundName + ".png")
+                    PAini += vbCrLf
+                Next
             Else
-                If AllColors + CurrentColors >= 256 Then
-                    AllColors = 0
-                    PalletOn += 1
-                Else
-                    AllColors += CurrentColors
-                End If
-                PalletNumbers.Add(SpriteName + "," + PalletOn.ToString)
+                For Each X As String In BGsToRedo
+                    'Dim IsBG As Boolean = DoesXDSLineExist("BACKGROUND " + X)
+                    'If Not IsBG Then Continue For
+                    Dim BGImage As Image = PathToImage(SessionPath + "Backgrounds\" + X + ".png")
+                    PAini += X + ".png "
+                    If BGImage.Width > 256 And BGImage.Height > 256 Then
+                        PAini += "LargeMap" : Else : PAini += "EasyBG"
+                    End If
+                    PAini += vbCrLf
+                    File.Copy(SessionPath + "Backgrounds\" + X + ".png", CompilePath + "gfx\" + X + ".png", True)
+                    BGImage.Dispose()
+                    DOn += 1
+                Next
             End If
-            If RedoSprites Then
-                TheImage.Save(CompilePath + "gfx\" + SpriteNameExtension)
+            'FinalString += "u8 ObjectGetPallet(char *ObjectName) {" + vbcrlf
+            'For Each X As String In GetXDSFilter("OBJECT ")
+            '    X = X.Substring(7)
+            '    Dim ObjectName As String = iget(X, 0, ",")
+            '    Dim SpriteName As String = iget(GetXDSLine("OBJECT " + ObjectName + ","), 1, ",")
+            '    Dim PalletNumber As Byte = 0
+            '    For Each PalletString As String In PalletNumbers
+            '        If PalletString.StartsWith(SpriteName + ",") Then
+            '            PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
+            '        End If
+            '    Next
+            '    FinalString += " if (strcmp(ObjectName, """ + ObjectName + """) == 0) return " + PalletNumber.ToString + ";" + vbcrlf
+            'Next
+            'FinalString += " return 0;" + vbcrlf
+            'FinalString += "}" + vbcrlf
+            'Dim EventsHeaderString As String = String.Empty
+            'For Each XDSLine As String In GetXDSFilter("EVENT ")
+            '    DOn = 0
+            '    XDSLine = XDSLine.Substring(6)
+            '    Dim ObjectName As String = iget(XDSLine, 0, ",")
+            '    Dim MainClass As String = iget(XDSLine, 1, ",")
+            '    Dim StringMainClass As String = MainClassTypeToString(MainClass).Replace(" ", String.Empty)
+            '    Dim SubClass As String = iget(XDSLine, 2, ",")
+            '    Dim StringSubClass As String = SubClass.Replace(" ", String.Empty)
+            '    If StringSubClass = "NoData" Then StringSubClass = String.Empty
+            '    EventsHeaderString += "void " + ObjectName + StringMainClass + StringSubClass + "_Event(u8 DAppliesTo);" + vbcrlf
+            'Next
+            PAini += vbCrLf + "#Sprites : " + vbCrLf
+            Dim PalletNumbers As New Collection
+            Dim PalletNames As New Collection
+            Dim PalletNumbers_Nitro As New Collection
+            Dim PalletNames_Nitro As New Collection
+            Dim AllColors As Int16 = 0
+            Dim PalletOn As Byte = 0
+            Dim AllColors_Nitro As Int16 = 0
+            Dim PalletOn_Nitro As Byte = 0
+            Dim FirstRun As Boolean = True
+            For Each XDSLine As String In GetXDSFilter("SPRITE ")
+                XDSLine = XDSLine.Substring(7)
+                Dim SpriteName As String = iGet(XDSLine, 0, ",")
+                Dim TheImage As Bitmap = GenerateDSSprite(SpriteName)
+                Dim SpriteNameExtension As String = SpriteName + ".png"
+                Dim CurrentColors As Int16 = ImageCountColors(TheImage)
                 If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
-                    PAini += SpriteNameExtension + " 256Colors " + "NitroPal" + PalletOn_Nitro.ToString + vbCrLf
-                Else
-                    PAini += SpriteNameExtension + " 256Colors " + "DSGMPal" + PalletOn.ToString + vbCrLf
-                End If
-            End If
-            If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
-                If FirstRun Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString) : FirstRun = False : Continue For
-                If AllColors = 0 Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
-            Else
-                If FirstRun Then PalletNames.Add(SpriteName + "," + PalletOn.ToString) : FirstRun = False : Continue For
-                If AllColors = 0 Then PalletNames.Add(SpriteName + "," + PalletOn.ToString)
-            End If
-        Next
-        File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
-        Dim EventsString As String = String.Empty
-        For Each XDSLine As String In GetXDSFilter("EVENT ")
-            DOn = 0
-            XDSLine = XDSLine.Substring(6)
-            Dim ObjectName As String = iGet(XDSLine, 0, ",")
-            Dim MainClass As String = iGet(XDSLine, 1, ",")
-            Dim StringMainClass As String = MainClassTypeToString(MainClass).Replace(" ", String.Empty)
-            Dim SubClass As String = iGet(XDSLine, 2, ",")
-            Dim StringSubClass As String = SubClass.Replace(" ", String.Empty)
-            If StringSubClass = "NoData" Then StringSubClass = String.Empty
-            If StringSubClass = "<Unknown>" Then Continue For
-            EventsString += "void " + ObjectName + StringMainClass + StringSubClass + "_Event(u8 DAppliesTo) {" + vbCrLf
-            Dim CurrentIndent As Byte = 1
-            Dim IndentOrDedent As Byte = 0
-            Dim Added As Byte = 0
-            For Each Y As String In GetXDSFilter("ACT " + ObjectName + "," + MainClass + "," + SubClass + ",")
-                Y = SillyFixMe(Y)
-                Y = Y.Substring(("ACT " + ObjectName + "," + MainClass + "," + SubClass + ",").Length)
-                Dim ActionName As String = iGet(Y, 0, ",")
-                If Not File.Exists(AppPath + "Actions\" + ActionName + ".action") Then Continue For
-                IndentOrDedent = 0
-                Added = 0
-                Dim NeedsAppliesToVar As Boolean = False
-                If Not ActionName = "Execute Code" Then
-                    For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
-                        If X = "INDENT" Then IndentOrDedent = 1
-                        If X = "DEDENT" Then IndentOrDedent = 2
-                        If X.Contains("AppliesTo") Then NeedsAppliesToVar = True
-                    Next
-                End If
-                Dim Arguments As String = iGet(Y, 1, ",")
-                Dim AppliesToString As String = iGet(Y, 2, ",")
-                If AppliesToString = "<Unknown>" Or Arguments.Contains("<Unknown>") Then Continue For
-                Dim ArgumentCount As Byte = HowManyChar(Arguments, ";") + 1
-                Dim InputtedArgumentValues As New List(Of String)
-                For X As Byte = 0 To ArgumentCount - 1
-                    InputtedArgumentValues.Add(iGet(Arguments, X, ";").ToString.Replace("<com>", ","))
-                Next
-                'For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
-                '    If X = "NOAPPLIES" Then ActionSaysIgnoreApplies = True : Exit For
-                'Next
-                If Not ActionName = "Execute Code" Then
-                    For Each X As String In ApplyFinders
-                        If Arguments.Contains(X) Then NeedsAppliesToVar = True
-                    Next
-                End If
-                'If Not IgnoreApplies Then NeedsAppliesToVar = True
-                Dim TempLine As String = String.Empty
-                ' If ApplicationUsed Then
-                Dim ToReplace As String = "AppliesTo"
-                If ActionName = "Execute Code" Then ToReplace = "DAppliesTo"
-                For X As Byte = 0 To InputtedArgumentValues.Count - 1
-                    For Each D As String In ApplyFinders
-                        Dim NoBrackets As String = D
-                        NoBrackets = NoBrackets.Substring(1)
-                        NoBrackets = NoBrackets.Substring(0, NoBrackets.Length - 1)
-                        InputtedArgumentValues.Item(X) = InputtedArgumentValues(X).Replace(D, "Instances[" + ToReplace + "]." + NoBrackets)
-                    Next
-                    'InputtedArgumentValues.Item(X) = InputtedArgumentValues(X).Replace("[Me]", "DAppliesTo")
-                Next
-                '  End If
-                If NeedsAppliesToVar Then
-                    If AppliesToString = "this" Then
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = DAppliesTo;" + vbCrLf
-                        Added = 0
-                    ElseIf IsObject(AppliesToString) Then
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = 0;" + vbCrLf
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "for (AppliesTo" + DOn.ToString + " = 0; AppliesTo" + DOn.ToString + " < 256; AppliesTo" + DOn.ToString + "++) {" + vbCrLf
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "  if (Instances[AppliesTo" + DOn.ToString + "].InUse && Instances[AppliesTo" + DOn.ToString + "].EName == " + AppliesToString + ") {" + vbCrLf
-                        CurrentIndent += 2
-                        Added = 2
+                    If AllColors_Nitro + CurrentColors >= 256 Then
+                        AllColors_Nitro = 0
+                        PalletOn_Nitro += 1
                     Else
-                        TempLine = "u8 ArrayAppliesTo" + DOn.ToString + "[] = {"
-                        Dim LoopTo As Byte = 0
-                        For I As Byte = 0 To HowManyChar(AppliesToString, " ")
-                            TempLine += iGet(AppliesToString, I, " ") + ", "
-                            LoopTo += 1
-                        Next
-                        TempLine = TempLine.Substring(0, TempLine.Length - 2)
-                        TempLine += "};"
-                        EventsString += MakeSpaces(CurrentIndent * 2) + TempLine + vbCrLf
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = 0;" + vbCrLf
-                        TempLine = MakeSpaces(CurrentIndent * 2) + "for (AppliesTo" + DOn.ToString + " = 0; AppliesTo" + DOn.ToString + " < " + LoopTo.ToString + "; AppliesTo" + DOn.ToString + "++) {"
-                        EventsString += TempLine + vbCrLf
-                        CurrentIndent += 1
-                        Added = 1
+                        AllColors_Nitro += CurrentColors
                     End If
-                End If
-                'For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
-                '    If X = "INDENT" Then
-                '        CurrentIndent += 1
-                '    End If
-                '    If X = "DEDENT" Then
-                '        If CurrentIndent > 0 Then CurrentIndent -= 1
-                '    End If
-                'Next
-                If IndentOrDedent = 1 Then CurrentIndent += 1
-                If IndentOrDedent = 2 Then
-                    If CurrentIndent > 0 Then CurrentIndent -= 1
-                End If
-                If ActionName = "Execute Code" Then
-                    Dim DBASCode As String = Arguments
-                    'Dim BRCount As Int16 = HowManyChar(OriginalCode, "<br|>")
-                    'For i As Int16 = 0 To BRCount
-
-                    'Next
-                    DBASCode = DBASCode.Replace("<br|>", vbCrLf).Replace("<com>", ",").Replace("<sem>", ";")
-                    Dim CCode As String = ScriptParseFromContent("Temp", DBASCode, String.Empty, String.Empty, False, True, False)
-                    For Each X As String In StringToLines(CCode)
-                        EventsString += MakeSpaces(CurrentIndent * 2) + X + vbCrLf
-                    Next
+                    PalletNumbers_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
                 Else
-                    For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
-                        If X.Length = 0 Then Continue For
-                        If X.StartsWith("ARG ") Then Continue For
-                        If X.StartsWith("DISPLAY ") Then Continue For
-                        If X.StartsWith("TYPE ") Then Continue For
-                        If X.StartsWith("ICON ") Then Continue For
-                        If X.StartsWith("CONDITION ") Then Continue For
-                        If X = "INDENT" Then Continue For
-                        If X = "DEDENT" Then Continue For
-                        If X = "NOAPPLIES" Then Continue For
-                        For i As Byte = 0 To 200
-                            If X(0).ToString = " " Then X = X.Substring(1) Else Exit For
+                    If AllColors + CurrentColors >= 256 Then
+                        AllColors = 0
+                        PalletOn += 1
+                    Else
+                        AllColors += CurrentColors
+                    End If
+                    PalletNumbers.Add(SpriteName + "," + PalletOn.ToString)
+                End If
+                If RedoSprites Then
+                    TheImage.Save(CompilePath + "gfx\" + SpriteNameExtension)
+                    If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
+                        PAini += SpriteNameExtension + " 256Colors " + "NitroPal" + PalletOn_Nitro.ToString + vbCrLf
+                    Else
+                        PAini += SpriteNameExtension + " 256Colors " + "DSGMPal" + PalletOn.ToString + vbCrLf
+                    End If
+                End If
+                If iGet(GetXDSLine("SPRITE " + XDSLine), 3, ",") = "Nitro" Then
+                    If FirstRun Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString) : FirstRun = False : Continue For
+                    If AllColors = 0 Then PalletNames_Nitro.Add(SpriteName + "," + PalletOn_Nitro.ToString)
+                Else
+                    If FirstRun Then PalletNames.Add(SpriteName + "," + PalletOn.ToString) : FirstRun = False : Continue For
+                    If AllColors = 0 Then PalletNames.Add(SpriteName + "," + PalletOn.ToString)
+                End If
+            Next
+            File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
+            Dim EventsString As String = String.Empty
+            For Each XDSLine As String In GetXDSFilter("EVENT ")
+                DOn = 0
+                XDSLine = XDSLine.Substring(6)
+                Dim ObjectName As String = iGet(XDSLine, 0, ",")
+                Dim MainClass As String = iGet(XDSLine, 1, ",")
+                Dim StringMainClass As String = MainClassTypeToString(MainClass).Replace(" ", String.Empty)
+                Dim SubClass As String = iGet(XDSLine, 2, ",")
+                Dim StringSubClass As String = SubClass.Replace(" ", String.Empty)
+                If StringSubClass = "NoData" Then StringSubClass = String.Empty
+                If StringSubClass = "<Unknown>" Then Continue For
+                EventsString += "void " + ObjectName + StringMainClass + StringSubClass + "_Event(u8 DAppliesTo) {" + vbCrLf
+                Dim CurrentIndent As Byte = 1
+                Dim IndentOrDedent As Byte = 0
+                Dim Added As Byte = 0
+                For Each Y As String In GetXDSFilter("ACT " + ObjectName + "," + MainClass + "," + SubClass + ",")
+                    Y = SillyFixMe(Y)
+                    Y = Y.Substring(("ACT " + ObjectName + "," + MainClass + "," + SubClass + ",").Length)
+                    Dim ActionName As String = iGet(Y, 0, ",")
+                    If Not File.Exists(AppPath + "Actions\" + ActionName + ".action") Then Continue For
+                    IndentOrDedent = 0
+                    Added = 0
+                    Dim NeedsAppliesToVar As Boolean = False
+                    If Not ActionName = "Execute Code" Then
+                        For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
+                            If X = "INDENT" Then IndentOrDedent = 1
+                            If X = "DEDENT" Then IndentOrDedent = 2
+                            If X.Contains("AppliesTo") Then NeedsAppliesToVar = True
                         Next
-                        For FOn = 0 To ArgumentCount - 1
-                            X = X.Replace("!" + (FOn + 1).ToString + "!", InputtedArgumentValues(FOn))
-                        Next
-                        If NeedsAppliesToVar Then
-                            If IsObject(AppliesToString) Or AppliesToString = "this" Then
-                                X = X.Replace("AppliesTo", "DX" + DOn.ToString)
-                            Else
-                                X = X.Replace("AppliesTo", "ArrayDX" + DOn.ToString + "[DX" + DOn.ToString + "]")
-                            End If
-                            X = X.Replace("DX", "AppliesTo")
-                        End If
-                        X = X.Replace("[Me]", "DAppliesTo")
-                        X = MakeSpaces(CurrentIndent * 2) + X
-                        EventsString += X + vbCrLf
+                    End If
+                    Dim Arguments As String = iGet(Y, 1, ",")
+                    Dim AppliesToString As String = iGet(Y, 2, ",")
+                    If AppliesToString = "<Unknown>" Or Arguments.Contains("<Unknown>") Then Continue For
+                    Dim ArgumentCount As Byte = HowManyChar(Arguments, ";") + 1
+                    Dim InputtedArgumentValues As New List(Of String)
+                    For X As Byte = 0 To ArgumentCount - 1
+                        InputtedArgumentValues.Add(iGet(Arguments, X, ";").ToString.Replace("<com>", ","))
                     Next
-                End If
-                If IndentOrDedent = 0 Then
-                    CurrentIndent -= Added
-                    If Added = 1 Then
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "}" + vbCrLf
-                    ElseIf Added = 2 Then
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "  }" + vbCrLf
-                        EventsString += MakeSpaces(CurrentIndent * 2) + "}" + vbCrLf
+                    'For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
+                    '    If X = "NOAPPLIES" Then ActionSaysIgnoreApplies = True : Exit For
+                    'Next
+                    If Not ActionName = "Execute Code" Then
+                        For Each X As String In ApplyFinders
+                            If Arguments.Contains(X) Then NeedsAppliesToVar = True
+                        Next
                     End If
-                End If
-                DOn += 1
+                    'If Not IgnoreApplies Then NeedsAppliesToVar = True
+                    Dim TempLine As String = String.Empty
+                    ' If ApplicationUsed Then
+                    Dim ToReplace As String = "AppliesTo"
+                    If ActionName = "Execute Code" Then ToReplace = "DAppliesTo"
+                    For X As Byte = 0 To InputtedArgumentValues.Count - 1
+                        For Each D As String In ApplyFinders
+                            Dim NoBrackets As String = D
+                            NoBrackets = NoBrackets.Substring(1)
+                            NoBrackets = NoBrackets.Substring(0, NoBrackets.Length - 1)
+                            InputtedArgumentValues.Item(X) = InputtedArgumentValues(X).Replace(D, "Instances[" + ToReplace + "]." + NoBrackets)
+                        Next
+                        'InputtedArgumentValues.Item(X) = InputtedArgumentValues(X).Replace("[Me]", "DAppliesTo")
+                    Next
+                    '  End If
+                    If NeedsAppliesToVar Then
+                        If AppliesToString = "this" Then
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = DAppliesTo;" + vbCrLf
+                            Added = 0
+                        ElseIf IsObject(AppliesToString) Then
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = 0;" + vbCrLf
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "for (AppliesTo" + DOn.ToString + " = 0; AppliesTo" + DOn.ToString + " < 256; AppliesTo" + DOn.ToString + "++) {" + vbCrLf
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "  if (Instances[AppliesTo" + DOn.ToString + "].InUse && Instances[AppliesTo" + DOn.ToString + "].EName == " + AppliesToString + ") {" + vbCrLf
+                            CurrentIndent += 2
+                            Added = 2
+                        Else
+                            TempLine = "u8 ArrayAppliesTo" + DOn.ToString + "[] = {"
+                            Dim LoopTo As Byte = 0
+                            For I As Byte = 0 To HowManyChar(AppliesToString, " ")
+                                TempLine += iGet(AppliesToString, I, " ") + ", "
+                                LoopTo += 1
+                            Next
+                            TempLine = TempLine.Substring(0, TempLine.Length - 2)
+                            TempLine += "};"
+                            EventsString += MakeSpaces(CurrentIndent * 2) + TempLine + vbCrLf
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "u16 AppliesTo" + DOn.ToString + " = 0;" + vbCrLf
+                            TempLine = MakeSpaces(CurrentIndent * 2) + "for (AppliesTo" + DOn.ToString + " = 0; AppliesTo" + DOn.ToString + " < " + LoopTo.ToString + "; AppliesTo" + DOn.ToString + "++) {"
+                            EventsString += TempLine + vbCrLf
+                            CurrentIndent += 1
+                            Added = 1
+                        End If
+                    End If
+                    'For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
+                    '    If X = "INDENT" Then
+                    '        CurrentIndent += 1
+                    '    End If
+                    '    If X = "DEDENT" Then
+                    '        If CurrentIndent > 0 Then CurrentIndent -= 1
+                    '    End If
+                    'Next
+                    If IndentOrDedent = 1 Then CurrentIndent += 1
+                    If IndentOrDedent = 2 Then
+                        If CurrentIndent > 0 Then CurrentIndent -= 1
+                    End If
+                    If ActionName = "Execute Code" Then
+                        Dim DBASCode As String = Arguments
+                        'Dim BRCount As Int16 = HowManyChar(OriginalCode, "<br|>")
+                        'For i As Int16 = 0 To BRCount
+
+                        'Next
+                        DBASCode = DBASCode.Replace("<br|>", vbCrLf).Replace("<com>", ",").Replace("<sem>", ";")
+                        Dim CCode As String = ScriptParseFromContent("Temp", DBASCode, String.Empty, String.Empty, False, True, False)
+                        For Each X As String In StringToLines(CCode)
+                            EventsString += MakeSpaces(CurrentIndent * 2) + X + vbCrLf
+                        Next
+                    Else
+                        For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
+                            If X.Length = 0 Then Continue For
+                            If X.StartsWith("ARG ") Then Continue For
+                            If X.StartsWith("DISPLAY ") Then Continue For
+                            If X.StartsWith("TYPE ") Then Continue For
+                            If X.StartsWith("ICON ") Then Continue For
+                            If X.StartsWith("CONDITION ") Then Continue For
+                            If X = "INDENT" Then Continue For
+                            If X = "DEDENT" Then Continue For
+                            If X = "NOAPPLIES" Then Continue For
+                            For i As Byte = 0 To 200
+                                If X(0).ToString = " " Then X = X.Substring(1) Else Exit For
+                            Next
+                            For FOn = 0 To ArgumentCount - 1
+                                X = X.Replace("!" + (FOn + 1).ToString + "!", InputtedArgumentValues(FOn))
+                            Next
+                            If NeedsAppliesToVar Then
+                                If IsObject(AppliesToString) Or AppliesToString = "this" Then
+                                    X = X.Replace("AppliesTo", "DX" + DOn.ToString)
+                                Else
+                                    X = X.Replace("AppliesTo", "ArrayDX" + DOn.ToString + "[DX" + DOn.ToString + "]")
+                                End If
+                                X = X.Replace("DX", "AppliesTo")
+                            End If
+                            X = X.Replace("[Me]", "DAppliesTo")
+                            X = MakeSpaces(CurrentIndent * 2) + X
+                            EventsString += X + vbCrLf
+                        Next
+                    End If
+                    If IndentOrDedent = 0 Then
+                        CurrentIndent -= Added
+                        If Added = 1 Then
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "}" + vbCrLf
+                        ElseIf Added = 2 Then
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "  }" + vbCrLf
+                            EventsString += MakeSpaces(CurrentIndent * 2) + "}" + vbCrLf
+                        End If
+                    End If
+                    DOn += 1
+                Next
+                For i = CurrentIndent - 1 To 0 Step -1
+                    EventsString += MakeSpaces(i * 2) + "}" + vbCrLf
+                Next
             Next
-            For i = CurrentIndent - 1 To 0 Step -1
-                EventsString += MakeSpaces(i * 2) + "}" + vbCrLf
-            Next
-        Next
-        'File.WriteAllText(CompilePath + "source\Events.c", EventsString)
-        DOn = 0
-        'Twas here, Marvolo!
-        For Each X As String In GetXDSFilter("ROOM ")
-            X = X.Substring(5)
-            Dim RoomName As String = iGet(X, 0, ",")
-            Dim TopWidth As Int16 = Convert.ToInt16(iGet(X, 1, ","))
-            Dim TopHeight As Int16 = Convert.ToInt16(iGet(X, 2, ","))
-            Dim TopScroll As Boolean = If(iGet(X, 3, ",") = "1", True, False)
-            Dim TopBG As String = iGet(X, 4, ",")
-            Dim BottomWidth As Int16 = Convert.ToInt16(iGet(X, 5, ","))
-            Dim BottomHeight As Int16 = Convert.ToInt16(iGet(X, 6, ","))
-            Dim BottomScroll As Boolean = If(iGet(X, 7, ",") = "1", True, False)
-            Dim BottomBG As String = iGet(X, 8, ",")
-            FinalString += "bool " + RoomName + "(void) {" + vbCrLf
-            FinalString += "  PA_ResetSpriteSys();" + vbCrLf
-            FinalString += "  PA_ResetBgSys();" + vbCrLf
-            If iGet(GetXDSLine("BACKGROUND " + TopBG), 1, ",") = "Nitro" Then
-                If TopBG.Length > 0 Then FinalString += "  FAT_LoadBackground(1, 2, """ + TopBG + """);" + vbCrLf
-                If BottomBG.Length > 0 Then FinalString += "  FAT_LoadBackground(0, 2, """ + BottomBG + """);" + vbCrLf
-            Else
-                If TopBG.Length > 0 Then FinalString += "  PA_LoadBackground(1, 2, &" + TopBG + ");" + vbCrLf
-                If BottomBG.Length > 0 Then FinalString += "  PA_LoadBackground(0, 2, &" + BottomBG + ");" + vbCrLf
-            End If
-            Dim MyPalletLines As New Collection
-            Dim MyNewLine As String = String.Empty
-            For Each p As String In PalletNames
-                Dim PalletNo As Byte = Convert.ToByte(p.Substring(p.IndexOf(",") + 1))
-                If File.ReadAllText(CompilePath + "gfx\PAGfx.ini").Contains("DSGMPal" + PalletNo.ToString) Then
-                    MyNewLine = "  PA_LoadSpritePal(1, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
-                    MyNewLine += " PA_LoadSpritePal(0, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+            'File.WriteAllText(CompilePath + "source\Events.c", EventsString)
+            DOn = 0
+            'Twas here, Marvolo!
+            For Each X As String In GetXDSFilter("ROOM ")
+                X = X.Substring(5)
+                Dim RoomName As String = iGet(X, 0, ",")
+                Dim TopWidth As Int16 = Convert.ToInt16(iGet(X, 1, ","))
+                Dim TopHeight As Int16 = Convert.ToInt16(iGet(X, 2, ","))
+                Dim TopScroll As Boolean = If(iGet(X, 3, ",") = "1", True, False)
+                Dim TopBG As String = iGet(X, 4, ",")
+                Dim BottomWidth As Int16 = Convert.ToInt16(iGet(X, 5, ","))
+                Dim BottomHeight As Int16 = Convert.ToInt16(iGet(X, 6, ","))
+                Dim BottomScroll As Boolean = If(iGet(X, 7, ",") = "1", True, False)
+                Dim BottomBG As String = iGet(X, 8, ",")
+                FinalString += "bool " + RoomName + "(void) {" + vbCrLf
+                FinalString += "  PA_ResetSpriteSys();" + vbCrLf
+                FinalString += "  PA_ResetBgSys();" + vbCrLf
+                If iGet(GetXDSLine("BACKGROUND " + TopBG), 1, ",") = "Nitro" Then
+                    If TopBG.Length > 0 Then FinalString += "  FAT_LoadBackground(1, 2, """ + TopBG + """);" + vbCrLf
+                    If BottomBG.Length > 0 Then FinalString += "  FAT_LoadBackground(0, 2, """ + BottomBG + """);" + vbCrLf
+                Else
+                    If TopBG.Length > 0 Then FinalString += "  PA_LoadBackground(1, 2, &" + TopBG + ");" + vbCrLf
+                    If BottomBG.Length > 0 Then FinalString += "  PA_LoadBackground(0, 2, &" + BottomBG + ");" + vbCrLf
                 End If
-                Dim AlreadyDone As Boolean = False
+                Dim MyPalletLines As New Collection
+                Dim MyNewLine As String = String.Empty
+                For Each p As String In PalletNames
+                    Dim PalletNo As Byte = Convert.ToByte(p.Substring(p.IndexOf(",") + 1))
+                    If File.ReadAllText(CompilePath + "gfx\PAGfx.ini").Contains("DSGMPal" + PalletNo.ToString) Then
+                        MyNewLine = "  PA_LoadSpritePal(1, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+                        MyNewLine += " PA_LoadSpritePal(0, " + PalletNo.ToString + ", (void*)DSGMPal" + PalletNo.ToString + "_Pal);"
+                    End If
+                    Dim AlreadyDone As Boolean = False
+                    For Each MyLine As String In MyPalletLines
+                        If MyLine = MyNewLine Then AlreadyDone = True : Exit For
+                    Next
+                    If Not AlreadyDone Then MyPalletLines.Add(MyNewLine)
+                Next
                 For Each MyLine As String In MyPalletLines
-                    If MyLine = MyNewLine Then AlreadyDone = True : Exit For
+                    FinalString += MyLine + vbCrLf
                 Next
-                If Not AlreadyDone Then MyPalletLines.Add(MyNewLine)
-            Next
-            For Each MyLine As String In MyPalletLines
-                FinalString += MyLine + vbCrLf
-            Next
-            FinalString += "  DSGM_Setup_Room(" + TopWidth.ToString + ", "
-            FinalString += TopHeight.ToString + ", "
-            FinalString += BottomWidth.ToString + ", "
-            FinalString += BottomHeight.ToString + ", 0, 0, 0, 0);" + vbCrLf
-            FinalString += "  PA_LoadText(1, 0, &Default); PA_LoadText(0, 0, &Default);" + vbCrLf
-            DOn = 0
-            For Each Y As String In GetXDSFilter("OBJECTPLOT ")
-                Y = Y.Substring(11)
-                If Not iGet(Y, 1, ",") = RoomName Then Continue For
-                Dim ObjectName As String = iGet(Y, 0, ",")
-                'FinalString += "  // " + ObjectName + vbcrlf
-                Dim ObjectLine As String = GetXDSLine("OBJECT " + ObjectName + ",")
-                Dim Screen As Boolean = If(iGet(Y, 2, ",") = "1", True, False)
-                Dim DX As Int16 = Convert.ToInt16(iGet(Y, 3, ","))
-                Dim DY As Int16 = Convert.ToInt16(iGet(Y, 4, ","))
-                Dim SpriteName As String = iGet(ObjectLine, 1, ",")
-                Dim SpriteLine As String = GetXDSLine("SPRITE " + SpriteName + ",")
-                'Dim DefaultFrame As Int16 = Convert.ToInt16(iget(ObjectLine, 2, ","))
-                FinalString += "  Create_Object(" + ObjectName + ", " + DOn.ToString + ", " + If(Screen, "true", "false") + ", " + DX.ToString + ", " + DY.ToString + ");" + vbCrLf
-                'Dim SW As Byte = Convert.ToByte(iget(SpriteLine, 1, ","))
-                'Dim SH As Byte = Convert.ToByte(iget(SpriteLine, 2, ","))
-                'FinalString += "  Instances[" + DOn.ToString + "].ObjectID = ObjectToID(""" + ObjectName + """);" + vbcrlf
-                'FinalString += "  Instances[" + DOn.ToString + "].InUse = true; Instances[" + DOn.ToString + "].Screen = " + If(Screen = 1, "true", "false") + ";" + vbcrlf
-                'FinalString += "  Instances[" + DOn.ToString + "].X = " + DX.ToString + "; Instances[" + DOn.ToString + "].Y = " + DY.ToString + ";" + vbcrlf
-                'FinalString += "  Instances[" + DOn.ToString + "].Width = " + SW.ToString + "; Instances[" + DOn.ToString + "].Height = " + SH.ToString + ";" + vbcrlf
-                'FinalString += "  Instances[" + DOn.ToString + "].Frame = " + DefaultFrame.ToString + ";" + vbcrlf
-                'If DefaultFrame > 0 Then FinalString += "  Instances[" + DOn.ToString + "].FrameChanged = true;" + vbcrlf
-                'Dim PalletNumber As Byte = 0
-                'For Each PalletString As String In PalletNumbers
-                '    If PalletString.StartsWith(SpriteName + ",") Then
-                '        PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
-                '    End If
-                'Next
-                'FinalString += "  PA_CreateSprite(" + Screen.ToString + ", " + DOn.ToString + ", (void*)" + SpriteName + "_Sprite, OBJ_SIZE_" + SW.ToString + "X" + SH.ToString + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbcrlf
-                'If Not DefaultFrame = 0 Then FinalString += "  PA_SetSpriteAnim(" + Screen + ", " + DOn.ToString + ", " + DefaultFrame.ToString + ");" + vbcrlf
-                'If DoesXDSLineExist("EVENT " + ObjectName + ",1,NoData") Then FinalString += "  " + ObjectName + "Create_Event(" + DOn.ToString + ");" + vbcrlf
-                DOn += 1
-            Next
-            FinalString += "  DSGM_Complete_Room();" + vbCrLf
-            FinalString += "  while(true) {" + vbCrLf
-            DOn = 0
-            Dim HasSuchEvents As Boolean = False
-            For Each Y As String In GetXDSFilter("EVENT ")
-                If iGet(Y, 1, ",") = "7" Then HasSuchEvents = True : Exit For
-            Next
-            If HasSuchEvents Then
-                'FinalString += "    // Step Events" + vbcrlf
-                FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
-                FinalString += "      if (Instances[DSGMPL].InUse) {" + vbCrLf
-                For Each Y As String In GetXDSFilter("OBJECT ")
-                    Y = Y.Substring(7)
+                FinalString += "  DSGM_Setup_Room(" + TopWidth.ToString + ", "
+                FinalString += TopHeight.ToString + ", "
+                FinalString += BottomWidth.ToString + ", "
+                FinalString += BottomHeight.ToString + ", 0, 0, 0, 0);" + vbCrLf
+                FinalString += "  PA_LoadText(1, 0, &Default); PA_LoadText(0, 0, &Default);" + vbCrLf
+                DOn = 0
+                For Each Y As String In GetXDSFilter("OBJECTPLOT ")
+                    Y = Y.Substring(11)
+                    If Not iGet(Y, 1, ",") = RoomName Then Continue For
                     Dim ObjectName As String = iGet(Y, 0, ",")
-                    If DoesXDSLineExist("EVENT " + ObjectName + ",7,NoData") Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") " + ObjectName + "Step_Event(DSGMPL);" + vbCrLf
-                    End If
+                    'FinalString += "  // " + ObjectName + vbcrlf
+                    Dim ObjectLine As String = GetXDSLine("OBJECT " + ObjectName + ",")
+                    Dim Screen As Boolean = If(iGet(Y, 2, ",") = "1", True, False)
+                    Dim DX As Int16 = Convert.ToInt16(iGet(Y, 3, ","))
+                    Dim DY As Int16 = Convert.ToInt16(iGet(Y, 4, ","))
+                    Dim SpriteName As String = iGet(ObjectLine, 1, ",")
+                    Dim SpriteLine As String = GetXDSLine("SPRITE " + SpriteName + ",")
+                    'Dim DefaultFrame As Int16 = Convert.ToInt16(iget(ObjectLine, 2, ","))
+                    FinalString += "  Create_Object(" + ObjectName + ", " + DOn.ToString + ", " + If(Screen, "true", "false") + ", " + DX.ToString + ", " + DY.ToString + ");" + vbCrLf
+                    'Dim SW As Byte = Convert.ToByte(iget(SpriteLine, 1, ","))
+                    'Dim SH As Byte = Convert.ToByte(iget(SpriteLine, 2, ","))
+                    'FinalString += "  Instances[" + DOn.ToString + "].ObjectID = ObjectToID(""" + ObjectName + """);" + vbcrlf
+                    'FinalString += "  Instances[" + DOn.ToString + "].InUse = true; Instances[" + DOn.ToString + "].Screen = " + If(Screen = 1, "true", "false") + ";" + vbcrlf
+                    'FinalString += "  Instances[" + DOn.ToString + "].X = " + DX.ToString + "; Instances[" + DOn.ToString + "].Y = " + DY.ToString + ";" + vbcrlf
+                    'FinalString += "  Instances[" + DOn.ToString + "].Width = " + SW.ToString + "; Instances[" + DOn.ToString + "].Height = " + SH.ToString + ";" + vbcrlf
+                    'FinalString += "  Instances[" + DOn.ToString + "].Frame = " + DefaultFrame.ToString + ";" + vbcrlf
+                    'If DefaultFrame > 0 Then FinalString += "  Instances[" + DOn.ToString + "].FrameChanged = true;" + vbcrlf
+                    'Dim PalletNumber As Byte = 0
+                    'For Each PalletString As String In PalletNumbers
+                    '    If PalletString.StartsWith(SpriteName + ",") Then
+                    '        PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
+                    '    End If
+                    'Next
+                    'FinalString += "  PA_CreateSprite(" + Screen.ToString + ", " + DOn.ToString + ", (void*)" + SpriteName + "_Sprite, OBJ_SIZE_" + SW.ToString + "X" + SH.ToString + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbcrlf
+                    'If Not DefaultFrame = 0 Then FinalString += "  PA_SetSpriteAnim(" + Screen + ", " + DOn.ToString + ", " + DefaultFrame.ToString + ");" + vbcrlf
+                    'If DoesXDSLineExist("EVENT " + ObjectName + ",1,NoData") Then FinalString += "  " + ObjectName + "Create_Event(" + DOn.ToString + ");" + vbcrlf
                     DOn += 1
                 Next
-                FinalString += "      }" + vbCrLf
-                FinalString += "    }" + vbCrLf
-            End If
-            DOn = 0
-            HasSuchEvents = False
-            For Each Y As String In GetXDSFilter("EVENT ")
-                If iGet(Y, 1, ",") = "5" Then HasSuchEvents = True : Exit For
-            Next
-            If HasSuchEvents Then
-                'FinalString += "    // Touch (Stylus) Events" + vbcrlf
-                FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
-                FinalString += "      if (Instances[DSGMPL].InUse) {" + vbCrLf
-                For Each Y As String In GetXDSFilter("OBJECT ")
-                    Dim ObjectName As String = iGet(Y.Substring(7), 0, ",")
-                    If DoesXDSLineExist("EVENT " + ObjectName + ",5,New Press") Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Newpress && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchNewPress_Event(DSGMPL);" + vbCrLf
-                    End If
-                    If DoesXDSLineExist("EVENT " + ObjectName + ",5,Double Press") Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.DblClick && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchDoublePress_Event(DSGMPL);" + vbCrLf
-                    End If
-                    If DoesXDSLineExist("EVENT " + ObjectName + ",5,Held") Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Held && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchHeld_Event(DSGMPL);" + vbCrLf
-                    End If
-                    If DoesXDSLineExist("EVENT " + ObjectName + ",5,Released") Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Released && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchReleased_Event(DSGMPL);" + vbCrLf
-                    End If
-                    DOn += 1
+                FinalString += "  DSGM_Complete_Room();" + vbCrLf
+                FinalString += "  while(true) {" + vbCrLf
+                DOn = 0
+                Dim HasSuchEvents As Boolean = False
+                For Each Y As String In GetXDSFilter("EVENT ")
+                    If iGet(Y, 1, ",") = "7" Then HasSuchEvents = True : Exit For
                 Next
-                FinalString += "      }" + vbCrLf
-                FinalString += "    }" + vbCrLf
-            End If
-            DOn = 0
-            HasSuchEvents = False
-            For Each Y As String In GetXDSFilter("EVENT ")
-                If iGet(Y, 1, ",") = "6" Then HasSuchEvents = True : Exit For
-            Next
-            If HasSuchEvents Then
-                'FinalString += "    // Collision Events" + vbcrlf
-                FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
-                For Each Y As String In GetXDSFilter("OBJECT ")
-                    Y = Y.Substring(7)
-                    Dim ObjectName As String = iGet(Y, 0, ",")
-                    If GetXDSFilter("EVENT " + ObjectName + ",6,").Length > 0 Then
-                        FinalString += "      if (Instances[DSGMPL].InUse && Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
-                        For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",6,")
-                            Dim CollidingObject As String = Z.Substring(Z.LastIndexOf(",") + 1)
-                            FinalString += "        for (DSGMSL = 0; DSGMSL <= 127; DSGMSL++) {" + vbCrLf
-                            FinalString += "          if (Instances[DSGMSL].InUse && Instances[DSGMSL].EName == " + CollidingObject + ") {" + vbCrLf
-                            FinalString += "            if (" + If(GetXDSLine("MIDPOINT_COLLISIONS ").Substring(20) = "1", "Sprite_Collision_Mid(", "Sprite_Collision(") + "DSGMPL, DSGMSL)) " + ObjectName + "Collision" + CollidingObject + "_Event(DSGMPL);" + vbCrLf
-                            FinalString += "          }" + vbCrLf
-                            FinalString += "        }" + vbCrLf
-                        Next
-                        FinalString += "      }" + vbCrLf
-                    End If
-                    DOn += 1
-                Next
-                FinalString += "    }" + vbCrLf
-            End If
-            DOn = 0
-            HasSuchEvents = False
-            For Each Y As String In GetXDSFilter("EVENT ")
-                If iGet(Y, 1, ",") = "2" Then HasSuchEvents = True
-                If iGet(Y, 1, ",") = "3" Then HasSuchEvents = True
-                If iGet(Y, 1, ",") = "4" Then HasSuchEvents = True
-            Next
-            If HasSuchEvents Then
-                'FinalString += "    // Button Events" + vbcrlf
-                FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
-                FinalString += "      if(Instances[DSGMPL].InUse) {" + vbCrLf
-                For Each Y As String In GetXDSFilter("OBJECT ")
-                    Y = Y.Substring(7)
-                    Dim ObjectName As String = iGet(Y, 0, ",")
-                    If GetXDSFilter("EVENT " + ObjectName + ",2,").Length > 0 Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
-                        For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",2,")
-                            Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
-                            FinalString += "          if(Pad.Newpress." + TC + ") " + ObjectName + "ButtonPress" + TC + "_Event(DSGMPL);" + vbCrLf
-                        Next
-                        FinalString += "        }" + vbCrLf
-                    End If
-                    If GetXDSFilter("EVENT " + ObjectName + ",3,").Length > 0 Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
-                        For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",3,")
-                            Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
-                            FinalString += "          if(Pad.Held." + TC + ") " + ObjectName + "ButtonHeld" + TC + "_Event(DSGMPL);" + vbCrLf
-                        Next
-                        FinalString += "        }" + vbCrLf
-                    End If
-                    If GetXDSFilter("EVENT " + ObjectName + ",4,").Length > 0 Then
-                        FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
-                        For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",4,")
-                            Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
-                            FinalString += "          if(Pad.Released." + TC + ") " + ObjectName + "ButtonReleased" + TC + "_Event(DSGMPL);" + vbCrLf
-                        Next
-                        FinalString += "        }" + vbCrLf
-                    End If
-                    DOn += 1
-                Next
-                FinalString += "      }" + vbCrLf
-                FinalString += "    }" + vbCrLf
-            End If
-            FinalString += "    Frames += 1;" + vbCrLf
-            FinalString += "    RoomFrames += 1;" + vbCrLf
-            FinalString += "    if (Frames % 60 == 0) Seconds += 1;" + vbCrLf
-            FinalString += "    if (Frames % 60 == 0) RoomSeconds += 1;" + vbCrLf
-            'FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbcrlf
-            'FinalString += "      if (Instances[DSGMPL].InUse && Instances[DSGMPL].FrameChanged) {" + vbcrlf
-            'FinalString += "        PA_SetSpriteAnim(Instances[DSGMPL].Screen, DSGMPL, Instances[DSGMPL].Frame);" + vbcrlf
-            'FinalString += "        Instances[DSGMPL].FrameChanged = false;" + vbcrlf
-            'FinalString += "      }" + vbcrlf
-            'FinalString += "    }" + vbcrlf
-            'FinalString += "    for (DSGMPL = 0; DSGMPL < 255; DSGMPL++) {" + vbcrlf
-            'FinalString += "      if (Instances[DSGMPL].InUse) Instances[DSGMPL].FrameChanged = false;" + vbcrlf
-            'FinalString += "    }" + vbcrlf
-            'FinalString += "    Frames += 1;" + vbcrlf
-            'FinalString += "    RoomFrames += 1;" + vbcrlf
-            'FinalString += "    if (Frames % 60 == 0) Seconds += 1;" + vbcrlf
-            'FinalString += "    if (Frames % 60 == 0) RoomSeconds += 1;" + vbcrlf
-            FinalString += "    DSGM_ObjectsSync();" + vbCrLf
-            FinalString += "    DSGM_AlarmsSync();" + vbCrLf
-            FinalString += "    PA_WaitForVBL();" + vbCrLf
-            If TopScroll Then FinalString += _
-            "    PA_EasyBgScrollXY(1, 2, RoomData.TopX, RoomData.TopY);" + vbCrLf
-            If BottomScroll Then FinalString += _
-            "    PA_EasyBgScrollXY(0, 2, RoomData.BottomX, RoomData.BottomY);" + vbCrLf
-            FinalString += "  }" + vbCrLf
-            FinalString += "  return true;" + vbCrLf
-            FinalString += "}" + vbCrLf
-        Next
-        DOn = 0
-        'Twas here 2, Marvolo!
-        'FinalString += "  return true;" + vbcrlf
-        'FinalString += "}" + vbcrlf + vbcrlf
-        'File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
-        File.WriteAllText(CompilePath + "source\main.c", FinalString)
-        Dim DefsString As String = String.Empty
-        For Each XDSLine As String In GetXDSFilter("ROOM ")
-            DefsString += "bool " + iGet(XDSLine.Substring(5), 0, ",") + "();" + vbCrLf
-        Next
-        For Each XDSLine As String In GetXDSFilter("SCRIPT ")
-            Dim ScriptName As String = XDSLine.Substring(7)
-            ScriptName = ScriptName.Substring(0, ScriptName.LastIndexOf(","))
-            DefsString += "int " + ScriptName + "("
-            Dim ArgumentString As String = String.Empty
-            For Each YXDSLine As String In GetXDSFilter("SCRIPTARG " + ScriptName + ",")
-                Dim ArgumentName As String = iGet(YXDSLine, 1, ",")
-                Dim ArgumentType As String = GenerateCType(iGet(YXDSLine, 2, ","))
-                ArgumentString += ArgumentType + " "
-                If ArgumentType = "char" Then ArgumentString += "*"
-                ArgumentString += ArgumentName + ", "
-            Next
-            If ArgumentString.Length = 0 Then
-                DefsString += "void"
-            Else
-                ArgumentString = ArgumentString.Substring(0, ArgumentString.Length - 2)
-                DefsString += ArgumentString
-            End If
-            DefsString += ");" + vbCrLf
-        Next
-        'fsdds()
-        File.WriteAllText(CompilePath + "include\Defines.h", DefsString)
-        'File.WriteAllBytes(CompilePath + "include\ActionWorks.h", My.Resources.ActionWorks)
-        Dim GameString As String = String.Empty
-        GameString += "#include ""dsgm_gfx.h""" + vbCrLf
-        GameString += "#include ""custom_gfx.h""" + vbCrLf
-        GameString += "#include ""Defines.h""" + vbCrLf
-        GameString += "#include ""ActionWorks.h""" + vbCrLf + vbCrLf
-        For Each X As String In GetXDSFilter("INCLUDE ")
-            Dim FileName As String = X.Substring(8)
-            GameString += "#include """ + FileName + """" + vbCrLf
-            IO.File.Copy(SessionPath + "IncludeFiles\" + FileName, CompilePath + "include\" + FileName)
-        Next
-        For Each X As String In GetXDSFilter("SOUND ")
-            If iGet(X, 1, ",") = "1" Then Continue For
-            X = X.Substring(6)
-            Dim SoundName As String = iGet(X, 0, ",")
-            If File.Exists(CompilePath + "data\" + SoundName + ".raw") Then
-                GameString += "#include """ + SoundName + ".h""" + vbCrLf
-            Else
-                GameString += "// Error converting " + SoundName + " with SOX! Sorry folks, use a proper WAV next time." + vbCrLf
-            End If
-        Next
-        GameString += vbCrLf
-        For Each XDSLine As String In GetXDSFilter("STRUCT ")
-            Dim StructureName As String = XDSLine.Substring(7)
-            GameString += "typedef struct {" + vbCrLf
-            For Each Y As String In GetXDSFilter("STRUCTMEMBER " + StructureName + ",")
-                Y = Y.Substring(("STRUCTMEMBER " + StructureName).Length + 1)
-                Dim ItemName As String = Y.Substring(0, Y.IndexOf(","))
-                Dim ItemType As String = Y.Substring(ItemName.Length + 1)
-                ItemType = ItemType.Substring(0, ItemType.IndexOf(","))
-                ItemType = GenerateCType(ItemType)
-                Dim ItemValue As String = Y.Substring(Y.LastIndexOf(",") + 1).Replace("<comma>", ",")
-                GameString += "  " + ItemType + " " + If(ItemType = "char", "*", String.Empty) + ItemName + ";" + vbCrLf
-            Next
-            GameString += "} " + StructureName + ";" + vbCrLf
-            'GameString += StructureName + "Struct " + StructureName + ";" + vbcrlf
-        Next
-        GameString += vbCrLf
-        For Each XDSLine As String In GetXDSFilter("GLOBAL ")
-            Dim TempString As String = String.Empty
-            XDSLine = XDSLine.Substring(7)
-            Dim VariableName As String = iGet(XDSLine, 0, ",")
-            Dim VariableType As String = iGet(XDSLine, 1, ",")
-            Dim CVariableType As String = GenerateCType(VariableType)
-            'If RealVariableType = "pie" Then RealVariableType = VariableType
-            Dim VariableValue As String = iGet(XDSLine, 2, ",")
-            TempString = CVariableType + " " + VariableName
-            If CVariableType.ToLower = "char" Then
-                TempString += "[128]"
-            Else
-                If Not DoesXDSLineExist("STRUCT " + VariableType) Then
-                    If VariableValue.Length > 0 Then TempString += " = " + VariableValue
+                If HasSuchEvents Then
+                    'FinalString += "    // Step Events" + vbcrlf
+                    FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
+                    FinalString += "      if (Instances[DSGMPL].InUse) {" + vbCrLf
+                    For Each Y As String In GetXDSFilter("OBJECT ")
+                        Y = Y.Substring(7)
+                        Dim ObjectName As String = iGet(Y, 0, ",")
+                        If DoesXDSLineExist("EVENT " + ObjectName + ",7,NoData") Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") " + ObjectName + "Step_Event(DSGMPL);" + vbCrLf
+                        End If
+                        DOn += 1
+                    Next
+                    FinalString += "      }" + vbCrLf
+                    FinalString += "    }" + vbCrLf
                 End If
-            End If
-            GameString += TempString + ";" + vbCrLf
-        Next
-        GameString += vbCrLf
-        For Each XDSLine As String In GetXDSFilter("ARRAY ")
-            XDSLine = XDSLine.Substring(6)
-            Dim VariableName As String = iGet(XDSLine, 0, ",")
-            Dim VariableType As Byte = Convert.ToByte(iGet(XDSLine, 1, ","))
-            Dim RealVariableType As String = String.Empty
-            If VariableType = 0 Then RealVariableType = "s32"
-            If VariableType = 1 Then RealVariableType = "bool"
-            Dim ValuesString As String = iGet(XDSLine, 2, ",")
-            ValuesString = ValuesString.Replace(";", ", ")
-            GameString += RealVariableType + " " + VariableName + "[] = {" + ValuesString + "};" + vbCrLf
-        Next
-        GameString += vbCrLf
-        If GetXDSFilter("OBJECT ").Length > 0 Then
-            GameString += "enum ObjectEnums { "
-            Dim ELooper As Byte = 1
-            For Each P As String In GetXDSFilter("OBJECT ")
-                P = P.Substring(7)
-                P = P.Substring(0, P.IndexOf(","))
-                GameString += P + " = " + ELooper.ToString + ", "
-                ELooper += 1
+                DOn = 0
+                HasSuchEvents = False
+                For Each Y As String In GetXDSFilter("EVENT ")
+                    If iGet(Y, 1, ",") = "5" Then HasSuchEvents = True : Exit For
+                Next
+                If HasSuchEvents Then
+                    'FinalString += "    // Touch (Stylus) Events" + vbcrlf
+                    FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
+                    FinalString += "      if (Instances[DSGMPL].InUse) {" + vbCrLf
+                    For Each Y As String In GetXDSFilter("OBJECT ")
+                        Dim ObjectName As String = iGet(Y.Substring(7), 0, ",")
+                        If DoesXDSLineExist("EVENT " + ObjectName + ",5,New Press") Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Newpress && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchNewPress_Event(DSGMPL);" + vbCrLf
+                        End If
+                        If DoesXDSLineExist("EVENT " + ObjectName + ",5,Double Press") Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.DblClick && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchDoublePress_Event(DSGMPL);" + vbCrLf
+                        End If
+                        If DoesXDSLineExist("EVENT " + ObjectName + ",5,Held") Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Held && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchHeld_Event(DSGMPL);" + vbCrLf
+                        End If
+                        If DoesXDSLineExist("EVENT " + ObjectName + ",5,Released") Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + " && Stylus.Released && PA_SpriteTouched(DSGMPL)) " + ObjectName + "TouchReleased_Event(DSGMPL);" + vbCrLf
+                        End If
+                        DOn += 1
+                    Next
+                    FinalString += "      }" + vbCrLf
+                    FinalString += "    }" + vbCrLf
+                End If
+                DOn = 0
+                HasSuchEvents = False
+                For Each Y As String In GetXDSFilter("EVENT ")
+                    If iGet(Y, 1, ",") = "6" Then HasSuchEvents = True : Exit For
+                Next
+                If HasSuchEvents Then
+                    'FinalString += "    // Collision Events" + vbcrlf
+                    FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
+                    For Each Y As String In GetXDSFilter("OBJECT ")
+                        Y = Y.Substring(7)
+                        Dim ObjectName As String = iGet(Y, 0, ",")
+                        If GetXDSFilter("EVENT " + ObjectName + ",6,").Length > 0 Then
+                            FinalString += "      if (Instances[DSGMPL].InUse && Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
+                            For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",6,")
+                                Dim CollidingObject As String = Z.Substring(Z.LastIndexOf(",") + 1)
+                                FinalString += "        for (DSGMSL = 0; DSGMSL <= 127; DSGMSL++) {" + vbCrLf
+                                FinalString += "          if (Instances[DSGMSL].InUse && Instances[DSGMSL].EName == " + CollidingObject + ") {" + vbCrLf
+                                FinalString += "            if (" + If(GetXDSLine("MIDPOINT_COLLISIONS ").Substring(20) = "1", "Sprite_Collision_Mid(", "Sprite_Collision(") + "DSGMPL, DSGMSL)) " + ObjectName + "Collision" + CollidingObject + "_Event(DSGMPL);" + vbCrLf
+                                FinalString += "          }" + vbCrLf
+                                FinalString += "        }" + vbCrLf
+                            Next
+                            FinalString += "      }" + vbCrLf
+                        End If
+                        DOn += 1
+                    Next
+                    FinalString += "    }" + vbCrLf
+                End If
+                DOn = 0
+                HasSuchEvents = False
+                For Each Y As String In GetXDSFilter("EVENT ")
+                    If iGet(Y, 1, ",") = "2" Then HasSuchEvents = True
+                    If iGet(Y, 1, ",") = "3" Then HasSuchEvents = True
+                    If iGet(Y, 1, ",") = "4" Then HasSuchEvents = True
+                Next
+                If HasSuchEvents Then
+                    'FinalString += "    // Button Events" + vbcrlf
+                    FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbCrLf
+                    FinalString += "      if(Instances[DSGMPL].InUse) {" + vbCrLf
+                    For Each Y As String In GetXDSFilter("OBJECT ")
+                        Y = Y.Substring(7)
+                        Dim ObjectName As String = iGet(Y, 0, ",")
+                        If GetXDSFilter("EVENT " + ObjectName + ",2,").Length > 0 Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
+                            For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",2,")
+                                Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
+                                FinalString += "          if(Pad.Newpress." + TC + ") " + ObjectName + "ButtonPress" + TC + "_Event(DSGMPL);" + vbCrLf
+                            Next
+                            FinalString += "        }" + vbCrLf
+                        End If
+                        If GetXDSFilter("EVENT " + ObjectName + ",3,").Length > 0 Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
+                            For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",3,")
+                                Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
+                                FinalString += "          if(Pad.Held." + TC + ") " + ObjectName + "ButtonHeld" + TC + "_Event(DSGMPL);" + vbCrLf
+                            Next
+                            FinalString += "        }" + vbCrLf
+                        End If
+                        If GetXDSFilter("EVENT " + ObjectName + ",4,").Length > 0 Then
+                            FinalString += "        if (Instances[DSGMPL].EName == " + ObjectName + ") {" + vbCrLf
+                            For Each Z As String In GetXDSFilter("EVENT " + ObjectName + ",4,")
+                                Dim TC As String = Z.Substring(Z.LastIndexOf(",") + 1)
+                                FinalString += "          if(Pad.Released." + TC + ") " + ObjectName + "ButtonReleased" + TC + "_Event(DSGMPL);" + vbCrLf
+                            Next
+                            FinalString += "        }" + vbCrLf
+                        End If
+                        DOn += 1
+                    Next
+                    FinalString += "      }" + vbCrLf
+                    FinalString += "    }" + vbCrLf
+                End If
+                FinalString += "    Frames += 1;" + vbCrLf
+                FinalString += "    RoomFrames += 1;" + vbCrLf
+                FinalString += "    if (Frames % 60 == 0) Seconds += 1;" + vbCrLf
+                FinalString += "    if (Frames % 60 == 0) RoomSeconds += 1;" + vbCrLf
+                'FinalString += "    for (DSGMPL = 0; DSGMPL <= 127; DSGMPL++) {" + vbcrlf
+                'FinalString += "      if (Instances[DSGMPL].InUse && Instances[DSGMPL].FrameChanged) {" + vbcrlf
+                'FinalString += "        PA_SetSpriteAnim(Instances[DSGMPL].Screen, DSGMPL, Instances[DSGMPL].Frame);" + vbcrlf
+                'FinalString += "        Instances[DSGMPL].FrameChanged = false;" + vbcrlf
+                'FinalString += "      }" + vbcrlf
+                'FinalString += "    }" + vbcrlf
+                'FinalString += "    for (DSGMPL = 0; DSGMPL < 255; DSGMPL++) {" + vbcrlf
+                'FinalString += "      if (Instances[DSGMPL].InUse) Instances[DSGMPL].FrameChanged = false;" + vbcrlf
+                'FinalString += "    }" + vbcrlf
+                'FinalString += "    Frames += 1;" + vbcrlf
+                'FinalString += "    RoomFrames += 1;" + vbcrlf
+                'FinalString += "    if (Frames % 60 == 0) Seconds += 1;" + vbcrlf
+                'FinalString += "    if (Frames % 60 == 0) RoomSeconds += 1;" + vbcrlf
+                FinalString += "    DSGM_ObjectsSync();" + vbCrLf
+                FinalString += "    DSGM_AlarmsSync();" + vbCrLf
+                FinalString += "    PA_WaitForVBL();" + vbCrLf
+                If TopScroll Then FinalString += _
+                "    PA_EasyBgScrollXY(1, 2, RoomData.TopX, RoomData.TopY);" + vbCrLf
+                If BottomScroll Then FinalString += _
+                "    PA_EasyBgScrollXY(0, 2, RoomData.BottomX, RoomData.BottomY);" + vbCrLf
+                FinalString += "  }" + vbCrLf
+                FinalString += "  return true;" + vbCrLf
+                FinalString += "}" + vbCrLf
             Next
-            GameString += " };" + vbCrLf
-        End If
-        GameString += "void Set_Sprite(u8 InstanceID, char *SpriteName, bool DeleteOld);" + vbCrLf
-        GameString += "void Create_Object(u8 ObjectEnum, u8 InstanceID, bool Screen, s16 X, s16 Y);" + vbCrLf
-        GameString += "u8 Sprite_Get_ID(char *SpriteName);" + vbCrLf
-        GameString += "u8 Room_Get_Index(char *RoomName);" + vbCrLf
-        GameString += "void Goto_Room_Backend(u8 RoomIndex);" + vbCrLf
-        GameString += "u8 Count_Instances(u8 ObjectEnum);" + vbCrLf
-        GameString += "void Goto_Next_Room(void);" + vbCrLf + vbCrLf
-        GameString += EventsString + vbCrLf
-        For Each XDSLine As String In GetXDSFilter("SCRIPT ")
-            XDSLine = XDSLine.Substring(7)
-            Dim C As Boolean = (XDSLine.EndsWith(",0"))
-            XDSLine = XDSLine.Substring(0, XDSLine.LastIndexOf(","))
-            GameString += vbCrLf + ScriptParse(XDSLine, C) + vbCrLf
-        Next
-        GameString += vbCrLf
-        'GameString += "s16 score = " + GetXDSLine("SCORE ").ToString.Substring(6) + ";" + vbcrlf
-        'GameString += "s16 lives = " + GetXDSLine("LIVES ").ToString.Substring(6) + ";" + vbcrlf
-        'GameString += "s16 health = " + GetXDSLine("HEALTH ").ToString.Substring(7) + ";" + vbcrlf
-        'GameString += "u8 RoomCount = " + GetXDSFilter("ROOM ").Length.ToString + ";" + vbcrlf
-        'GameString += "u8 CurrentRoom = 0;" + vbcrlf + vbcrlf
-        DOn = 0
-        GameString += "void Set_Sprite(u8 InstanceID, char *SpriteName, bool DeleteOld) {" + vbCrLf
-        GameString += "  Instances[InstanceID].HasSprite = true;" + vbCrLf
-        GameString += "  if (DeleteOld) PA_DeleteSprite(Instances[InstanceID].Screen, InstanceID);" + vbCrLf
-        If GetXDSFilter("SPRITE ").Length > 0 Then
-            GameString += "  switch(Sprite_Get_ID(SpriteName)) {" + vbCrLf
+            DOn = 0
+            'Twas here 2, Marvolo!
+            'FinalString += "  return true;" + vbcrlf
+            'FinalString += "}" + vbcrlf + vbcrlf
+            'File.WriteAllText(CompilePath + "gfx\PAGfx.ini", PAini)
+            File.WriteAllText(CompilePath + "source\main.c", FinalString)
+            Dim DefsString As String = String.Empty
+            For Each XDSLine As String In GetXDSFilter("ROOM ")
+                DefsString += "bool " + iGet(XDSLine.Substring(5), 0, ",") + "();" + vbCrLf
+            Next
+            For Each XDSLine As String In GetXDSFilter("SCRIPT ")
+                Dim ScriptName As String = XDSLine.Substring(7)
+                ScriptName = ScriptName.Substring(0, ScriptName.LastIndexOf(","))
+                DefsString += "int " + ScriptName + "("
+                Dim ArgumentString As String = String.Empty
+                For Each YXDSLine As String In GetXDSFilter("SCRIPTARG " + ScriptName + ",")
+                    Dim ArgumentName As String = iGet(YXDSLine, 1, ",")
+                    Dim ArgumentType As String = GenerateCType(iGet(YXDSLine, 2, ","))
+                    ArgumentString += ArgumentType + " "
+                    If ArgumentType = "char" Then ArgumentString += "*"
+                    ArgumentString += ArgumentName + ", "
+                Next
+                If ArgumentString.Length = 0 Then
+                    DefsString += "void"
+                Else
+                    ArgumentString = ArgumentString.Substring(0, ArgumentString.Length - 2)
+                    DefsString += ArgumentString
+                End If
+                DefsString += ");" + vbCrLf
+            Next
+            'fsdds()
+            File.WriteAllText(CompilePath + "include\Defines.h", DefsString)
+            'File.WriteAllBytes(CompilePath + "include\ActionWorks.h", My.Resources.ActionWorks)
+            Dim GameString As String = String.Empty
+            GameString += "#include ""dsgm_gfx.h""" + vbCrLf
+            GameString += "#include ""custom_gfx.h""" + vbCrLf
+            GameString += "#include ""Defines.h""" + vbCrLf
+            GameString += "#include ""ActionWorks.h""" + vbCrLf + vbCrLf
+            For Each X As String In GetXDSFilter("INCLUDE ")
+                Dim FileName As String = X.Substring(8)
+                GameString += "#include """ + FileName + """" + vbCrLf
+                IO.File.Copy(SessionPath + "IncludeFiles\" + FileName, CompilePath + "include\" + FileName)
+            Next
+            For Each X As String In GetXDSFilter("SOUND ")
+                If iGet(X, 1, ",") = "1" Then Continue For
+                X = X.Substring(6)
+                Dim SoundName As String = iGet(X, 0, ",")
+                If File.Exists(CompilePath + "data\" + SoundName + ".raw") Then
+                    GameString += "#include """ + SoundName + ".h""" + vbCrLf
+                Else
+                    GameString += "// Error converting " + SoundName + " with SOX! Sorry folks, use a proper WAV next time." + vbCrLf
+                End If
+            Next
+            GameString += vbCrLf
+            For Each XDSLine As String In GetXDSFilter("STRUCT ")
+                Dim StructureName As String = XDSLine.Substring(7)
+                GameString += "typedef struct {" + vbCrLf
+                For Each Y As String In GetXDSFilter("STRUCTMEMBER " + StructureName + ",")
+                    Y = Y.Substring(("STRUCTMEMBER " + StructureName).Length + 1)
+                    Dim ItemName As String = Y.Substring(0, Y.IndexOf(","))
+                    Dim ItemType As String = Y.Substring(ItemName.Length + 1)
+                    ItemType = ItemType.Substring(0, ItemType.IndexOf(","))
+                    ItemType = GenerateCType(ItemType)
+                    Dim ItemValue As String = Y.Substring(Y.LastIndexOf(",") + 1).Replace("<comma>", ",")
+                    GameString += "  " + ItemType + " " + If(ItemType = "char", "*", String.Empty) + ItemName + ";" + vbCrLf
+                Next
+                GameString += "} " + StructureName + ";" + vbCrLf
+                'GameString += StructureName + "Struct " + StructureName + ";" + vbcrlf
+            Next
+            GameString += vbCrLf
+            For Each XDSLine As String In GetXDSFilter("GLOBAL ")
+                Dim TempString As String = String.Empty
+                XDSLine = XDSLine.Substring(7)
+                Dim VariableName As String = iGet(XDSLine, 0, ",")
+                Dim VariableType As String = iGet(XDSLine, 1, ",")
+                Dim CVariableType As String = GenerateCType(VariableType)
+                'If RealVariableType = "pie" Then RealVariableType = VariableType
+                Dim VariableValue As String = iGet(XDSLine, 2, ",")
+                TempString = CVariableType + " " + VariableName
+                If CVariableType.ToLower = "char" Then
+                    TempString += "[128]"
+                Else
+                    If Not DoesXDSLineExist("STRUCT " + VariableType) Then
+                        If VariableValue.Length > 0 Then TempString += " = " + VariableValue
+                    End If
+                End If
+                GameString += TempString + ";" + vbCrLf
+            Next
+            GameString += vbCrLf
+            For Each XDSLine As String In GetXDSFilter("ARRAY ")
+                XDSLine = XDSLine.Substring(6)
+                Dim VariableName As String = iGet(XDSLine, 0, ",")
+                Dim VariableType As Byte = Convert.ToByte(iGet(XDSLine, 1, ","))
+                Dim RealVariableType As String = String.Empty
+                If VariableType = 0 Then RealVariableType = "s32"
+                If VariableType = 1 Then RealVariableType = "bool"
+                Dim ValuesString As String = iGet(XDSLine, 2, ",")
+                ValuesString = ValuesString.Replace(";", ", ")
+                GameString += RealVariableType + " " + VariableName + "[] = {" + ValuesString + "};" + vbCrLf
+            Next
+            GameString += vbCrLf
+            If GetXDSFilter("OBJECT ").Length > 0 Then
+                GameString += "enum ObjectEnums { "
+                Dim ELooper As Byte = 1
+                For Each P As String In GetXDSFilter("OBJECT ")
+                    P = P.Substring(7)
+                    P = P.Substring(0, P.IndexOf(","))
+                    GameString += P + " = " + ELooper.ToString + ", "
+                    ELooper += 1
+                Next
+                GameString += " };" + vbCrLf
+            End If
+            GameString += "void Set_Sprite(u8 InstanceID, char *SpriteName, bool DeleteOld);" + vbCrLf
+            GameString += "void Create_Object(u8 ObjectEnum, u8 InstanceID, bool Screen, s16 X, s16 Y);" + vbCrLf
+            GameString += "u8 Sprite_Get_ID(char *SpriteName);" + vbCrLf
+            GameString += "u8 Room_Get_Index(char *RoomName);" + vbCrLf
+            GameString += "void Goto_Room_Backend(u8 RoomIndex);" + vbCrLf
+            GameString += "u8 Count_Instances(u8 ObjectEnum);" + vbCrLf
+            GameString += "void Goto_Next_Room(void);" + vbCrLf + vbCrLf
+            GameString += EventsString + vbCrLf
+            For Each XDSLine As String In GetXDSFilter("SCRIPT ")
+                XDSLine = XDSLine.Substring(7)
+                Dim C As Boolean = (XDSLine.EndsWith(",0"))
+                XDSLine = XDSLine.Substring(0, XDSLine.LastIndexOf(","))
+                GameString += vbCrLf + ScriptParse(XDSLine, C) + vbCrLf
+            Next
+            GameString += vbCrLf
+            'GameString += "s16 score = " + GetXDSLine("SCORE ").ToString.Substring(6) + ";" + vbcrlf
+            'GameString += "s16 lives = " + GetXDSLine("LIVES ").ToString.Substring(6) + ";" + vbcrlf
+            'GameString += "s16 health = " + GetXDSLine("HEALTH ").ToString.Substring(7) + ";" + vbcrlf
+            'GameString += "u8 RoomCount = " + GetXDSFilter("ROOM ").Length.ToString + ";" + vbcrlf
+            'GameString += "u8 CurrentRoom = 0;" + vbcrlf + vbcrlf
+            DOn = 0
+            GameString += "void Set_Sprite(u8 InstanceID, char *SpriteName, bool DeleteOld) {" + vbCrLf
+            GameString += "  Instances[InstanceID].HasSprite = true;" + vbCrLf
+            GameString += "  if (DeleteOld) PA_DeleteSprite(Instances[InstanceID].Screen, InstanceID);" + vbCrLf
+            If GetXDSFilter("SPRITE ").Length > 0 Then
+                GameString += "  switch(Sprite_Get_ID(SpriteName)) {" + vbCrLf
+                For Each X As String In GetXDSFilter("SPRITE ")
+                    X = X.Substring(7)
+                    Dim SpriteName As String = iGet(X, 0, ",")
+                    Dim SW As String = iGet(X, 1, ",")
+                    Dim SH As String = iGet(X, 2, ",")
+                    Dim PalletNumber As Byte = 0
+                    Dim PalletNumber_Nitro As Byte = 0
+                    If iGet(X, 3, ",") = "Nitro" Then
+                        For Each PalletString_Nitro As String In PalletNumbers_Nitro
+                            If PalletString_Nitro.StartsWith(SpriteName + ",") Then
+                                PalletNumber_Nitro = Convert.ToByte(PalletString_Nitro.Substring(PalletString_Nitro.IndexOf(",") + 1))
+                            End If
+                        Next
+                        PalletNumber = PalletNumbers.Count
+                    Else
+                        For Each PalletString As String In PalletNumbers
+                            If PalletString.StartsWith(SpriteName + ",") Then
+                                PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
+                            End If
+                        Next
+                    End If
+                    GameString += "    case " + DOn.ToString + ":" + vbCrLf
+                    GameString += "      Instances[InstanceID].Width = " + SW + "; Instances[InstanceID].Height = " + SH + ";" + vbCrLf
+
+                    If iGet(X, 3, ",") = "Nitro" Then
+                        'Fix palette
+                        ' Nitro + DSGM
+                        GameString += "      FAT_BasicCreateSprite(Instances[InstanceID].Screen, InstanceID, " + (PalletNumber_Nitro + PalletNumber).ToString + ", """ + SpriteName + "_Sprite.bin"", """ + "NitroPal" + PalletNumber_Nitro.ToString + "_Pal.bin"", OBJ_SIZE_" + SW + "X" + SH + ", 256, 192);" + vbCrLf
+                    Else
+                        GameString += "      PA_CreateSprite(Instances[InstanceID].Screen, InstanceID, (void*)" + SpriteName + "_Sprite, " + _
+                                             "OBJ_SIZE_" + SW + "X" + SH + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbCrLf
+                    End If
+
+                    GameString += "      break;" + vbCrLf
+                    DOn += 1
+                Next
+                GameString += "  }" + vbCrLf
+            End If
+            'FinalString += "  return true;" + vbcrlf
+            GameString += "}" + vbCrLf + vbCrLf
+            DOn = 0
+            GameString += "void Create_Object(u8 ObjectEnum, u8 InstanceID, bool Screen, s16 X, s16 Y) {" + vbCrLf
+            'GameString += "  strcpy(Instances[InstanceID].Name, ObjectName);" + vbCrLf
+            GameString += "  Instances[InstanceID].EName = ObjectEnum;"
+            GameString += "  Instances[InstanceID].InUse = true; Instances[InstanceID].Screen = Screen;" + vbCrLf
+            GameString += "  Instances[InstanceID].OriginalX = X; Instances[InstanceID].OriginalY = Y;" + vbCrLf
+            GameString += "  Instances[InstanceID].X = X; Instances[InstanceID].Y = Y;" + vbCrLf
+            GameString += "  Instances[InstanceID].VX = 0; Instances[InstanceID].VY = 0;" + vbCrLf
+            If GetXDSFilter("OBJECT ").Length > 0 Then
+                For Each X As String In GetXDSFilter("OBJECT ")
+                    X = X.Substring(7)
+                    Dim ObjectName As String = iGet(X, 0, ",")
+                    Dim ObjectFrame As Int16 = Convert.ToInt16(iGet(X, 2, ","))
+                    Dim SpriteName As String = iGet(GetXDSLine("OBJECT " + ObjectName + ","), 1, ",")
+                    If DOn = 0 Then
+                        GameString += "  if (ObjectEnum == " + ObjectName + ") {" + vbCrLf
+                    Else
+                        GameString += "  } else if (ObjectEnum == " + ObjectName + ") {" + vbCrLf
+                    End If
+                    If Not SpriteName = "None" Then
+                        Dim SpriteLine As String = GetXDSLine("SPRITE " + SpriteName + ",")
+                        Dim SW As Byte = Convert.ToByte(iGet(SpriteLine, 1, ","))
+                        Dim SH As Byte = Convert.ToByte(iGet(SpriteLine, 2, ","))
+                        GameString += "     Instances[InstanceID].HasSprite = true;" + vbCrLf
+                        GameString += "     Set_Sprite(InstanceID, """ + SpriteName + """, false);" + vbCrLf
+                        If ObjectFrame > 0 Then GameString += "     Set_Frame(InstanceID, " + ObjectFrame.ToString + ");" + vbCrLf
+                    Else
+                        GameString += "     Instances[InstanceID].HasSprite = false;" + vbCrLf
+                        'FinalString += "     PA_CreateSprite(Screen, InstanceID, (void*)" + SpriteName + "_Sprite, OBJ_SIZE_" + SW.ToString + "X" + SH.ToString + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbcrlf
+                    End If
+                    'FinalString += "     #ifdef " + ObjectName + "CreateExists" + vbcrlf
+                    If DoesXDSLineExist("EVENT " + ObjectName + ",1,NoData") Then
+                        GameString += "     " + ObjectName + "Create_Event(InstanceID);" + vbCrLf
+                    End If
+                    'FinalString += "       " + ObjectName + "Create_Event(" + DOn.ToString + ");" + vbcrlf
+                    'FinalString += "     #endif" + vbcrlf
+                    'GameString += "     break;" + vbcrlf
+                    DOn += 1
+                Next
+                GameString += "  }" + vbCrLf + vbCrLf
+            End If
+            'GameString += "  return true;" + vbcrlf
+            GameString += "}" + vbCrLf
+            DOn = 0
+            GameString += "u8 Sprite_Get_ID(char *SpriteName) {" + vbCrLf
             For Each X As String In GetXDSFilter("SPRITE ")
                 X = X.Substring(7)
                 Dim SpriteName As String = iGet(X, 0, ",")
-                Dim SW As String = iGet(X, 1, ",")
-                Dim SH As String = iGet(X, 2, ",")
-                Dim PalletNumber As Byte = 0
-                Dim PalletNumber_Nitro As Byte = 0
-                If iGet(X, 3, ",") = "Nitro" Then
-                    For Each PalletString_Nitro As String In PalletNumbers_Nitro
-                        If PalletString_Nitro.StartsWith(SpriteName + ",") Then
-                            PalletNumber_Nitro = Convert.ToByte(PalletString_Nitro.Substring(PalletString_Nitro.IndexOf(",") + 1))
-                        End If
-                    Next
-                    PalletNumber = PalletNumbers.Count
-                Else
+                GameString += " if (strcmp(SpriteName, """ + SpriteName + """) == 0) return " + DOn.ToString + ";" + vbCrLf
+                DOn += 1
+            Next
+            GameString += " return 0;" + vbCrLf
+            GameString += "}" + vbCrLf + vbCrLf
+            DOn = 0
+            GameString += "u8 Room_Get_Index(char *RoomName) {" + vbCrLf
+            For Each X As String In GetXDSFilter("ROOM ")
+                X = X.Substring(5)
+                Dim RoomName As String = iGet(X, 0, ",")
+                GameString += " if (strcmp(RoomName, """ + RoomName + """) == 0) return " + DOn.ToString + ";" + vbCrLf
+                DOn += 1
+            Next
+            GameString += " return 0;" + vbCrLf
+            GameString += "}" + vbCrLf + vbCrLf
+            DOn = 0
+            GameString += "void Goto_Room_Backend(u8 RoomIndex) {" + vbCrLf
+            GameString += "  RoomFrames = 0;" + vbCrLf
+            GameString += "  RoomSeconds = 0;" + vbCrLf
+            For Each X As String In GetXDSFilter("ROOM ")
+                X = X.Substring(5)
+                Dim RoomName As String = iGet(X, 0, ",")
+                GameString += "  if (RoomIndex == " + DOn.ToString + ") " + RoomName + "();" + vbCrLf
+                DOn += 1
+            Next
+            GameString += "}" + vbCrLf + vbCrLf
+            GameString += "void Goto_Next_Room(void) {" + vbCrLf
+            GameString += " if (CurrentRoom < RoomCount) {" + vbCrLf
+            GameString += "  CurrentRoom += 1;" + vbCrLf
+            GameString += "  Goto_Room_Backend(CurrentRoom);" + vbCrLf
+            GameString += " }" + vbCrLf
+            GameString += "}" + vbCrLf + vbCrLf
+            'GameString += "void Goto_Room(char *RoomName) {" + vbcrlf
+            'GameString += "  Goto_Room_Backend(Room_Get_Index(RoomName));" + vbcrlf
+            'GameString += "}" + vbcrlf
+            File.WriteAllText(CompilePath + "include\GameWorks.h", GameString)
+            Dim MF As String = _
+                  "ARM7_SELECTED = ARM7_MP3_DSWIFI" + vbCrLf
+            MF += "USE_NITROFS  = YES" + vbCrLf
+            MF += "NITRODATA   := nitrofiles" + vbCrLf
+            MF += "TEXT1        := " + GetXDSLine("PROJECTNAME ").ToString.Substring(12) + vbCrLf
+            MF += "TEXT2        := " + GetXDSLine("TEXT2 ").ToString.Substring(6) + vbCrLf
+            MF += "TEXT3        := " + GetXDSLine("TEXT3 ").ToString.Substring(6) + vbCrLf
+            MF += "TARGET       := $(shell basename $(CURDIR))" + vbCrLf
+            MF += "BUILD        := build" + vbCrLf
+            MF += "SOURCES      := source data gfx/bin" + vbCrLf
+            MF += "INCLUDES     := include build data gfx" + vbCrLf
+            MF += "RELEASEPATH  := " + vbCrLf
+            MF += "MAKEFILE_VER := ver2" + vbCrLf
+            MF += "include " + CDrive + "devkitPro\PAlib\lib\PA_Makefile" + vbCrLf
+            System.IO.File.WriteAllText(CompilePath + "Makefile", MF)
+            Compile.CustomPerformStep("Processing Graphics")
+            Dim MyProcess As New Process
+            Dim MyInfo As New ProcessStartInfo
+            If RedoAllGraphics Or BGsToRedo.Count > 0 Or RedoSprites Then
+                With MyInfo
+                    .FileName = CompilePath + "gfx\PAGfx.exe"
+                    .WorkingDirectory = CompilePath + "gfx"
+                End With
+                With MyProcess
+                    .StartInfo = MyInfo
+                    .Start()
+                    .WaitForExit()
+                End With
+            End If
+            File.Delete(CompilePath + "gfx\PAGfx.txt")
+            File.Delete(CompilePath + "gfx\all_gfx.h")
+            'Make a hacky GFX file ...
+            Dim DSGMH As String = String.Empty
+            DSGMH += "#pragma once" + vbCrLf
+            DSGMH += "#include <PA_BgStruct.h>" + vbCrLf + vbCrLf
+            DSGMH += "//Sprites:" + vbCrLf
+            For Each X As String In GetXDSFilter("SPRITE ")
+                X = X.Substring(7)
+                If iGet(GetXDSLine("SPRITE " + X), 3, ",") = "Nitro" Then
+                    If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
+                        File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
+                    End If
+                    Dim PalletNumber As Byte = 0
                     For Each PalletString As String In PalletNumbers
-                        If PalletString.StartsWith(SpriteName + ",") Then
+                        If PalletString.StartsWith(X + ",") Then
                             PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
                         End If
                     Next
-                End If
-                GameString += "    case " + DOn.ToString + ":" + vbCrLf
-                GameString += "      Instances[InstanceID].Width = " + SW + "; Instances[InstanceID].Height = " + SH + ";" + vbCrLf
 
-                If iGet(X, 3, ",") = "Nitro" Then
-                    'Fix palette
-                    ' Nitro + DSGM
-                    GameString += "      FAT_BasicCreateSprite(Instances[InstanceID].Screen, InstanceID, " + (PalletNumber_Nitro + PalletNumber).ToString + ", """ + SpriteName + "_Sprite.bin"", """ + "NitroPal" + PalletNumber_Nitro.ToString + "_Pal.bin"", OBJ_SIZE_" + SW + "X" + SH + ", 256, 192);" + vbCrLf
+                    If File.Exists(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
+                        File.Move(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin", CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
+                    End If
                 Else
-                    GameString += "      PA_CreateSprite(Instances[InstanceID].Screen, InstanceID, (void*)" + SpriteName + "_Sprite, " + _
-                                         "OBJ_SIZE_" + SW + "X" + SH + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbCrLf
+                    Dim SpriteName As String = X.Substring(0, X.IndexOf(","))
+                    Dim TheSize As Size = GenerateDSSprite(SpriteName).Size
+                    Dim Timez As Int64 = TheSize.Width * TheSize.Height
+                    DSGMH += "  extern const unsigned char " + SpriteName + "_Sprite[" + Timez.ToString + "] _GFX_ALIGN;" + vbCrLf
                 End If
+            Next
+            DSGMH += vbCrLf + "//Backgrounds:" + vbCrLf
+            For Each X As String In GetXDSFilter("BACKGROUND ")
+                X = X.Substring(11)
+                If iGet(GetXDSLine("BACKGROUND " + X), 1, ",") = "Nitro" Then
 
-                GameString += "      break;" + vbCrLf
-                DOn += 1
-            Next
-            GameString += "  }" + vbCrLf
-        End If
-        'FinalString += "  return true;" + vbcrlf
-        GameString += "}" + vbCrLf + vbCrLf
-        DOn = 0
-        GameString += "void Create_Object(u8 ObjectEnum, u8 InstanceID, bool Screen, s16 X, s16 Y) {" + vbCrLf
-        'GameString += "  strcpy(Instances[InstanceID].Name, ObjectName);" + vbCrLf
-        GameString += "  Instances[InstanceID].EName = ObjectEnum;"
-        GameString += "  Instances[InstanceID].InUse = true; Instances[InstanceID].Screen = Screen;" + vbCrLf
-        GameString += "  Instances[InstanceID].OriginalX = X; Instances[InstanceID].OriginalY = Y;" + vbCrLf
-        GameString += "  Instances[InstanceID].X = X; Instances[InstanceID].Y = Y;" + vbCrLf
-        GameString += "  Instances[InstanceID].VX = 0; Instances[InstanceID].VY = 0;" + vbCrLf
-        If GetXDSFilter("OBJECT ").Length > 0 Then
-            For Each X As String In GetXDSFilter("OBJECT ")
-                X = X.Substring(7)
-                Dim ObjectName As String = iGet(X, 0, ",")
-                Dim ObjectFrame As Int16 = Convert.ToInt16(iGet(X, 2, ","))
-                Dim SpriteName As String = iGet(GetXDSLine("OBJECT " + ObjectName + ","), 1, ",")
-                If DOn = 0 Then
-                    GameString += "  if (ObjectEnum == " + ObjectName + ") {" + vbCrLf
+                    If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
+                        File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
+                    End If
+                    If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
+                        File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
+                    End If
+                    If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
+                        File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
+                    End If
+                    If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c") Then
+                        If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
+                        File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
+                    End If
                 Else
-                    GameString += "  } else if (ObjectEnum == " + ObjectName + ") {" + vbCrLf
+                    DSGMH += "  extern const PA_BgStruct " + X + ";" + vbCrLf
                 End If
-                If Not SpriteName = "None" Then
-                    Dim SpriteLine As String = GetXDSLine("SPRITE " + SpriteName + ",")
-                    Dim SW As Byte = Convert.ToByte(iGet(SpriteLine, 1, ","))
-                    Dim SH As Byte = Convert.ToByte(iGet(SpriteLine, 2, ","))
-                    GameString += "     Instances[InstanceID].HasSprite = true;" + vbCrLf
-                    GameString += "     Set_Sprite(InstanceID, """ + SpriteName + """, false);" + vbCrLf
-                    If ObjectFrame > 0 Then GameString += "     Set_Frame(InstanceID, " + ObjectFrame.ToString + ");" + vbCrLf
-                Else
-                    GameString += "     Instances[InstanceID].HasSprite = false;" + vbCrLf
-                    'FinalString += "     PA_CreateSprite(Screen, InstanceID, (void*)" + SpriteName + "_Sprite, OBJ_SIZE_" + SW.ToString + "X" + SH.ToString + ", 1, " + PalletNumber.ToString + ", 256, 192);" + vbcrlf
-                End If
-                'FinalString += "     #ifdef " + ObjectName + "CreateExists" + vbcrlf
-                If DoesXDSLineExist("EVENT " + ObjectName + ",1,NoData") Then
-                    GameString += "     " + ObjectName + "Create_Event(InstanceID);" + vbCrLf
-                End If
-                'FinalString += "       " + ObjectName + "Create_Event(" + DOn.ToString + ");" + vbcrlf
-                'FinalString += "     #endif" + vbcrlf
-                'GameString += "     break;" + vbcrlf
-                DOn += 1
             Next
-            GameString += "  }" + vbCrLf + vbCrLf
-        End If
-        'GameString += "  return true;" + vbcrlf
-        GameString += "}" + vbCrLf
-        DOn = 0
-        GameString += "u8 Sprite_Get_ID(char *SpriteName) {" + vbCrLf
-        For Each X As String In GetXDSFilter("SPRITE ")
-            X = X.Substring(7)
-            Dim SpriteName As String = iGet(X, 0, ",")
-            GameString += " if (strcmp(SpriteName, """ + SpriteName + """) == 0) return " + DOn.ToString + ";" + vbCrLf
-            DOn += 1
-        Next
-        GameString += " return 0;" + vbCrLf
-        GameString += "}" + vbCrLf + vbCrLf
-        DOn = 0
-        GameString += "u8 Room_Get_Index(char *RoomName) {" + vbCrLf
-        For Each X As String In GetXDSFilter("ROOM ")
-            X = X.Substring(5)
-            Dim RoomName As String = iGet(X, 0, ",")
-            GameString += " if (strcmp(RoomName, """ + RoomName + """) == 0) return " + DOn.ToString + ";" + vbCrLf
-            DOn += 1
-        Next
-        GameString += " return 0;" + vbCrLf
-        GameString += "}" + vbCrLf + vbCrLf
-        DOn = 0
-        GameString += "void Goto_Room_Backend(u8 RoomIndex) {" + vbCrLf
-        GameString += "  RoomFrames = 0;" + vbCrLf
-        GameString += "  RoomSeconds = 0;" + vbCrLf
-        For Each X As String In GetXDSFilter("ROOM ")
-            X = X.Substring(5)
-            Dim RoomName As String = iGet(X, 0, ",")
-            GameString += "  if (RoomIndex == " + DOn.ToString + ") " + RoomName + "();" + vbCrLf
-            DOn += 1
-        Next
-        GameString += "}" + vbCrLf + vbCrLf
-        GameString += "void Goto_Next_Room(void) {" + vbCrLf
-        GameString += " if (CurrentRoom < RoomCount) {" + vbCrLf
-        GameString += "  CurrentRoom += 1;" + vbCrLf
-        GameString += "  Goto_Room_Backend(CurrentRoom);" + vbCrLf
-        GameString += " }" + vbCrLf
-        GameString += "}" + vbCrLf + vbCrLf
-        'GameString += "void Goto_Room(char *RoomName) {" + vbcrlf
-        'GameString += "  Goto_Room_Backend(Room_Get_Index(RoomName));" + vbcrlf
-        'GameString += "}" + vbcrlf
-        File.WriteAllText(CompilePath + "include\GameWorks.h", GameString)
-        Dim MF As String = _
-              "ARM7_SELECTED = ARM7_MP3_DSWIFI" + vbCrLf
-        MF += "USE_NITROFS  = YES" + vbCrLf
-        MF += "NITRODATA   := nitrofiles" + vbCrLf
-        MF += "TEXT1        := " + GetXDSLine("PROJECTNAME ").ToString.Substring(12) + vbCrLf
-        MF += "TEXT2        := " + GetXDSLine("TEXT2 ").ToString.Substring(6) + vbCrLf
-        MF += "TEXT3        := " + GetXDSLine("TEXT3 ").ToString.Substring(6) + vbCrLf
-        MF += "TARGET       := $(shell basename $(CURDIR))" + vbCrLf
-        MF += "BUILD        := build" + vbCrLf
-        MF += "SOURCES      := source data gfx/bin" + vbCrLf
-        MF += "INCLUDES     := include build data gfx" + vbCrLf
-        MF += "RELEASEPATH  := " + vbCrLf
-        MF += "MAKEFILE_VER := ver2" + vbCrLf
-        MF += "include " + CDrive + "devkitPro\PAlib\lib\PA_Makefile" + vbCrLf
-        System.IO.File.WriteAllText(CompilePath + "Makefile", MF)
-        Compile.CustomPerformStep("Processing Graphics")
-        Dim MyProcess As New Process
-        Dim MyInfo As New ProcessStartInfo
-        If RedoAllGraphics Or BGsToRedo.Count > 0 Or RedoSprites Then
+            If PalletNames.Count > 0 Then
+                DSGMH += vbCrLf + "//Pallets:" + vbCrLf
+                For i As Byte = 0 To PalletNames.Count - 1
+                    'BRB!
+                    DSGMH += "  extern const unsigned short DSGMPal" + i.ToString + "_Pal[256] _GFX_ALIGN;" + vbCrLf
+                Next
+            End If
+            File.WriteAllText(CompilePath + "gfx\dsgm_gfx.h", DSGMH)
+            Compile.CustomPerformStep("Compiling Game")
             With MyInfo
-                .FileName = CompilePath + "gfx\PAGfx.exe"
-                .WorkingDirectory = CompilePath + "gfx"
+                .FileName = CompilePath + "build.bat"
+                .WorkingDirectory = CompilePath
             End With
             With MyProcess
                 .StartInfo = MyInfo
                 .Start()
                 .WaitForExit()
             End With
-        End If
-        File.Delete(CompilePath + "gfx\PAGfx.txt")
-        File.Delete(CompilePath + "gfx\all_gfx.h")
-        'Make a hacky GFX file ...
-        Dim DSGMH As String = String.Empty
-        DSGMH += "#pragma once" + vbCrLf
-        DSGMH += "#include <PA_BgStruct.h>" + vbCrLf + vbCrLf
-        DSGMH += "//Sprites:" + vbCrLf
-        For Each X As String In GetXDSFilter("SPRITE ")
-            X = X.Substring(7)
-            If iGet(GetXDSLine("SPRITE " + X), 3, ",") = "Nitro" Then
-                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
-                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Sprite.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Sprite.bin")
-                End If
-                Dim PalletNumber As Byte = 0
-                For Each PalletString As String In PalletNumbers
-                    If PalletString.StartsWith(X + ",") Then
-                        PalletNumber = Convert.ToByte(PalletString.Substring(PalletString.IndexOf(",") + 1))
-                    End If
+            If File.Exists(CompilePath + CompileName + ".nds") Then
+                RedoAllGraphics = False
+                RedoSprites = False
+                BGsToRedo.Clear()
+                SoundsToRedo.Clear()
+                FontsUsedLastTime.Clear()
+                For Each X As String In FontsUsedThisTime
+                    FontsUsedLastTime.Add(X)
                 Next
-
-                If File.Exists(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
-                    File.Move(CompilePath + "gfx\bin\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin", CompilePath + "nitrofiles\" + "NitroPal" + PalletNumber.ToString + "_Pal.bin")
-                End If
-            Else
-                Dim SpriteName As String = X.Substring(0, X.IndexOf(","))
-                Dim TheSize As Size = GenerateDSSprite(SpriteName).Size
-                Dim Timez As Int64 = TheSize.Width * TheSize.Height
-                DSGMH += "  extern const unsigned char " + SpriteName + "_Sprite[" + Timez.ToString + "] _GFX_ALIGN;" + vbCrLf
+                Return True
             End If
-        Next
-        DSGMH += vbCrLf + "//Backgrounds:" + vbCrLf
-        For Each X As String In GetXDSFilter("BACKGROUND ")
-            X = X.Substring(11)
-            If iGet(GetXDSLine("BACKGROUND " + X), 1, ",") = "Nitro" Then
-
-                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
-                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Map.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Map.bin")
-                End If
-                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
-                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Tiles.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Tiles.bin")
-                End If
-                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
-                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + "_Pal.bin", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + "_Pal.bin")
-                End If
-                If File.Exists(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c") Then
-                    If File.Exists(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c") Then File.Delete(CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
-                    File.Move(CompilePath + "gfx\bin\" + iGet(X, 0, ",") + ".c", CompilePath + "nitrofiles\" + iGet(X, 0, ",") + ".c")
-                End If
-            Else
-                DSGMH += "  extern const PA_BgStruct " + X + ";" + vbCrLf
-            End If
-        Next
-        If PalletNames.Count > 0 Then
-            DSGMH += vbCrLf + "//Pallets:" + vbCrLf
-            For i As Byte = 0 To PalletNames.Count - 1
-                'BRB!
-                DSGMH += "  extern const unsigned short DSGMPal" + i.ToString + "_Pal[256] _GFX_ALIGN;" + vbCrLf
-            Next
-        End If
-        File.WriteAllText(CompilePath + "gfx\dsgm_gfx.h", DSGMH)
-        Compile.CustomPerformStep("Compiling Game")
-        With MyInfo
-            .FileName = CompilePath + "build.bat"
-            .WorkingDirectory = CompilePath
-        End With
-        With MyProcess
-            .StartInfo = MyInfo
-            .Start()
-            .WaitForExit()
-        End With
-        If File.Exists(CompilePath + CompileName + ".nds") Then
-            RedoAllGraphics = False
-            RedoSprites = False
-            BGsToRedo.Clear()
-            SoundsToRedo.Clear()
-            FontsUsedLastTime.Clear()
-            For Each X As String In FontsUsedThisTime
-                FontsUsedLastTime.Add(X)
-            Next
-            Return True
-        End If
-        Return False
+            Return False
     End Function
 
     Public Function FormNOGBAPath() As String
@@ -2284,11 +2212,6 @@ Module DSGMlib
         System.Diagnostics.Process.Start(URL)
     End Sub
 
-    Sub ProPlease(ByVal ToDoWhat As String)
-        MsgInfo("Please buy the Pro Edition to " + ToDoWhat + ".")
-        Pro.ShowDialog()
-    End Sub
-
     Function GetActionTypes(ByVal ActionName) As String
         Dim Returnable As String = String.Empty
         For Each X As String In File.ReadAllLines(AppPath + "Actions\" + ActionName + ".action")
@@ -2363,20 +2286,6 @@ Module DSGMlib
         End Try
     End Sub
 
-    Public Sub ResetPro()
-        My.Settings.ProEmail = String.Empty
-        My.Settings.ProSerial = String.Empty
-        My.Settings.ProActivated = False
-        My.Settings.Save()
-        SetSetting("PRO_EMAIL", String.Empty)
-        SetSetting("PRO_SERIAL", String.Empty)
-        SetSetting("PRO", "0")
-        MsgInfo("The Reset was successful.")
-        IsPro = False
-        MainForm.Text = TitleDataWorks()
-        'MainForm.EquateProButton()
-    End Sub
-
     Public Function TitleDataWorks() As String
         Dim Returnable As String = String.Empty
         If BeingUsed Then
@@ -2389,7 +2298,6 @@ Module DSGMlib
             CacheProjectName = Returnable
             Returnable += " - "
         End If
-        'Returnable += Application.ProductName + " " + If(IsPro, "Pro", "Free")
         Returnable += Application.ProductName
         Return Returnable
     End Function
@@ -2420,50 +2328,5 @@ Module DSGMlib
     Function GetOSVersion() As Byte
         Return Convert.ToByte(System.Environment.OSVersion.Version.ToString.Substring(0, 1))
     End Function
-
-    Sub PrivacyBummer(ByVal Message As String, ByVal Action As String)
-        MsgError(Message + "." + vbcrlf + vbcrlf + Application.ProductName + " will " + Action + ".")
-    End Sub
-
-    Sub PiracyWorks()
-        Dim Baddies As New Collection
-        Dim PathBegin As String = CDrive
-        If GetOSVersion() = 5 Then
-            PathBegin += "Documents and Settings\" + Environment.UserName + "\My Documents"
-        Else
-            PathBegin += "Users\" + Environment.UserName
-        End If
-        PathBegin += "\Downloads\"
-        '3.0
-        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\readme.nfo")
-        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\DSGameMaker.exe")
-        Baddies.Add(PathBegin + "DSGameMaker 3.0 + Crack\DSGameMaker_3.0.exe")
-        '2.6B
-        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\readme.nfo")
-        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\DSGameMaker_2.6B.exe")
-        Baddies.Add(PathBegin + "DSGameMaker 2.6B + Crack\DSGameMaker.exe")
-        Baddies.Add(AppPath + "readme.nfo")
-        Dim ContainsBaddy As Boolean = False
-        For Each Baddy As String In Baddies
-            If System.IO.File.Exists(Baddy) Then ContainsBaddy = True : Exit For
-        Next
-        If ContainsBaddy Then
-            PrivacyBummer("An illegal copy of " + Application.ProductName + " was found on your computer", "remove the offending files and downgrade to the Free Edition")
-            For Each Baddy As String In Baddies
-                If IO.File.Exists(Baddy) Then IO.File.Delete(Baddy)
-            Next
-            ResetPro()
-            MsgInfo("The offending files were removed and your copy of " + Application.ProductName + " has been downgraded to the Free Edition.")
-            If Directory.Exists("C:/Program Files/uTorrent") Then
-                If MessageBox.Show("Would you like to close and remove µTorrent too?" + vbcrlf + vbcrlf + "This will stop you from distributing more illegal material (by accident!).", Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    For Each p As Process In System.Diagnostics.Process.GetProcesses
-                        If p.ProcessName.ToLower = "utorrent" Then p.Kill()
-                    Next
-                    Directory.Delete("C:/Program Files/uTorrent", True)
-                    MsgInfo("µTorrent has been successfully closed and removed.")
-                End If
-            End If
-        End If
-    End Sub
 
 End Module

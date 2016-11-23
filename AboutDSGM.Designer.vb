@@ -25,13 +25,12 @@ Partial Class AboutDSGM
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AboutDSGM))
         Me.DSGMTopPanel = New System.Windows.Forms.Panel()
         Me.MainPanel = New System.Windows.Forms.Panel()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.AdditionalCreditsLabel = New System.Windows.Forms.Label()
         Me.WebAddressLabel = New System.Windows.Forms.Label()
-        Me.MainInfoLabel = New System.Windows.Forms.Label()
         Me.WrittenByLabel = New System.Windows.Forms.Label()
         Me.VersionLabel = New System.Windows.Forms.Label()
         Me.DOkayButton = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.MainPanel.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -49,12 +48,22 @@ Partial Class AboutDSGM
         Me.MainPanel.Controls.Add(Me.Label1)
         Me.MainPanel.Controls.Add(Me.AdditionalCreditsLabel)
         Me.MainPanel.Controls.Add(Me.WebAddressLabel)
-        Me.MainPanel.Controls.Add(Me.MainInfoLabel)
         Me.MainPanel.Controls.Add(Me.WrittenByLabel)
         Me.MainPanel.Location = New System.Drawing.Point(0, 130)
         Me.MainPanel.Name = "MainPanel"
         Me.MainPanel.Size = New System.Drawing.Size(338, 235)
         Me.MainPanel.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.ForeColor = System.Drawing.Color.White
+        Me.Label1.Location = New System.Drawing.Point(8, 35)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(193, 14)
+        Me.Label1.TabIndex = 4
+        Me.Label1.Text = "With some love from Chris Ertl"
         '
         'AdditionalCreditsLabel
         '
@@ -65,8 +74,8 @@ Partial Class AboutDSGM
         Me.AdditionalCreditsLabel.Size = New System.Drawing.Size(314, 67)
         Me.AdditionalCreditsLabel.TabIndex = 3
         Me.AdditionalCreditsLabel.Text = "Additional components and assistance contributed by Dave J Murphy, Michael Noland" & _
-            ", Jason Rogers, Gregory Potdevin, Chris Rickard, Nick Thissen, Robert Dixon, Dav" & _
-            "e Tabba, Cilein Kearns and Baron Khan."
+    ", Jason Rogers, Gregory Potdevin, Chris Rickard, Nick Thissen, Robert Dixon, Dav" & _
+    "e Tabba, Cilein Kearns and Baron Khan."
         '
         'WebAddressLabel
         '
@@ -76,21 +85,9 @@ Partial Class AboutDSGM
         Me.WebAddressLabel.ForeColor = System.Drawing.Color.White
         Me.WebAddressLabel.Location = New System.Drawing.Point(8, 207)
         Me.WebAddressLabel.Name = "WebAddressLabel"
-        Me.WebAddressLabel.Size = New System.Drawing.Size(157, 14)
+        Me.WebAddressLabel.Size = New System.Drawing.Size(58, 14)
         Me.WebAddressLabel.TabIndex = 2
-        Me.WebAddressLabel.Text = "www.dsgamemaker.com"
-        '
-        'MainInfoLabel
-        '
-        Me.MainInfoLabel.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.MainInfoLabel.ForeColor = System.Drawing.Color.White
-        Me.MainInfoLabel.Location = New System.Drawing.Point(8, 127)
-        Me.MainInfoLabel.Name = "MainInfoLabel"
-        Me.MainInfoLabel.Size = New System.Drawing.Size(314, 80)
-        Me.MainInfoLabel.TabIndex = 1
-        Me.MainInfoLabel.Text = "Copyright James Garner, Invisionsoft 2008-2011" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "For DS Game Maker updates, rela" & _
-            "ted products (such as DS Homebrew Kits), more information, discussion and games," & _
-            " visit our website:"
+        Me.WebAddressLabel.Text = "dsgm.co"
         '
         'WrittenByLabel
         '
@@ -122,17 +119,6 @@ Partial Class AboutDSGM
         Me.DOkayButton.Text = "OK"
         Me.DOkayButton.UseVisualStyleBackColor = True
         '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ForeColor = System.Drawing.Color.White
-        Me.Label1.Location = New System.Drawing.Point(12, 35)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(277, 14)
-        Me.Label1.TabIndex = 4
-        Me.Label1.Text = "Updates (version 5.2+) written by Chris Ertl"
-        '
         'AboutDSGM
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -159,7 +145,6 @@ Partial Class AboutDSGM
     Friend WithEvents MainPanel As System.Windows.Forms.Panel
     Friend WithEvents DOkayButton As System.Windows.Forms.Button
     Friend WithEvents WrittenByLabel As System.Windows.Forms.Label
-    Friend WithEvents MainInfoLabel As System.Windows.Forms.Label
     Friend WithEvents WebAddressLabel As System.Windows.Forms.Label
     Friend WithEvents VersionLabel As System.Windows.Forms.Label
     Friend WithEvents AdditionalCreditsLabel As System.Windows.Forms.Label

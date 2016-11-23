@@ -35,8 +35,6 @@ Partial Class MainForm
         Me.MenuSep2 = New System.Windows.Forms.ToolStripSeparator()
         Me.TestGameButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.CompileGameButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MenuSep3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ExitButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.DuplicateButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteButton = New System.Windows.Forms.ToolStripMenuItem()
@@ -116,9 +114,9 @@ Partial Class MainForm
         Me.AddResourceRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.DuplicateResourceRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeleteResourceRightClickButton = New System.Windows.Forms.ToolStripMenuItem()
-        Me.Splitter1 = New System.Windows.Forms.Splitter()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.CompilesToNitroFSButton = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Splitter1 = New System.Windows.Forms.Splitter()
         Me.DMainMenuStrip.SuspendLayout()
         Me.MainToolStrip.SuspendLayout()
         Me.ResRightClickMenu.SuspendLayout()
@@ -137,7 +135,7 @@ Partial Class MainForm
         '
         'FileMenu
         '
-        Me.FileMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewProjectButton, Me.OpenProjectButton, Me.OpenLastProjectButton, Me.MenuSep1, Me.SaveButton, Me.SaveAsButton, Me.MenuSep2, Me.TestGameButton, Me.CompileGameButton, Me.MenuSep3, Me.ExitButton})
+        Me.FileMenu.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewProjectButton, Me.OpenProjectButton, Me.OpenLastProjectButton, Me.MenuSep1, Me.SaveButton, Me.SaveAsButton, Me.MenuSep2, Me.TestGameButton, Me.CompileGameButton})
         Me.FileMenu.Name = "FileMenu"
         Me.FileMenu.Size = New System.Drawing.Size(35, 20)
         Me.FileMenu.Text = "File"
@@ -162,7 +160,7 @@ Partial Class MainForm
         '
         Me.OpenLastProjectButton.Name = "OpenLastProjectButton"
         Me.OpenLastProjectButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-                    Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+            Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
         Me.OpenLastProjectButton.Size = New System.Drawing.Size(230, 22)
         Me.OpenLastProjectButton.Text = "Open Last Project"
         '
@@ -184,7 +182,7 @@ Partial Class MainForm
         Me.SaveAsButton.Image = Global.DS_Game_Maker.My.Resources.Resources.SaveAsIcon
         Me.SaveAsButton.Name = "SaveAsButton"
         Me.SaveAsButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-                    Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+            Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.SaveAsButton.Size = New System.Drawing.Size(230, 22)
         Me.SaveAsButton.Text = "Save As..."
         '
@@ -208,17 +206,6 @@ Partial Class MainForm
         Me.CompileGameButton.ShortcutKeys = System.Windows.Forms.Keys.F6
         Me.CompileGameButton.Size = New System.Drawing.Size(230, 22)
         Me.CompileGameButton.Text = "Compile Game..."
-        '
-        'MenuSep3
-        '
-        Me.MenuSep3.Name = "MenuSep3"
-        Me.MenuSep3.Size = New System.Drawing.Size(227, 6)
-        '
-        'ExitButton
-        '
-        Me.ExitButton.Name = "ExitButton"
-        Me.ExitButton.Size = New System.Drawing.Size(230, 22)
-        Me.ExitButton.Text = "Exit"
         '
         'EditMenu
         '
@@ -263,7 +250,7 @@ Partial Class MainForm
         '
         Me.FindResourceButton.Name = "FindResourceButton"
         Me.FindResourceButton.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
-                    Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
+            Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
         Me.FindResourceButton.Size = New System.Drawing.Size(224, 22)
         Me.FindResourceButton.Text = "Find Resource"
         '
@@ -753,7 +740,7 @@ Partial Class MainForm
         Me.ResRightClickMenu.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ResRightClickMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenResourceRightClickButton, Me.RightClickSeparator, Me.AddResourceRightClickButton, Me.DuplicateResourceRightClickButton, Me.DeleteResourceRightClickButton, Me.ToolStripSeparator1, Me.CompilesToNitroFSButton})
         Me.ResRightClickMenu.Name = "ResRightClickMenu"
-        Me.ResRightClickMenu.Size = New System.Drawing.Size(168, 148)
+        Me.ResRightClickMenu.Size = New System.Drawing.Size(168, 126)
         '
         'OpenResourceRightClickButton
         '
@@ -789,14 +776,6 @@ Partial Class MainForm
         Me.DeleteResourceRightClickButton.Size = New System.Drawing.Size(167, 22)
         Me.DeleteResourceRightClickButton.Text = "Delete"
         '
-        'Splitter1
-        '
-        Me.Splitter1.Location = New System.Drawing.Point(192, 49)
-        Me.Splitter1.Name = "Splitter1"
-        Me.Splitter1.Size = New System.Drawing.Size(3, 493)
-        Me.Splitter1.TabIndex = 6
-        Me.Splitter1.TabStop = False
-        '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
@@ -808,6 +787,14 @@ Partial Class MainForm
         Me.CompilesToNitroFSButton.Name = "CompilesToNitroFSButton"
         Me.CompilesToNitroFSButton.Size = New System.Drawing.Size(167, 22)
         Me.CompilesToNitroFSButton.Text = "Compiles to NitroFS"
+        '
+        'Splitter1
+        '
+        Me.Splitter1.Location = New System.Drawing.Point(192, 49)
+        Me.Splitter1.Name = "Splitter1"
+        Me.Splitter1.Size = New System.Drawing.Size(3, 493)
+        Me.Splitter1.TabIndex = 6
+        Me.Splitter1.TabStop = False
         '
         'MainForm
         '
@@ -847,8 +834,6 @@ Partial Class MainForm
     Friend WithEvents MenuSep2 As System.Windows.Forms.ToolStripSeparator
     Friend WithEvents TestGameButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CompileGameButton As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MenuSep3 As System.Windows.Forms.ToolStripSeparator
-    Friend WithEvents ExitButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DeleteButton As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ResourcesMenu As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents AddSpriteButton As System.Windows.Forms.ToolStripMenuItem

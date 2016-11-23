@@ -72,15 +72,6 @@ Public Class DObject
             Exit Sub
         End If
         If Not DragFromBottom Then Exit Sub
-        If Not IsPro Then
-            Dim RequiresPro As Boolean = False
-            For Each X As String In ProActions
-                If X = ActionName Then RequiresPro = True
-            Next
-            If RequiresPro Then
-                MsgInfo("This action requires the Pro Edition.")
-            End If
-        End If
         'MsgError(Location.X.ToString)
         'MsgError(Location.Y.ToString)
         'Dim MDIID As Byte = 10
@@ -394,8 +385,6 @@ Public Class DObject
             SelectedEvent = 0
             EventsListBox.SelectedIndex = 0
         End If
-        If IsPro Then RequiresProBanner.BackColor = Color.FromArgb(35, 200, 0) Else RequiresProBanner.BackColor = Color.FromArgb(192, 0, 0)
-        RequiresProBanner.Visible = False
         ArgumentsHeaderLabel.Height = 120
         ArgumentsListLabel.Height = 94
     End Sub

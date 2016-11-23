@@ -157,12 +157,6 @@
     <Compile Include="EditCode.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EnterSerial.Designer.vb">
-      <DependentUpon>EnterSerial.vb</DependentUpon>
-    </Compile>
-    <Compile Include="EnterSerial.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="FontViewer.Designer.vb">
       <DependentUpon>FontViewer.vb</DependentUpon>
     </Compile>
@@ -251,12 +245,6 @@
     <Compile Include="Compile.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Newsline.Designer.vb">
-      <DependentUpon>Newsline.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Newsline.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Options.Designer.vb">
       <DependentUpon>Options.vb</DependentUpon>
     </Compile>
@@ -267,12 +255,6 @@
       <DependentUpon>Preview.vb</DependentUpon>
     </Compile>
     <Compile Include="Preview.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pro.Designer.vb">
-      <DependentUpon>Pro.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Pro.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="RegistryLib.vb" />
@@ -392,10 +374,6 @@
       <DependentUpon>EditCode.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="EnterSerial.resx">
-      <DependentUpon>EnterSerial.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="FontViewer.resx">
       <DependentUpon>FontViewer.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -442,20 +420,12 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Newsline.resx">
-      <DependentUpon>Newsline.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Preview.resx">
       <DependentUpon>Preview.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pro.resx">
-      <DependentUpon>Pro.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Room.resx">

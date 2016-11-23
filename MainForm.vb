@@ -76,7 +76,7 @@ Public Class MainForm
             If TypeOf ctl Is MdiClient Then ctl.BackgroundImage = My.Resources.MDIBG
         Next ctl
         Dim System32Path As String = Environment.GetFolderPath(Environment.SpecialFolder.System)
-        CacheHasTinternet = HasInternetConnection("http://invisionsoft.co.uk")
+        CacheHasTinternet = HasInternetConnection("http://google.com")
         If Not File.Exists(System32Path + "\SciLexer.dll") Then
             File.Copy(AppPath + "SciLexer.dll", System32Path + "\SciLexer.dll")
         End If
@@ -90,12 +90,6 @@ Public Class MainForm
         End If
         If Not File.Exists(WindowsPath + "\ScintillaNet.dll") Then
             File.Copy(AppPath + "ScintillaNet.dll", WindowsPath + "\ScintillaNet.dll")
-        End If
-        If Not File.Exists(AppPath + "devkitProUpdater-1.5.0.exe") Then
-            If CacheHasTinternet Then
-                Dim ReqURL As String = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/murphy.php")
-                WC.DownloadFile(ReqURL, AppPath + "devkitProUpdater-1.5.0.exe")
-            End If
         End If
         Try
             SetFileType(".dsgm", "DSGMFile")
@@ -163,31 +157,8 @@ Public Class MainForm
             FontName = FontName.Substring(0, FontName.IndexOf("."))
             FontNames.Add(FontName)
         Next
-        'PiracyWorks()
-        If CacheHasTinternet Then
-            Dim Result As String = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/version.php")
-            UpdateVersion = Convert.ToInt16(Result)
-            Result = WC.DownloadString("http://dsgamemaker.com/DSGM5RegClient/forcedupdate.php?id=" + IDVersion.ToString)
-            If Result.Length > 0 Then
-                MsgInfo("You are using a version of " + Application.ProductName + " that is widely pirated and therefore you must upgrade to the latest version as soon as possible." + vbCrLf + vbCrLf + "You will now be directed to the download page.")
-                URL("http://dsgamemaker.com/?dlchange")
-                End
-            End If
-        End If
-        'IsPro = ReallyPro()
-        'EquateProButton()
         Text = TitleDataWorks()
     End Sub
-
-    'Public Sub EquateProButton()
-    '    If IsPro Then
-    '        UpgradeToProButtonTool.Text = "Using Pro!"
-    '        UpgradeToProButton.Text = "Pro Edition"
-    '    Else
-    '        UpgradeToProButtonTool.Text = "Upgrade to Pro"
-    '        UpgradeToProButton.Text = "Upgrade to Pro"
-    '    End If
-    'End Sub
 
     Sub GenerateShite(ByVal DisplayResult As String)
         Dim DW As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_WIDTH"))
@@ -284,7 +255,6 @@ Public Class MainForm
 
     Private Sub AddObjectButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddObjectButton.Click, AddObjectButtonTool.Click
         Dim ObjectCount As Byte = GetXDSFilter("OBJECT ").Length
-        If Not IsPro And ObjectCount >= 10 Then ProPlease("use more than 10 Objects") : Exit Sub
         Dim NewName As String = MakeResourceName("Object", "OBJECT")
         XDSAddLine("OBJECT " + NewName + ",None,0")
         AddResourceNode(ResourceIDs.DObject, NewName, "ObjectNode", True)
@@ -329,7 +299,6 @@ Public Class MainForm
 
     Private Sub AddRoomButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AddRoomButton.Click, AddRoomButtonTool.Click
         Dim RoomCount As Byte = GetXDSFilter("ROOM ").Length
-        If Not IsPro And RoomCount >= 5 Then ProPlease("use more than 5 Rooms") : Exit Sub
         Dim NewName As String = MakeResourceName("Room", "ROOM")
         Dim DW As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_WIDTH"))
         Dim DH As Int16 = Convert.ToInt16(GetSetting("DEFAULT_ROOM_HEIGHT"))
@@ -432,10 +401,6 @@ Public Class MainForm
         SaveButtonTool.Enabled = True
         IsNewProject = False
         Me.Text = TitleDataWorks()
-    End Sub
-
-    Private Sub ExitButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitButton.Click
-        MainForm_FormClosing(New Object, New FormClosingEventArgs(CloseReason.ApplicationExitCall, False))
     End Sub
 
     Private Sub OptionsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OptionsButton.Click, OptionsButtonTool.Click
@@ -574,13 +539,8 @@ Public Class MainForm
             DUpdate.ShowDialog()
         End If
         If Not Directory.Exists(CDrive + "devkitPro") Then
-            MsgInfo("Thank you for installing " + Application.ProductName + "." + vbCrLf + vbCrLf + "the toolchain will now be installed (to compile your games).")
+            MsgInfo("Thank you for installing " + Application.ProductName + "." + vbCrLf + vbCrLf + "The toolchain will now be installed to compile your games.")
             RundevkitProUpdater()
-        End If
-        If Not IsPro Then
-            If HasInternetConnection("http://dsgamemaker.com") Then
-                If Not ShownPro Then Pro.ShowDialog() : ShownPro = True
-            End If
         End If
         Dim SkipAuto As Boolean = False
         Dim Args As New List(Of String)
@@ -619,15 +579,7 @@ Public Class MainForm
             BGsToRedo.Clear()
             AddResourceNode(ResourceIDs.Room, "Room_1", "RoomNode", False)
             InternalSave()
-            If CacheHasTinternet And GetSetting("SHOW_NEWS") = "1" Then
-                Newsline.Location = New Point(24, 24)
-                ShowInternalForm(Newsline)
-            End If
         End If
-    End Sub
-
-    Private Sub UpgradeToProButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Pro.ShowDialog()
     End Sub
 
     Private Sub DeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeleteButton.Click
@@ -685,16 +637,8 @@ Public Class MainForm
         URL(Domain + "dsgmforum/viewforum.php?f=6")
     End Sub
 
-    Private Sub EnterSerialCodeButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        EnterSerial.ShowDialog()
-    End Sub
-
     Private Sub GlobalStructuresButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GlobalStructuresButton.Click, GlobalStructuresButtonTool.Click
         GlobalStructures.ShowDialog()
-    End Sub
-
-    Private Sub NewsButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewsButton.Click
-        ShowInternalForm(Newsline)
     End Sub
 
     Private Sub RunDevkitProUpdaterButton(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReinstallToolchainButton.Click

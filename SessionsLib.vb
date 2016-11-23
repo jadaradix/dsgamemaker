@@ -40,11 +40,9 @@ Module SessionsLib
         File.WriteAllBytes(CompilePath + "gfx\PAGfx.exe", My.Resources.PAGfx)
         Directory.CreateDirectory(CompilePath + "include")
         File.WriteAllBytes(CompilePath + "include\ActionWorks.h", My.Resources.ActionWorks)
-        If IsPro Then
-            File.WriteAllBytes(CompilePath + "include\ExtraDBAS.h", My.Resources.ExtraDBAS)
-            File.WriteAllText(CompilePath + "include\ActionWorks.h", PathToString(CompilePath + "include\ActionWorks.h") + vbcrlf + PathToString(CompilePath + "include\ExtraDBAS.h"))
-            File.Delete(CompilePath + "include\ExtraDBAS.h")
-        End If
+        File.WriteAllBytes(CompilePath + "include\ExtraDBAS.h", My.Resources.ExtraDBAS)
+        File.WriteAllText(CompilePath + "include\ActionWorks.h", PathToString(CompilePath + "include\ActionWorks.h") + vbCrLf + PathToString(CompilePath + "include\ExtraDBAS.h"))
+        File.Delete(CompilePath + "include\ExtraDBAS.h")
         Directory.CreateDirectory(CompilePath + "source")
         Dim Writeable As String = "make" + vbcrlf + "pause"
         File.WriteAllText(CompilePath + "build.bat", Writeable)
